@@ -1,0 +1,1 @@
+# AyurMinds-Client-Mobile-App
