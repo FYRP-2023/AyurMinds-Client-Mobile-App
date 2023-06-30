@@ -3,29 +3,39 @@ const themes = {
     primary: "#17CE92",
     secondary: "#fff",
     text: "#000000",
+    status: {
+      success: "##17CE92",
+      error: "#E93E3E",
+      info: "#21B8E8",
+    },
   },
   //
   Typography: {
-    fontSize: {
-      small: 12,
-      medium: 16,
-      large: 20,
+    heading: {
+      fontSize: 20,
+      color: "black",
+      fontWeight: 700,
+      padding: 6,
+    },
+    subHeading: {
+      fontSize: 18,
+      color: "616161",
+      fontWeight: 500,
+      padding: 6,
+    },
+    title: {
+      fontSize: 16,
+      color: "616161",
+      fontWeight: 400,
+      padding: 6,
+    },
+    body: {
+      fontSize: 15,
+      color: "616161",
+      fontWeight: 400,
+      padding: 6,
     },
     fontFamily: "Arial",
-  },
-  //
-  Heading: {
-    fontSize: 20,
-    color: "black",
-    fontWeight: 700,
-    padding: 6,
-  },
-  //
-  SubHeading: {
-    fontSize: 18,
-    color: "616161",
-    fontWeight: 400,
-    padding: 6,
   },
   //
   Spacing: {
