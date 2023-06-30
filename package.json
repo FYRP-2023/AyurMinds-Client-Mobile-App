@@ -10,11 +10,16 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^18.0.1",
+    "@react-navigation/material-top-tabs": "^6.6.3",
+    "@react-navigation/native": "^6.1.7",
+    "@react-navigation/stack": "^6.3.17",
     "expo": "~48.0.10",
     "expo-status-bar": "~1.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.71.6",
+    "react-native-pager-view": "6.1.2",
+    "react-native-tab-view": "^3.5.2",
     "react-native-web": "~0.18.10"
   },
   "devDependencies": {
