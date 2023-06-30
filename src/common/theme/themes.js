@@ -13,7 +13,7 @@ const themes = {
   Typography: {
     heading: {
       fontSize: 20,
-      color: "black",
+      color: "#071421",
       fontWeight: 700,
       padding: 6,
     },
