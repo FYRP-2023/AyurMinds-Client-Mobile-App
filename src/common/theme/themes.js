@@ -1,7 +1,7 @@
 const themes = {
   Colors: {
     primary: "#17CE92",
-    secondary: "##9BA1A6",
+    secondary: "#9BA1A6",
     text: "#000000",
     status: {
       success: "##17CE92",
