@@ -5,17 +5,19 @@ import ChatBot from "../screens/ChatBot";
 import Doctor from "../screens/Doctor";
 import SocialNetwork from "../screens/SocialNetwork";
 import Herb from "../screens/Herb";
-import { StatusBar } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
 import themes from "../common/theme/themes";
 
 const Tab = createMaterialTopTabNavigator();
 
 const AppNavigator = () => {
   return (
-    <Tab.Navigator style={{ paddingTop: StatusBar.currentHeight }}>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarIndicatorStyle: { backgroundColor: themes.Colors.primary },
+      }}
+    >
       <Tab.Screen
         options={{
           title: ({ color, focused }) => (

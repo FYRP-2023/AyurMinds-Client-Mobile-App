@@ -16,6 +16,7 @@ const themes = {
       color: "#071421",
       fontWeight: 700,
       padding: 6,
+      letterSpacing: 3,
     },
     subHeading: {
       fontSize: 18,

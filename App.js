@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import themes from "./src/common/theme/themes";
 import AppNavigator from "./src/navigations/AppNavigator";
 import { NavigationContainer } from "@react-navigation/native";
+import LogoHeader from "./src/components/LogoHeader";
 
 export default function App() {
   return (
     <NavigationContainer>
+      <LogoHeader />
       <AppNavigator />
     </NavigationContainer>
   );
