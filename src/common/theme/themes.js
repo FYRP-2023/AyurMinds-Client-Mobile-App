@@ -82,6 +82,11 @@ const themes = {
     marginTop: 20,
     width: "100%",
     textAlign: "center",
+    elevation: 5,
+    shadowColor: "#17CE92",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: -2, height: 4 },
+    shadowRadius: 3,
   },
   SecondaryBtnLarge: {
     backgroundColor: "#D9E7E2",
