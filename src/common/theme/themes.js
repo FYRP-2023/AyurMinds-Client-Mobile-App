@@ -12,15 +12,16 @@ const themes = {
   //
   Typography: {
     heading: {
-      fontSize: 20,
+      fontSize: 24,
       color: "#071421",
       fontWeight: 700,
       padding: 6,
-      letterSpacing: 3,
+      letterSpacing: 2,
+      // fontFamily: "Trebuchet MS', sans-serif",
     },
     subHeading: {
       fontSize: 18,
-      color: "616161",
+      color: "#616161",
       fontWeight: 500,
       padding: 6,
     },
@@ -62,6 +63,34 @@ const themes = {
       shadowOpacity: 0.1,
       shadowRadius: 2,
     },
+  },
+  //
+  PrimaryBtnSmall: {
+    backgroundColor: " #17CE92",
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    marginTop: 20,
+    width: "10rem",
+    textAlign: "center",
+  },
+  PrimaryBtnLarge: {
+    backgroundColor: "#17CE92",
+    paddingVertical: 8,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginTop: 20,
+    width: "100%",
+    textAlign: "center",
+  },
+  SecondaryBtnLarge: {
+    backgroundColor: "#D9E7E2",
+    paddingVertical: 8,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginTop: 20,
+    width: "100%",
+    textAlign: "center",
   },
 };
 

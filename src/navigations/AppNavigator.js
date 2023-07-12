@@ -8,6 +8,7 @@ import Herb from "../screens/Herb";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import themes from "../common/theme/themes";
+import LogoHeader from "../components/LogoHeader";
 
 const Tab = createMaterialTopTabNavigator();
 
