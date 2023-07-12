@@ -2,19 +2,20 @@ import AppNavigator from "./src/navigations/AppNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Login, SignUp, Welcome } from "./src/screens";
-import { useFonts } from "expo-font";
-import { Text } from "react-native";
+import * as Font from "expo-font";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [loaded] = useFonts({
-    Urbanist: require("./assets/fonts/Urbanist-Black.ttf"),
+  //loading fonts
+  Font.loadAsync({
+    "Urbanist-Black": require("./assets/fonts/Urbanist-Black.ttf"),
+    "Urbanist-Bold": require("./assets/fonts/Urbanist-Bold.ttf"),
+    "Urbanist-Semi-Bold": require("./assets/fonts/Urbanist-SemiBold.ttf"),
+    "Urbanist-ExtraBold": require("./assets/fonts/Urbanist-ExtraBold.ttf"),
+    "Urbanist-Light": require("./assets/fonts/Urbanist-Light.ttf"),
+    "Urbanist-Regular": require("./assets/fonts/Urbanist-Regular.ttf"),
   });
-
-  if (!loaded) {
-    return null;
-  }
 
   return (
     <NavigationContainer>
@@ -32,7 +33,7 @@ export default function App() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='Welcome'>
+    <Stack.Navigator initialRouteName='SignUp'>
       <Stack.Screen
         name='Welcome'
         component={Welcome}

@@ -2,8 +2,11 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import React from "react";
 import { Button } from "react-native-paper";
 import themes from "../common/theme/themes";
+import { useNavigation } from "@react-navigation/native";
+import SocialMediaContainer from "../components/SocialMediaContainer";
 
 const Welcome = () => {
+  const navigate = useNavigation();
   return (
     <View style={styles.container}>
       <View>
@@ -16,49 +19,23 @@ const Welcome = () => {
       </View>
 
       <View style={styles.btnGroup}>
-        <Button mode='contained' style={themes.PrimaryBtnLarge}>
+        <Button
+          mode='contained'
+          style={themes.PrimaryBtnLarge}
+          onPress={() => navigate.navigate("Login")}
+        >
           <Text style={styles.primaryButtonText}>Log in</Text>
         </Button>
-        <Button mode='contained' style={themes.SecondaryBtnLarge}>
+        <Button
+          mode='contained'
+          style={themes.SecondaryBtnLarge}
+          onPress={() => navigate.navigate("SignUp")}
+        >
           <Text style={styles.secondaryButtonText}>Sign up</Text>
         </Button>
       </View>
 
-      <View style={styles.line}>
-        <Text
-          style={{
-            color: themes.Colors.secondary,
-            textAlign: "center",
-            paddingHorizontal: 8,
-            marginBottom: 2,
-          }}
-        >
-          or continue with
-        </Text>
-      </View>
-
-      <View style={styles.socialMediaContainer}>
-        <TouchableOpacity style={styles.socialMediaArea}>
-          <Image
-            source={require("../../assets/facebook.svg")}
-            style={styles.socialMediaIcon}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.socialMediaArea}>
-          <Image
-            source={require("../../assets/apple.svg")}
-            style={styles.socialMediaIcon}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.socialMediaArea}>
-          <Image
-            source={require("../../assets/google.svg")}
-            style={styles.socialMediaIcon}
-          />
-        </TouchableOpacity>
-      </View>
+      <SocialMediaContainer />
     </View>
   );
 };
@@ -96,12 +73,12 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: "#FFF",
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Urbanist-Semi-Bold",
   },
   secondaryButtonText: {
     color: "#17CE92",
     fontSize: 16,
-    fontWeight: "bold",
+    fontFamily: "Urbanist-Semi-Bold",
   },
   btnGroup: {
     width: "100%",
@@ -112,28 +89,5 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     marginBottom: 50,
-  },
-  line: {
-    borderBottomColor: "#9BA1A6",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    alignSelf: "stretch",
-    width: "100%",
-    marginTop: 50,
-  },
-  socialMediaContainer: {
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-    justifyContent: "space-evenly",
-    marginTop: 30,
-  },
-  socialMediaIcon: {
-    width: 35,
-    height: 35,
-  },
-  socialMediaArea: {
-    border: "1px solid #9BA1A6",
-    borderRadius: 10,
-    padding: 8,
   },
 });

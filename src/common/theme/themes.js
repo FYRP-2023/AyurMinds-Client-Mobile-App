@@ -14,30 +14,34 @@ const themes = {
     heading: {
       fontSize: 24,
       color: "#071421",
-      fontWeight: 700,
       padding: 6,
       letterSpacing: 2,
-      // fontFamily: "Trebuchet MS', sans-serif",
+      fontFamily: "Urbanist-ExtraBold",
     },
     subHeading: {
       fontSize: 18,
       color: "#616161",
-      fontWeight: 500,
       padding: 6,
+      fontFamily: "Urbanist-Bold",
     },
     title: {
       fontSize: 16,
       color: "616161",
-      fontWeight: 400,
       padding: 6,
+      fontFamily: "Urbanist-Black",
     },
     body: {
       fontSize: 15,
       color: "616161",
-      fontWeight: 400,
       padding: 6,
+      fontFamily: "Urbanist-Semi-Bold",
     },
-    fontFamily: "Arial",
+    body2: {
+      fontSize: 15,
+      color: "616161",
+      padding: 6,
+      fontFamily: "Urbanist-Bold",
+    },
   },
   //
   Spacing: {
