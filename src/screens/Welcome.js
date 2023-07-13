@@ -10,12 +10,16 @@ const Welcome = () => {
   return (
     <View style={styles.container}>
       <View>
-        <Image source={require("../../assets/logo2.png")} style={styles.logo} />
+        <Image
+          source={require("../../assets/LogoGreen.svg")}
+          style={styles.logo}
+        />
       </View>
 
       <View style={styles.textGroup}>
         <Text style={styles.title}>Welcome to </Text>
-        <Text style={styles.subTitle}>Ayur Mind 👋</Text>
+        <Text style={styles.title}>Future of </Text>
+        <Text style={styles.subTitle}>Ayurvedha</Text>
       </View>
 
       <View style={styles.btnGroup}>
@@ -51,15 +55,17 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   title: {
-    fontSize: 30,
+    fontSize: 35,
     fontWeight: "bold",
     marginBottom: 2,
+    fontFamily: "Urbanist-Bold",
   },
   subTitle: {
-    fontSize: 30,
+    fontSize: 40,
     fontWeight: "bold",
     marginTop: 2,
-    color: "#17CE92",
+    color: themes.Colors.primary,
+    fontFamily: "Urbanist-Semi-Bold",
   },
   input: {
     width: "100%",
@@ -86,8 +92,8 @@ const styles = StyleSheet.create({
   },
   textGroup: { alignItems: "center", justifyContent: "center", gap: 5 },
   logo: {
-    width: 150,
-    height: 150,
+    width: 210,
+    height: 192,
     marginBottom: 50,
   },
 });

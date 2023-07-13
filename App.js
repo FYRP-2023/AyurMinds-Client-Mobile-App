@@ -33,7 +33,7 @@ export default function App() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='SignUp'>
+    <Stack.Navigator initialRouteName='Welcome'>
       <Stack.Screen
         name='Welcome'
         component={Welcome}
@@ -49,7 +49,11 @@ function MainNavigator() {
         component={SignUp}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name='AppNavigator' component={AppNavigator} />
+      <Stack.Screen
+        name='AppNavigator'
+        component={AppNavigator}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }

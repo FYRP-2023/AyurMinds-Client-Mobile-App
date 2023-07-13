@@ -1,8 +1,8 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, TextInput } from "react-native";
 import React, { useState } from "react";
 import themes from "../common/theme/themes";
 import { Ionicons } from "@expo/vector-icons";
-import { Button, Divider, TextInput } from "react-native-paper";
+import { Button, Divider } from "react-native-paper";
 import SocialMediaContainer from "../components/SocialMediaContainer";
 import { Checkbox } from "react-native-paper";
 
@@ -28,6 +28,7 @@ const SignUp = () => {
           size={30}
           color='black'
           style={{ margin: 5 }}
+          onPress={() => navigate.goBack()}
         />
         <Text style={themes.Typography.heading}>Hello there👋</Text>
         <Text style={themes.Typography.subHeading}>
@@ -90,7 +91,7 @@ const SignUp = () => {
           <Divider style={styles.divider} />
 
           <Button style={themes.PrimaryBtnLarge} onPress={handleSignup}>
-            <Text style={styles.primaryButtonText}>Sign Up</Text>
+            <Text style={styles.primaryButtonText}>Sign up</Text>
           </Button>
         </View>
       </View>
@@ -102,7 +103,7 @@ export default SignUp;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 20,
     flex: 1,
     gap: 15,
   },

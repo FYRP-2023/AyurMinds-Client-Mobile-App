@@ -1,12 +1,13 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import Home from "../screens/Home";
+import Profile from "../screens/Home";
 import ChatBot from "../screens/ChatBot";
 import Doctor from "../screens/Doctor";
 import SocialNetwork from "../screens/SocialNetwork";
 import Herb from "../screens/Herb";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import themes from "../common/theme/themes";
 import LogoHeader from "../components/LogoHeader";
 
@@ -19,19 +20,6 @@ const AppNavigator = () => {
         tabBarIndicatorStyle: { backgroundColor: themes.Colors.primary },
       }}
     >
-      <Tab.Screen
-        options={{
-          title: ({ color, focused }) => (
-            <Ionicons
-              size={25}
-              name={focused ? "home" : "home-outline"}
-              color={focused ? themes.Colors.primary : themes.Colors.secondary}
-            />
-          ),
-        }}
-        component={Home}
-        name='Home'
-      />
       <Tab.Screen
         options={{
           title: ({ color, focused }) => (
@@ -84,6 +72,19 @@ const AppNavigator = () => {
         }}
         component={SocialNetwork}
         name='SocialNetwork'
+      />
+      <Tab.Screen
+        options={{
+          title: ({ color, focused }) => (
+            <FontAwesome
+              size={25}
+              name={focused ? "user-circle-o" : "user-circle"}
+              color={focused ? themes.Colors.primary : themes.Colors.secondary}
+            />
+          ),
+        }}
+        component={Profile}
+        name='Profile'
       />
     </Tab.Navigator>
   );
