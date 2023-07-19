@@ -1,21 +1,22 @@
 import axios from "axios";
 
-export const baseURL = () => {
-  const apiUrl =
-    process.env.AYUR_MIND_MOBILE_SERVICE_LOCAL &&
-    process.env.AYUR_MIND_MOBILE_SERVICE_LOCAL;
-
-  return apiUrl;
+// add each services base url here
+export const authServiceBaseURL = () => {
+  const authService =
+    process.env.AUTH_SERVICE_LOCAL && process.env.AUTH_SERVICE_LOCAL;
+  return authService;
 };
-//
-export const getInstance = () => {
+
+//create instance of each services here
+export const getAuthServiceInstance = () => {
   // const token = tokenStore.getState().token;
   return axios.create({
     headers: { Authorization: `Bearer ${token}` },
-    baseURL: baseURL(),
+    baseURL: authServiceBaseURL(),
   });
 };
 //
+
 export const handleResponse = (response) => {
   return {
     data: response && response.data ? response.data.data : null,
@@ -25,6 +26,7 @@ export const handleResponse = (response) => {
   };
 };
 //
+
 export const handleError = (errorObject) => {
   return errorObject;
 };

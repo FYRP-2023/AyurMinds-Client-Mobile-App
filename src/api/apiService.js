@@ -1,15 +1,15 @@
 // All API's endpoints uses here
 import {
-  baseURL,
-  getInstance,
+  authServiceBaseURL,
+  getAuthServiceInstance,
   handleError,
   handleResponse,
 } from "../utils/axios";
 
 export const AyurMindsApi = {
   signIn: async (userData) => {
-    let url = `${baseURL()}user/signin`;
-    return await getInstance()
+    let url = `${authServiceBaseURL()}user/signin`;
+    return await getAuthServiceInstance()
       .post(url, userData)
       .then(handleResponse)
       .catch(handleError);
