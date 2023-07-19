@@ -1,5 +1,6 @@
 import { SafeAreaView, StyleSheet, Text, View, TextInput } from "react-native";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import themes from "../common/theme/themes";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Divider } from "react-native-paper";
@@ -8,15 +9,19 @@ import { Checkbox } from "react-native-paper";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { AyurMindsApi } from "../api/apiService";
+import { authActions } from "../store/authSlice";
 
 const Login = () => {
   const navigate = useNavigation();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [checked, setChecked] = React.useState(false);
 
   const handleLogin = () => {
-    AyurMindsApi.signIn().then().catch();
+    AyurMindsApi.signIn({ email, password })
+      .then(() => dispatch(authActions.login(res.data)))
+      .catch((err) => console.log(err));
     navigate.navigate("AppNavigator");
   };
 

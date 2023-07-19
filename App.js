@@ -1,8 +1,11 @@
 import AppNavigator from "./src/navigations/AppNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+import { Provider } from "react-redux";
 import { Login, SignUp, Welcome } from "./src/screens";
 import * as Font from "expo-font";
+import store from "./src/store/store";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,16 +21,18 @@ export default function App() {
   });
 
   return (
-    <NavigationContainer>
-      {/* <LogoHeader /> */}
-      <Stack.Navigator>
-        <Stack.Screen
-          name='Main'
-          component={MainNavigator}
-          options={{ headerShown: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        {/* <LogoHeader /> */}
+        <Stack.Navigator>
+          <Stack.Screen
+            name='Main'
+            component={MainNavigator}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 
