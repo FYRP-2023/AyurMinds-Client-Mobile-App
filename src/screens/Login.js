@@ -7,7 +7,7 @@ import SocialMediaContainer from "../components/SocialMediaContainer";
 import { Checkbox } from "react-native-paper";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
+import { AyurMindsApi } from "../api/apiService";
 
 const Login = () => {
   const navigate = useNavigation();
@@ -15,16 +15,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [checked, setChecked] = React.useState(false);
 
-  const handleSignup = () => {
-    console.log("Signup", email, password);
-    axios
-      .post("http://localhost:5001/api/user/signin", { email, password })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handleLogin = () => {
+    AyurMindsApi.signIn().then().catch();
+    navigate.navigate("AppNavigator");
   };
 
   return (
@@ -102,7 +95,7 @@ const Login = () => {
 
           <Divider style={styles.divider} />
 
-          <Button style={themes.PrimaryBtnLarge} onPress={handleSignup}>
+          <Button style={themes.PrimaryBtnLarge} onPress={handleLogin}>
             <Text style={styles.primaryButtonText}>Log in</Text>
           </Button>
         </View>
