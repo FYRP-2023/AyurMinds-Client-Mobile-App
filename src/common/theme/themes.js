@@ -1,7 +1,7 @@
 const themes = {
   Colors: {
     primary: "#17CE92",
-    secondary: "##9BA1A6",
+    secondary: "#9BA1A6",
     text: "#000000",
     status: {
       success: "##17CE92",
@@ -12,30 +12,36 @@ const themes = {
   //
   Typography: {
     heading: {
-      fontSize: 20,
+      fontSize: 24,
       color: "#071421",
-      fontWeight: 700,
       padding: 6,
+      letterSpacing: 2,
+      fontFamily: "Urbanist-ExtraBold",
     },
     subHeading: {
       fontSize: 18,
-      color: "616161",
-      fontWeight: 500,
+      color: "#616161",
       padding: 6,
+      fontFamily: "Urbanist-Bold",
     },
     title: {
       fontSize: 16,
       color: "616161",
-      fontWeight: 400,
       padding: 6,
+      fontFamily: "Urbanist-Black",
     },
     body: {
       fontSize: 15,
       color: "616161",
-      fontWeight: 400,
       padding: 6,
+      fontFamily: "Urbanist-Semi-Bold",
     },
-    fontFamily: "Arial",
+    body2: {
+      fontSize: 15,
+      color: "616161",
+      padding: 6,
+      fontFamily: "Urbanist-Bold",
+    },
   },
   //
   Spacing: {
@@ -61,6 +67,39 @@ const themes = {
       shadowOpacity: 0.1,
       shadowRadius: 2,
     },
+  },
+  //
+  PrimaryBtnSmall: {
+    backgroundColor: " #17CE92",
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    marginTop: 20,
+    width: "10rem",
+    textAlign: "center",
+  },
+  PrimaryBtnLarge: {
+    backgroundColor: "#17CE92",
+    paddingVertical: 8,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginTop: 20,
+    width: "100%",
+    textAlign: "center",
+    elevation: 5,
+    shadowColor: "#17CE92",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: -2, height: 4 },
+    shadowRadius: 3,
+  },
+  SecondaryBtnLarge: {
+    backgroundColor: "#D9E7E2",
+    paddingVertical: 8,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginTop: 20,
+    width: "100%",
+    textAlign: "center",
   },
 };
 
