@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { Login, SignUp, Welcome } from "./src/screens";
 import * as Font from "expo-font";
 import store from "./src/store/store";
+import DoctorChat from "./src/screens/DoctorChat";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,7 +39,7 @@ export default function App() {
 
 function MainNavigator() {
   return (
-    <Stack.Navigator initialRouteName='Welcome'>
+    <Stack.Navigator initialRouteName='AppNavigator'>
       <Stack.Screen
         name='Welcome'
         component={Welcome}
@@ -57,6 +58,11 @@ function MainNavigator() {
       <Stack.Screen
         name='AppNavigator'
         component={AppNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name='DocChat'
+        component={DoctorChat}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
