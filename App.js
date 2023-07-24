@@ -1,15 +1,19 @@
 import AppNavigator from "./src/navigations/AppNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
 import { Provider } from "react-redux";
 import { Login, SignUp, Welcome } from "./src/screens";
 import * as Font from "expo-font";
 import store from "./src/store/store";
+import Splash from "./src/screens/Splash";
+// import { AyurMindsApi } from "./src/api/apiService";
+// import { authActions } from "./src/store/authSlice";
+
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+
+const App = () => {
   //loading fonts
   Font.loadAsync({
     "Urbanist-Black": require("./assets/fonts/Urbanist-Black.ttf"),
@@ -26,7 +30,7 @@ export default function App() {
         {/* <LogoHeader /> */}
         <Stack.Navigator>
           <Stack.Screen
-            name='Main'
+            name="Main"
             component={MainNavigator}
             options={{ headerShown: false }}
           />
@@ -34,31 +38,38 @@ export default function App() {
       </NavigationContainer>
     </Provider>
   );
-}
+};
 
-function MainNavigator() {
+const MainNavigator = () => {
+ 
   return (
-    <Stack.Navigator initialRouteName='Welcome'>
+    <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen
-        name='Welcome'
+        name="Splash"
+        component={Splash}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Welcome"
         component={Welcome}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name='Login'
+        name="Login"
         component={Login}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name='SignUp'
+        name="SignUp"
         component={SignUp}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name='AppNavigator'
+        name="AppNavigator"
         component={AppNavigator}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
 }
+export default App;

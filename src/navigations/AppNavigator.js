@@ -14,6 +14,7 @@ import LogoHeader from "../components/LogoHeader";
 const Tab = createMaterialTopTabNavigator();
 
 const AppNavigator = () => {
+  
   return (
     <Tab.Navigator
       screenOptions={{

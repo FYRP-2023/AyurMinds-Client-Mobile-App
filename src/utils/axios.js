@@ -1,32 +1,32 @@
 import axios from "axios";
+import { configs } from "../../configs";
 
 // add each services base url here
-export const authServiceBaseURL = () => {
-  const authService =
-    process.env.AUTH_SERVICE_LOCAL && process.env.AUTH_SERVICE_LOCAL;
-  return authService;
+export const authenticationServiceBaseURL = () => {
+  return configs.AUTHENTICATION_SERVICE;
+};
+
+export const autherizationServiceBaseURL = () => {
+  return configs.AUTHERIZATION_SERVICE;
 };
 
 //create instance of each services here
-export const getAuthServiceInstance = () => {
-  // const token = tokenStore.getState().token;
+export const getAxiosInstance = () => {
   return axios.create({
-    headers: { Authorization: `Bearer ${token}` },
-    baseURL: authServiceBaseURL(),
+    baseURL: configs.API_GATWAY_URL,
   });
 };
-//
 
-export const handleResponse = (response) => {
-  return {
-    data: response && response.data ? response.data.data : null,
-    errors: response && response.data ? response.data.errors : {},
-    status: response && response.status ? response.status : 500,
-    message: response && response.data ? response.data.message : "",
-  };
-};
-//
+// export const handleResponse = (response) => {
+//   console.log("🚀 ~ file: axios.js:31 ~ handleResponse ~ response:", response)
+//   return {
+//     data: response && response.data ? response.data : null,
+//     status: response && response.status ? response.status : 500,
+//     message: response && response.data ? response.data.message : "",
+//   };
+// };
+// //
 
-export const handleError = (errorObject) => {
-  return errorObject;
-};
+// export const handleError = (errorObject) => {
+//   throw new Error(errorObject);
+// };

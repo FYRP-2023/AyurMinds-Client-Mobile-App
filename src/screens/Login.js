@@ -8,8 +8,7 @@ import SocialMediaContainer from "../components/SocialMediaContainer";
 import { Checkbox } from "react-native-paper";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { AyurMindsApi } from "../api/apiService";
-import { authActions } from "../store/authSlice";
+import { login } from "../actions/authActions";
 
 const Login = () => {
   const navigate = useNavigation();
@@ -19,10 +18,7 @@ const Login = () => {
   const [checked, setChecked] = React.useState(false);
 
   const handleLogin = () => {
-    AyurMindsApi.signIn({ email, password })
-      .then(() => dispatch(authActions.login(res.data)))
-      .catch((err) => console.log(err));
-    navigate.navigate("AppNavigator");
+    dispatch(login(email, password, navigate));
   };
 
   return (

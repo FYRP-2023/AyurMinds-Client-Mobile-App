@@ -1,13 +1,34 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
-import React from "react";
-import { Button } from "react-native-paper";
+import { View, StyleSheet, Image } from "react-native";
 import themes from "../common/theme/themes";
 import { useNavigation } from "@react-navigation/native";
-import SocialMediaContainer from "../components/SocialMediaContainer";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authActions } from "../store/authSlice";
+import { useDispatch } from "react-redux";
 
-const Welcome = () => {
+
+const Splash = () => {
   const navigate = useNavigation();
-  
+  const dispatch = useDispatch();
+  const [initialLoad, setInitialLoad] = useState(true);
+  useEffect(() => {
+    const delay = 1000; // 1 seconds in milliseconds
+    const timeout = setTimeout(() => {
+      const checkLogin = async () => {
+        const isLogin = await AsyncStorage.getItem("isLogin");
+        if (isLogin) {
+          dispatch(authActions.login());
+          navigate.navigate("AppNavigator");
+        } else {
+          navigate.navigate("Welcome");
+        }
+      };
+      checkLogin();
+      setInitialLoad(false);
+    }, delay);
+    return () => clearTimeout(timeout);
+  }, [initialLoad]);
+
   return (
     <View style={styles.container}>
       <View>
@@ -16,36 +37,11 @@ const Welcome = () => {
           style={styles.logo}
         />
       </View>
-
-      <View style={styles.textGroup}>
-        <Text style={styles.title}>Welcome to </Text>
-        <Text style={styles.title}>Future of </Text>
-        <Text style={styles.subTitle}>Ayurvedha</Text>
-      </View>
-
-      <View style={styles.btnGroup}>
-        <Button
-          mode='contained'
-          style={themes.PrimaryBtnLarge}
-          onPress={() => navigate.navigate("Login")}
-        >
-          <Text style={styles.primaryButtonText}>Log in</Text>
-        </Button>
-        <Button
-          mode='contained'
-          style={themes.SecondaryBtnLarge}
-          onPress={() => navigate.navigate("SignUp")}
-        >
-          <Text style={styles.secondaryButtonText}>Sign up</Text>
-        </Button>
-      </View>
-
-      <SocialMediaContainer />
     </View>
   );
 };
 
-export default Welcome;
+export default Splash;
 
 const styles = StyleSheet.create({
   container: {

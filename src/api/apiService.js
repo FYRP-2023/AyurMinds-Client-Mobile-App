@@ -1,17 +1,26 @@
 // All API's endpoints uses here
 import {
-  authServiceBaseURL,
-  getAuthServiceInstance,
-  handleError,
-  handleResponse,
+  authenticationServiceBaseURL,
+  autherizationServiceBaseURL,
 } from "../utils/axios";
 
-export const AyurMindsApi = {
-  signIn: async (userData) => {
-    let url = `${authServiceBaseURL()}user/signin`;
-    return await getAuthServiceInstance()
-      .post(url, userData)
-      .then(handleResponse)
-      .catch(handleError);
+const AyurMindsApi = {
+  authentication_service: {
+    register: `${authenticationServiceBaseURL()}/`,
+    signIn: `${authenticationServiceBaseURL()}/signin`,
+    access: `${authenticationServiceBaseURL()}/access`,
+    logout: `${authenticationServiceBaseURL()}/signout`,
+  },
+  authorization_service: {
+    info: `${autherizationServiceBaseURL()}/info`,
+    //   return await getAuthServiceInstance()
+    //     .get(url, {
+    //       headers: { Authorization: token },
+    //     })
+    //     .then((res) => handleResponse(res))
+    //     .catch((err) => handleError(err));
+    // },
   },
 };
+
+export default AyurMindsApi;
