@@ -1,20 +1,79 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import AppNavigator from "./src/navigations/AppNavigator";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Provider } from "react-redux";
+import { Login, SignUp, Welcome } from "./src/screens";
+import * as Font from "expo-font";
+import store from "./src/store/store";
+import Splash from "./src/screens/Splash";
+import DoctorChat from "./src/screens/DoctorChat";
 
-export default function App() {
+
+const Stack = createNativeStackNavigator();
+
+
+const App = () => {
+  //loading fonts
+  Font.loadAsync({
+    "Urbanist-Black": require("./assets/fonts/Urbanist-Black.ttf"),
+    "Urbanist-Bold": require("./assets/fonts/Urbanist-Bold.ttf"),
+    "Urbanist-Semi-Bold": require("./assets/fonts/Urbanist-SemiBold.ttf"),
+    "Urbanist-ExtraBold": require("./assets/fonts/Urbanist-ExtraBold.ttf"),
+    "Urbanist-Light": require("./assets/fonts/Urbanist-Light.ttf"),
+    "Urbanist-Regular": require("./assets/fonts/Urbanist-Regular.ttf"),
+  });
+
   return (
-    <View style={styles.container}>
-      <Text>Welcome to Ayur Minds Appliction</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={store}>
+      <NavigationContainer>
+        {/* <LogoHeader /> */}
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Main"
+            component={MainNavigator}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
+  );
+};
+
+const MainNavigator = () => {
+ 
+  return (
+    <Stack.Navigator initialRouteName="Splash">
+      <Stack.Screen
+        name="Splash"
+        component={Splash}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Welcome"
+        component={Welcome}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SignUp"
+        component={SignUp}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AppNavigator"
+        component={AppNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name='DocChat'
+        component={DoctorChat}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
