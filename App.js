@@ -6,8 +6,7 @@ import { Login, SignUp, Welcome } from "./src/screens";
 import * as Font from "expo-font";
 import store from "./src/store/store";
 import Splash from "./src/screens/Splash";
-// import { AyurMindsApi } from "./src/api/apiService";
-// import { authActions } from "./src/store/authSlice";
+import DoctorChat from "./src/screens/DoctorChat";
 
 
 const Stack = createNativeStackNavigator();
@@ -67,6 +66,11 @@ const MainNavigator = () => {
       <Stack.Screen
         name="AppNavigator"
         component={AppNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name='DocChat'
+        component={DoctorChat}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
