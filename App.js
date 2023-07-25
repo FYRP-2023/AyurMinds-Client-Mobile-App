@@ -8,9 +8,7 @@ import store from "./src/store/store";
 import Splash from "./src/screens/Splash";
 import DoctorChat from "./src/screens/DoctorChat";
 
-
 const Stack = createNativeStackNavigator();
-
 
 const App = () => {
   //loading fonts
@@ -26,7 +24,6 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        {/* <LogoHeader /> */}
         <Stack.Navigator>
           <Stack.Screen
             name="Main"
@@ -40,7 +37,6 @@ const App = () => {
 };
 
 const MainNavigator = () => {
- 
   return (
     <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen
@@ -69,11 +65,11 @@ const MainNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name='DocChat'
+        name="DocChat"
         component={DoctorChat}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
-}
+};
 export default App;

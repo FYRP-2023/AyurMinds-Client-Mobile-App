@@ -8,10 +8,10 @@ export const login = (email, password, navigate) => {
     try {
       const res = await getAxiosInstance().post(
         AyurMindsApi.authentication_service.signIn,
-        { email, password },
-        {
-          withCredentials: true,
-        }
+        { email, password }
+        // {
+        //   withCredentials: true,
+        // }
       );
       dispatch(authActions.login());
       await AsyncStorage.setItem("isLogin", true);
@@ -26,10 +26,10 @@ export const logout = (navigate) => {
     try {
       const res = await getAxiosInstance().post(
         AyurMindsApi.authentication_service.logout,
-        null,
-        {
-          withCredentials: true,
-        }
+        null
+        // {
+        //   withCredentials: true,
+        // }
       );
       dispatch(authActions.logout());
       await AsyncStorage.removeItem("isLogin");
@@ -44,10 +44,10 @@ export const access = (navigate) => {
     try {
       const res = await getAxiosInstance().post(
         AyurMindsApi.authentication_service.access,
-        null,
-        {
-          withCredentials: true,
-        }
+        null
+        // {
+        //   withCredentials: true,
+        // }
       );
       dispatch(authActions.access(res.data.ac_token));
     } catch (err) {
