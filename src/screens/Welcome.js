@@ -4,44 +4,47 @@ import { Button } from "react-native-paper";
 import themes from "../common/theme/themes";
 import { useNavigation } from "@react-navigation/native";
 import SocialMediaContainer from "../components/SocialMediaContainer";
+import { SafeAreaView } from "react-native";
 
 const Welcome = () => {
   const navigate = useNavigation();
   
   return (
-    <View style={styles.container}>
-      <View>
-        <Image
-          source={require("../../assets/LogoGreen.svg")}
-          style={styles.logo}
-        />
-      </View>
+    <SafeAreaView>
+      <View style={styles.container}>
+        <View>
+          <Image
+            source={require("../../assets/LogoGreen.svg")}
+            style={styles.logo}
+          />
+        </View>
 
-      <View style={styles.textGroup}>
-        <Text style={styles.title}>Welcome to </Text>
-        <Text style={styles.title}>Future of </Text>
-        <Text style={styles.subTitle}>Ayurvedha</Text>
-      </View>
+        <View style={styles.textGroup}>
+          <Text style={styles.title}>Welcome to </Text>
+          <Text style={styles.title}>Future of </Text>
+          <Text style={styles.subTitle}>Ayurvedha</Text>
+        </View>
 
-      <View style={styles.btnGroup}>
-        <Button
-          mode='contained'
-          style={themes.PrimaryBtnLarge}
-          onPress={() => navigate.navigate("Login")}
-        >
-          <Text style={styles.primaryButtonText}>Log in</Text>
-        </Button>
-        <Button
-          mode='contained'
-          style={themes.SecondaryBtnLarge}
-          onPress={() => navigate.navigate("SignUp")}
-        >
-          <Text style={styles.secondaryButtonText}>Sign up</Text>
-        </Button>
-      </View>
+        <View style={styles.btnGroup}>
+          <Button
+            mode="contained"
+            style={themes.PrimaryBtnLarge}
+            onPress={() => navigate.navigate("Login")}
+          >
+            <Text style={styles.primaryButtonText}>Log in</Text>
+          </Button>
+          <Button
+            mode="contained"
+            style={themes.SecondaryBtnLarge}
+            onPress={() => navigate.navigate("SignUp")}
+          >
+            <Text style={styles.secondaryButtonText}>Sign up</Text>
+          </Button>
+        </View>
 
-      <SocialMediaContainer />
-    </View>
+        <SocialMediaContainer />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -53,10 +56,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 40,
+    paddingVertical: 40,
     gap: 10,
   },
   title: {
-    fontSize: 35,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 2,
     fontFamily: "Urbanist-Bold",
@@ -93,8 +97,8 @@ const styles = StyleSheet.create({
   },
   textGroup: { alignItems: "center", justifyContent: "center", gap: 5 },
   logo: {
-    width: 210,
-    height: 192,
+    width: 120,
+    height: 110,
     marginBottom: 50,
   },
 });

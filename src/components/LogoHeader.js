@@ -44,7 +44,7 @@ const LogoHeader = () => {
         size={28}
         name="chat"
         color={themes.Colors.primary}
-        onPress={() => navigate.navigate("DocChat")}
+        onPress={() => navigate.navigate("Messenger")}
       />
     </View>
   );

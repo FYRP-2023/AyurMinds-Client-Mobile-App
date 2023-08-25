@@ -1,5 +1,6 @@
 const themes = {
   Colors: {
+    white: "#FFFFFF",
     primary: "#17CE92",
     secondary: "#9BA1A6",
     text: "#000000",
