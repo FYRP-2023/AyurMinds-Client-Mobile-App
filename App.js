@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import AppNavigator from "./src/navigations/AppNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -8,20 +9,25 @@ import store from "./src/store/store";
 import Splash from "./src/screens/Splash";
 import DoctorChat from "./src/screens/DoctorChat";
 
-
 const Stack = createNativeStackNavigator();
 
-
 const App = () => {
+  const [fontLoaded, setFontLoaded] = useState(false);
   //loading fonts
-  Font.loadAsync({
-    "Urbanist-Black": require("./assets/fonts/Urbanist-Black.ttf"),
-    "Urbanist-Bold": require("./assets/fonts/Urbanist-Bold.ttf"),
-    "Urbanist-Semi-Bold": require("./assets/fonts/Urbanist-SemiBold.ttf"),
-    "Urbanist-ExtraBold": require("./assets/fonts/Urbanist-ExtraBold.ttf"),
-    "Urbanist-Light": require("./assets/fonts/Urbanist-Light.ttf"),
-    "Urbanist-Regular": require("./assets/fonts/Urbanist-Regular.ttf"),
-  });
+  useEffect(() => {
+    Font.loadAsync({
+      "Urbanist-Black": require("./assets/fonts/Urbanist-Black.ttf"),
+      "Urbanist-Bold": require("./assets/fonts/Urbanist-Bold.ttf"),
+      "Urbanist-Semi-Bold": require("./assets/fonts/Urbanist-SemiBold.ttf"),
+      "Urbanist-ExtraBold": require("./assets/fonts/Urbanist-ExtraBold.ttf"),
+      "Urbanist-Light": require("./assets/fonts/Urbanist-Light.ttf"),
+      "Urbanist-Regular": require("./assets/fonts/Urbanist-Regular.ttf"),
+    }).then(() => {
+      setFontLoaded(true);
+    });
+  }, []);
+
+  if (!fontLoaded) return null;
 
   return (
     <Provider store={store}>
@@ -40,7 +46,6 @@ const App = () => {
 };
 
 const MainNavigator = () => {
- 
   return (
     <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen
@@ -69,11 +74,11 @@ const MainNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name='DocChat'
+        name="DocChat"
         component={DoctorChat}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
-}
+};
 export default App;
