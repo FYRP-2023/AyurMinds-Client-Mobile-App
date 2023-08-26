@@ -1,49 +1,43 @@
 import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
-import React, { Component } from "react";
+import React from "react";
 import themes from "../common/theme/themes";
+import FaceBookIcon from "../../assets/facebook.svg";
+import AppleSvg from "../../assets/apple.svg";
+import GoogleSvg from "../../assets/google.svg";
 
-export default class SocialMediaContainer extends Component {
-  render() {
-    return (
-      <>
-        <View style={styles.line}>
-          <Text
-            style={{
-              color: themes.Colors.secondary,
-              textAlign: "center",
-              paddingHorizontal: 8,
-              marginBottom: 2,
-            }}
-          >
-            or continue with
-          </Text>
-        </View>
-        <View style={styles.socialMediaContainer}>
-          <TouchableOpacity style={styles.socialMediaArea}>
-            <Image
-              source={require("../../assets/facebook.svg")}
-              style={styles.socialMediaIcon}
-            />
-          </TouchableOpacity>
+const SocialMediaContainer = () => {
+  return (
+    <>
+      <View style={styles.line}>
+        <Text
+          style={{
+            color: themes.Colors.secondary,
+            textAlign: "center",
+            paddingHorizontal: 8,
+            marginBottom: 2,
+          }}
+        >
+          or continue with
+        </Text>
+      </View>
+      <View style={styles.socialMediaContainer}>
+        <TouchableOpacity style={styles.socialMediaArea}>
+          <GoogleSvg width={35} height={35} />
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.socialMediaArea}>
-            <Image
-              source={require("../../assets/apple.svg")}
-              style={styles.socialMediaIcon}
-            />
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.socialMediaArea}>
+          <AppleSvg width={35} height={35} />
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.socialMediaArea}>
-            <Image
-              source={require("../../assets/google.svg")}
-              style={styles.socialMediaIcon}
-            />
-          </TouchableOpacity>
-        </View>
-      </>
-    );
-  }
-}
+        <TouchableOpacity style={styles.socialMediaArea}>
+          <FaceBookIcon width={35} height={35} />
+        </TouchableOpacity>
+      </View>
+    </>
+  );
+};
+
+export default SocialMediaContainer;
 
 const styles = StyleSheet.create({
   line: {
