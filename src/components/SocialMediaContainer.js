@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     alignSelf: "stretch",
     width: "100%",
-    marginTop: 50,
+    marginTop: 20,
   },
   socialMediaContainer: {
     display: "flex",

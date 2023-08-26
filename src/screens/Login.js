@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput } from "react-native";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import themes from "../common/theme/themes";
@@ -68,11 +68,24 @@ const Login = () => {
         </View>
 
         <View style={{ alignItems: "center", marginTop: 35 }}>
-          <Text style={themes.Typography.body}>Forget password</Text>
+          <Text style={themes.Typography.body}>
+            <Text
+              // onClick={() => navigate.navigate("ForgetPassword")}
+              style={{ color: themes.Colors.primary }}
+            >
+              Forget password
+            </Text>
+          </Text>
         </View>
         <View style={{ alignItems: "center", marginTop: 25 }}>
           <Text style={themes.Typography.body}>
-            Don't have an account? Sign up
+            Don't have an account?{" "}
+            <Text
+              onClick={() => navigate.navigate("SignUp")}
+              style={{ color: themes.Colors.primary }}
+            >
+              Sign up
+            </Text>
           </Text>
         </View>
 
@@ -118,7 +131,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginTop: 25,
-    marginBottom: 25,
+    marginBottom: 1,
     color: themes.Colors.secondary,
   },
 });

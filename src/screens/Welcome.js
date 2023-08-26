@@ -4,17 +4,15 @@ import { Button } from "react-native-paper";
 import themes from "../common/theme/themes";
 import { useNavigation } from "@react-navigation/native";
 import SocialMediaContainer from "../components/SocialMediaContainer";
+import LogoSvg from "../../assets/LogoGreen.svg";
 
 const Welcome = () => {
   const navigate = useNavigation();
-  
+
   return (
     <View style={styles.container}>
-      <View>
-        <Image
-          source={require("../../assets/LogoGreen.svg")}
-          style={styles.logo}
-        />
+      <View style={styles.logo}>
+        <LogoSvg width={200} height={152} />
       </View>
 
       <View style={styles.textGroup}>
@@ -89,12 +87,11 @@ const styles = StyleSheet.create({
   },
   btnGroup: {
     width: "100%",
-    marginTop: 100,
+    marginTop: 50,
   },
   textGroup: { alignItems: "center", justifyContent: "center", gap: 5 },
   logo: {
-    width: 210,
-    height: 192,
     marginBottom: 50,
+    marginTop: 50,
   },
 });
