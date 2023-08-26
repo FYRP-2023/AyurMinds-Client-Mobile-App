@@ -77,12 +77,12 @@ const themes = {
   },
   //
   PrimaryBtnSmall: {
-    backgroundColor: " #17CE92",
+    backgroundColor: "#17CE92",
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 20,
+    paddingHorizontal: 5,
+    borderRadius: 25,
     marginTop: 20,
-    width: "10rem",
+    width: 200,
     textAlign: "center",
   },
   PrimaryBtnLarge: {
