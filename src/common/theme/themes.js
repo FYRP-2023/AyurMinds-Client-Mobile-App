@@ -26,16 +26,19 @@ const themes = {
     },
     title: {
       fontSize: 16,
+      color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Black",
     },
     body: {
       fontSize: 15,
+      color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Semi-Bold",
     },
     body2: {
       fontSize: 15,
+      color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Bold",
     },
