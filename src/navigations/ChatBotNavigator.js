@@ -15,11 +15,11 @@ export default function ChatBotNavigator() {
           headerShown: false,
         }}
         component={ChatBot}
-        name="ChatBot"
+        name='ChatBotWelcome'
       />
       <ChatBotStack.Screen
         component={NewChat}
-        name="NewChat"
+        name='NewChat'
         options={{
           title: "ChatBot",
           headerShown: false,

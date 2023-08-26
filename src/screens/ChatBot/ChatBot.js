@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "react-native-paper";
 import themes from "../../common/theme/themes";
 import { useNavigation } from "@react-navigation/native";
+import ChatbotIcon from "../../../assets/chatbotIcon.svg";
 
 const ChatBot = () => {
   const navigate = useNavigation();
@@ -10,10 +11,7 @@ const ChatBot = () => {
   return (
     <View style={styles.container}>
       <View>
-        <Image
-          source={require("../../../assets/chatbotIcon.svg")}
-          style={styles.logo}
-        />
+        <ChatbotIcon width={210} height={192} />
       </View>
 
       <View style={styles.textGroup}>
@@ -28,7 +26,7 @@ const ChatBot = () => {
 
       <View style={styles.btnGroup}>
         <Button
-          mode="contained"
+          mode='contained'
           style={themes.PrimaryBtnLarge}
           onPress={() => navigate.navigate("NewChat")}
         >

@@ -17,8 +17,9 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [checked, setChecked] = useState(false);
 
+  //need to be added login dispatch
   const handleLogin = () => {
-    dispatch(login(email, password, navigate));
+    navigate.navigate("AppNavigator");
   };
 
   return (
