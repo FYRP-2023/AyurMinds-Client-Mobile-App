@@ -26,21 +26,28 @@ const themes = {
     },
     title: {
       fontSize: 16,
-      color: "616161",
+      color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Black",
     },
     body: {
       fontSize: 15,
-      color: "616161",
+      color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Semi-Bold",
     },
     body2: {
       fontSize: 15,
-      color: "616161",
+      color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Bold",
+    },
+    body_light: {
+      fontSize: 17,
+      color: "#9BA1A6",
+      padding: 6,
+      textAlign: "center",
+      fontFamily: "Urbanist-Light",
     },
   },
   //

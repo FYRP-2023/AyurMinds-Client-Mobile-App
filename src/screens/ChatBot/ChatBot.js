@@ -1,49 +1,43 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import React from "react";
 import { Button } from "react-native-paper";
-import themes from "../common/theme/themes";
+import themes from "../../common/theme/themes";
 import { useNavigation } from "@react-navigation/native";
-import SocialMediaContainer from "../components/SocialMediaContainer";
-import LogoSvg from "../../assets/LogoGreen.svg";
+import ChatbotIcon from "../../../assets/chatbotIcon.svg";
 
-const Welcome = () => {
+const ChatBot = () => {
   const navigate = useNavigation();
 
   return (
     <View style={styles.container}>
-      <View style={styles.logo}>
-        <LogoSvg width={200} height={152} />
+      <View>
+        <ChatbotIcon width={210} height={192} />
       </View>
 
       <View style={styles.textGroup}>
-        <Text style={styles.title}>Welcome to </Text>
-        <Text style={styles.title}>Future of </Text>
-        <Text style={styles.subTitle}>Ayurvedha</Text>
+        <Text style={styles.title1}>Welcome to </Text>
+        <Text style={styles.title2}>Ayur Chat</Text>
+        <View style={styles.subTitle2}>
+          <Text style={themes.Typography.body_light}>
+            Start chatting with Ayur Chat now. You can ask me anything
+          </Text>
+        </View>
       </View>
 
       <View style={styles.btnGroup}>
         <Button
           mode='contained'
           style={themes.PrimaryBtnLarge}
-          onPress={() => navigate.navigate("Login")}
+          onPress={() => navigate.navigate("NewChat")}
         >
-          <Text style={styles.primaryButtonText}>Log in</Text>
-        </Button>
-        <Button
-          mode='contained'
-          style={themes.SecondaryBtnLarge}
-          onPress={() => navigate.navigate("SignUp")}
-        >
-          <Text style={styles.secondaryButtonText}>Sign up</Text>
+          <Text style={styles.primaryButtonText}>Start Chat</Text>
         </Button>
       </View>
-
-      <SocialMediaContainer />
     </View>
   );
 };
 
-export default Welcome;
+export default ChatBot;
 
 const styles = StyleSheet.create({
   container: {
@@ -53,11 +47,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     gap: 10,
   },
-  title: {
+  title1: {
+    fontSize: 38,
+    fontWeight: "bold",
+    marginBottom: 2,
+    fontFamily: "Urbanist-Bold",
+  },
+  title2: {
     fontSize: 35,
     fontWeight: "bold",
     marginBottom: 2,
     fontFamily: "Urbanist-Bold",
+    color: themes.Colors.primary,
   },
   subTitle: {
     fontSize: 40,
@@ -87,11 +88,15 @@ const styles = StyleSheet.create({
   },
   btnGroup: {
     width: "100%",
-    marginTop: 50,
+    marginTop: 100,
   },
   textGroup: { alignItems: "center", justifyContent: "center", gap: 5 },
   logo: {
+    width: 210,
+    height: 192,
     marginBottom: 50,
-    marginTop: 50,
+  },
+  subTitle2: {
+    paddingTop: 20,
   },
 });
