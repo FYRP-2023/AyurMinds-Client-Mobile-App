@@ -7,20 +7,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { access, info, logout } from "../actions/authActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import io from "socket.io-client";
+import { configs } from "../../configs";
+import { authActions } from "../store/authSlice";
+
 const LogoHeader = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const token = useSelector((state) => state.auth.token);
+  const isSocketConnect = useSelector((state) => state.auth.isSocketConnect);
+  const wsSocket = useSelector((state) => state.auth.socket);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigation();
   let timeout;
+  const SOCKET_URL = configs.API_GATWAY_URL;
 
   const fetchData = async () => {
     const isLocalLogin = await AsyncStorage.getItem("isLogin");
     if (isLocalLogin && isLoggedIn) {
       await dispatch(access(navigate));
     }
-    timeout = setTimeout(fetchData, 2*60*1000);
+    timeout = setTimeout(fetchData, 2 * 60 * 1000);
   };
 
   const fetchData2 = async () => {
@@ -36,6 +43,65 @@ const LogoHeader = () => {
   useEffect(() => {
     fetchData2();
   }, [token, user, dispatch]);
+
+  useEffect(() => {
+    if (!isSocketConnect) {
+      const socket = io(SOCKET_URL);
+      dispatch(authActions.socketConnect(socket));
+    }
+  }, [isSocketConnect, user, token]);
+
+  useEffect(() => {
+    if (isSocketConnect && user && token && wsSocket) {
+      wsSocket.emit("setup", {
+        user: user,
+        headers: {
+          authorization: token,
+        },
+      });
+    }
+  }, [isSocketConnect, user, wsSocket, token]);
+
+  useEffect(() => {
+    if (wsSocket !== null) {
+      if(user){
+        wsSocket.on("connected", (data) => {
+          console.log(
+            "🚀 ~ file: LogoHeader.js:71 ~ wsSocket.on ~ data:",
+            data
+          );
+          wsSocket.emit("chat_service", {
+            emit_message: "chat_setup",
+            user: user,
+          });
+        });
+        wsSocket.on("error", (data) => {
+          console.log(
+            "🚀 ~ file: LogoHeader.js:72 ~ wsSocket.on ~ data:",
+            data
+          );
+          dispatch(authActions.socketDisconnect());
+        });
+        wsSocket.on("chat_service", (data) => {
+          console.log(
+            "🚀 ~ file: LogoHeader.js:72 ~ wsSocket.on ~ data:",
+            data
+          );
+        });
+        wsSocket.on("notification_service", (data) => {
+          console.log(
+            "🚀 ~ file: LogoHeader.js:72 ~ wsSocket.on ~ data:",
+            data
+          );
+        });
+        wsSocket.on("chat_connected", (data) => {
+          if (!data) {
+            dispatch(authActions.socketDisconnect());
+          }
+        });
+      }
+    }
+  }, [wsSocket, dispatch, user]);
 
   return (
     <View style={styles.container}>

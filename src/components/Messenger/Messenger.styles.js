@@ -35,20 +35,20 @@ export const style = StyleSheet.create({
     color: "#FFF",
   },
   rowFront: {
-    alignItems: "center",
-    backgroundColor: "#CCC",
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
+    alignItems: "left",
+    backgroundColor: "#FFF",
     justifyContent: "center",
-    height: 50,
+    height: 60,
+    marginBottom: 10,
   },
   rowBack: {
     alignItems: "center",
-    backgroundColor: "#DDD",
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     paddingLeft: 15,
+    marginBottom: 10,
+    height: 50,
   },
   backRightBtn: {
     alignItems: "center",
@@ -63,7 +63,40 @@ export const style = StyleSheet.create({
     right: 75,
   },
   backRightBtnRight: {
-    backgroundColor: "red",
     right: 0,
+  },
+  chatView: {
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 5,
+    marginBottom: 5,
+    display: "flex",
+  },
+  chatContainer: {
+    flexDirection: "row",
+    marginLeft: 10,
+    marginRight: 10,
+    paddingTop: 20,
+    paddingBottom: 20,
+    alignItems: "center",
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    marginRight: 16,
+    borderColor: "#000",
+    borderWidth: 1,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  imageName: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  latestMessage: {
+    color: "gray",
   },
 });

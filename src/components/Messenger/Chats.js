@@ -4,11 +4,13 @@ import { SafeAreaView } from 'react-native'
 import { style } from './Messenger.styles';
 import { SwipeListView } from "react-native-swipe-list-view";
 import { TouchableOpacity } from 'react-native';
-import { Text } from 'react-native';
+import { Text, Card, Image } from "react-native";
 import { useState } from 'react';
 import { TouchableHighlight } from 'react-native';
+import { Feather } from "@expo/vector-icons";
 
 const Chats = () => {
+  
     const [listData, setListData] = useState(
       Array(20)
         .fill("")
@@ -37,20 +39,23 @@ const Chats = () => {
          style={style.rowFront}
          underlayColor={"#AAA"}
        >
-         <View>
-           <Text>I am {data.item.text} in a SwipeListView</Text>
+         <View style={style.chatContainer}>
+           <Image source={""} style={style.avatar} />
+           <View style={style.textContainer}>
+             <Text style={style.imageName}>Name</Text>
+             <Text style={style.latestMessage}>Message</Text>
+           </View>
          </View>
        </TouchableHighlight>
      );
 
      const renderHiddenItem = (data, rowMap) => (
        <View style={style.rowBack}>
-         <Text>Left</Text>
          <TouchableOpacity
            style={[style.backRightBtn, style.backRightBtnRight]}
            onPress={() => deleteRow(rowMap, data.item.key)}
          >
-           <Text style={style.backTextWhite}>Delete</Text>
+           <Feather name="trash-2" size={24} color="red" />
          </TouchableOpacity>
        </View>
      );
@@ -62,7 +67,6 @@ const Chats = () => {
              data={listData}
              renderItem={renderItem}
              renderHiddenItem={renderHiddenItem}
-             leftOpenValue={75}
              rightOpenValue={-50}
              previewRowKey={"0"}
              previewOpenValue={-40}

@@ -4,12 +4,16 @@ import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 import thunk from "redux-thunk";
 import authSlice from "./authSlice";
+import chatSlice from "./chatSlice";
+import notificationSlice from "./notificationSlice";
 
 //With the Redux Persist library, can save the Redux store in persistent storage,
 //for example, the local storage. Therefore, even after refreshing the browser, the site state will still be preserved
 
 const reducers = combineReducers({
   auth: authSlice.reducer,
+  chat: chatSlice.reducer,
+  notification: notificationSlice.reducer,
 });
 
 const persistConfig = {
