@@ -95,29 +95,31 @@ export default function NewChat() {
       {/* Side Menu */}
       <Animated.View style={[styles.sideMenu, { left: menuPosition, top: 49 }]}>
         {/* Menu Content */}
-        <TouchableOpacity>
+        <View>
           {dummyChats.map((chat) => {
             return (
               <View style={styles.sideMenuItemContainer}>
                 <View style={styles.sideMenuItem}>
                   <Ionicons name='chatbox-outline' size={20} color='#FFFFFF' />
-                  <Text
-                    style={{ ...themes.Typography.title, color: "#FFFFFF" }}
-                  >
-                    {chat.chatName}
-                  </Text>
+                  <TouchableOpacity>
+                    <Text
+                      style={{ ...themes.Typography.title, color: "#FFFFFF" }}
+                    >
+                      {chat.chatName}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-                <View style={{ paddingRight: 2 }}>
+                <TouchableOpacity style={{ paddingRight: 2 }}>
                   <MaterialIcons
                     name='delete-outline'
                     size={24}
                     color='#FFFFFF'
                   />
-                </View>
+                </TouchableOpacity>
               </View>
             );
           })}
-        </TouchableOpacity>
+        </View>
       </Animated.View>
 
       <View style={styles.container}>
