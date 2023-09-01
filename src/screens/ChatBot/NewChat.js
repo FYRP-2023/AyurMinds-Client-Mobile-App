@@ -83,7 +83,7 @@ export default function NewChat() {
           <Entypo name='menu' size={30} color='#FFFFFF' />
         </TouchableOpacity>
         <View>
-          <Text style={{ ...themes.Typography.title, color: "#FFFFFF" }}>
+          <Text style={{ ...themes.Typography.subHeading, color: "#FFFFFF" }}>
             New Chat
           </Text>
         </View>
@@ -99,10 +99,8 @@ export default function NewChat() {
           {dummyChats.map((chat) => {
             return (
               <View style={styles.sideMenuItem}>
-                <Ionicons name='chatbox-outline' size={24} color='#FFFFFF' />
-                <Text
-                  style={{ ...themes.Typography.subHeading, color: "#FFFFFF" }}
-                >
+                <Ionicons name='chatbox-outline' size={20} color='#FFFFFF' />
+                <Text style={{ ...themes.Typography.title, color: "#FFFFFF" }}>
                   {chat.chatName}
                 </Text>
               </View>
