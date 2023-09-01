@@ -11,39 +11,77 @@ import { Card, Divider, TextInput } from "react-native-paper";
 import themes from "../../common/theme/themes";
 import ChatbotIcon from "../../../assets/chatbotIcon.svg";
 import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import SingleChat from "./SingleChat";
 
 const dummyChats = [
   {
     chatName: "Lorem ipsum Chat one",
     modifiedAt: new Date(),
-    dialog: {
-      user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-      bot: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-    },
+    dialogs: [
+      {
+        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo Lorem ipsum dolor sit amet, consectetur adipiscing  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut lelit, sed do eiusmod tempor incididunt ut labo",
+        bot: {
+          answer:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
+          herbs: ["herb 1", "herb 2"],
+          symptoms: ["symptoms 1", "symptoms2"],
+        },
+      },
+      {
+        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
+        bot: {
+          answer:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
+          herbs: ["herb 1", "herb 2"],
+          symptoms: ["symptoms 1", "symptoms2"],
+        },
+      },
+    ],
   },
   {
     chatName: "Lorem ipsum Chat two",
     modifiedAt: new Date(),
-    dialog: {
-      user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-      bot: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-    },
+    dialogs: [
+      {
+        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
+        bot: {
+          answer:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
+          herbs: ["herb 1", "herb 2"],
+          symptoms: ["symptoms 1", "symptoms2"],
+        },
+      },
+    ],
   },
   {
     chatName: "Lorem ipsum Chat three",
     modifiedAt: new Date(),
-    dialog: {
-      user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-      bot: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-    },
+    dialogs: [
+      {
+        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
+        bot: {
+          answer:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
+          herbs: ["herb 1", "herb 2"],
+          symptoms: ["symptoms 1", "symptoms2"],
+        },
+      },
+    ],
   },
   {
     chatName: "Lorem ipsum Chat four",
     modifiedAt: new Date(),
-    dialog: {
-      user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-      bot: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-    },
+    dialogs: [
+      {
+        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
+        bot: {
+          answer:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
+          herbs: ["herb 1", "herb 2"],
+          symptoms: ["symptoms 1", "symptoms2"],
+        },
+      },
+    ],
   },
 ];
 
@@ -196,7 +234,7 @@ export default function NewChat() {
           </View>
         </View>
       ) : (
-        <></>
+        <SingleChat chat={selectedSingleChat} />
       )}
     </>
   );
@@ -206,7 +244,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFFF",
     padding: 10,
-    height: "100%",
     flex: 1,
     justifyContent: "space-around",
   },
