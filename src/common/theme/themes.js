@@ -4,9 +4,10 @@ const themes = {
     secondary: "#9BA1A6",
     text: "#000000",
     status: {
-      success: "##17CE92",
+      success: "#17CE92",
       error: "#E93E3E",
       info: "#21B8E8",
+      warning: "#FFA500",
     },
   },
   //
