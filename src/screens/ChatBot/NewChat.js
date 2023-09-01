@@ -50,6 +50,8 @@ const dummyChats = [
 export default function NewChat() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const menuPosition = useRef(new Animated.Value(-300)).current;
+  const [selectedSingleChat, setSelectedSingleChat] = useState({});
+  const [isNewChat, setIsNewChat] = useState(true);
 
   const openMenu = () => {
     Animated.timing(menuPosition, {
@@ -79,16 +81,25 @@ export default function NewChat() {
 
   return (
     <>
+      {/* Header field  */}
       <View style={styles.header}>
         <TouchableOpacity onPress={toggleMenu}>
           <Entypo name='menu' size={30} color='#FFFFFF' />
         </TouchableOpacity>
         <View>
           <Text style={{ ...themes.Typography.subHeading, color: "#FFFFFF" }}>
-            New Chat
+            {selectedSingleChat?.chatName
+              ? selectedSingleChat?.chatName
+              : "New Chat"}
           </Text>
         </View>
-        <TouchableOpacity onPress={toggleMenu}>
+        <TouchableOpacity
+          onPress={() => {
+            setIsNewChat(true);
+            setSelectedSingleChat({});
+            closeMenu();
+          }}
+        >
           <Entypo name='plus' size={30} color='#FFFFFF' />
         </TouchableOpacity>
       </View>
@@ -102,7 +113,13 @@ export default function NewChat() {
               <View style={styles.sideMenuItemContainer}>
                 <View style={styles.sideMenuItem}>
                   <Ionicons name='chatbox-outline' size={20} color='#FFFFFF' />
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSelectedSingleChat(chat);
+                      setIsNewChat(false);
+                      closeMenu();
+                    }}
+                  >
                     <Text
                       style={{ ...themes.Typography.title, color: "#FFFFFF" }}
                     >
@@ -123,59 +140,64 @@ export default function NewChat() {
         </View>
       </Animated.View>
 
-      <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.iconContainer}>
-            <ChatbotIcon width={120} height={120} />
-          </View>
-          <Text style={styles.title}>Capabilities</Text>
+      {/* New chat field  */}
+      {isNewChat ? (
+        <View style={styles.container}>
+          <ScrollView>
+            <View style={styles.iconContainer}>
+              <ChatbotIcon width={120} height={120} />
+            </View>
+            <Text style={styles.title}>Capabilities</Text>
 
-          <View style={styles.cardContainer}>
-            <Card style={styles.card} mode='contained'>
-              <Card.Content>
-                <Text style={styles.cardText}>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do
-                </Text>
-              </Card.Content>
-            </Card>
+            <View style={styles.cardContainer}>
+              <Card style={styles.card} mode='contained'>
+                <Card.Content>
+                  <Text style={styles.cardText}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do
+                  </Text>
+                </Card.Content>
+              </Card>
 
-            <Card style={styles.card} mode='contained'>
-              <Card.Content>
-                <Text style={styles.cardText}>
-                  Loremdolor sit amet, consectetur adipiscing elit, sed do
-                  eiusmod tempor incididunt ut
-                </Text>
-              </Card.Content>
-            </Card>
+              <Card style={styles.card} mode='contained'>
+                <Card.Content>
+                  <Text style={styles.cardText}>
+                    Loremdolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut
+                  </Text>
+                </Card.Content>
+              </Card>
 
-            <Card style={styles.card} mode='contained'>
-              <Card.Content>
-                <Text style={styles.cardText}>
-                  Loremdolor sit amet, consectetur adipiscing elit, sed do
-                  eiusmod tempor incididunt ut
-                </Text>
-              </Card.Content>
-            </Card>
-          </View>
-        </ScrollView>
-        <View style={styles.inputContainer}>
-          <Divider style={{ marginBottom: 10 }} />
-          <View>
-            <TextInput
-              placeholder='Ask me...'
-              placeholderTextColor='#BDBDBD'
-              style={styles.input}
-              multiline
-              underlineColor='none'
-              activeUnderlineColor='none'
-              right={
-                <TextInput.Icon icon='send' color={themes.Colors.primary} />
-              }
-            />
+              <Card style={styles.card} mode='contained'>
+                <Card.Content>
+                  <Text style={styles.cardText}>
+                    Loremdolor sit amet, consectetur adipiscing elit, sed do
+                    eiusmod tempor incididunt ut
+                  </Text>
+                </Card.Content>
+              </Card>
+            </View>
+          </ScrollView>
+          <View style={styles.inputContainer}>
+            <Divider style={{ marginBottom: 10 }} />
+            <View>
+              <TextInput
+                placeholder='Ask me...'
+                placeholderTextColor='#BDBDBD'
+                style={styles.input}
+                multiline
+                underlineColor='none'
+                activeUnderlineColor='none'
+                right={
+                  <TextInput.Icon icon='send' color={themes.Colors.primary} />
+                }
+              />
+            </View>
           </View>
         </View>
-      </View>
+      ) : (
+        <></>
+      )}
     </>
   );
 }
