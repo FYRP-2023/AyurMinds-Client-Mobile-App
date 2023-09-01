@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Animated,
+  ScrollView,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { Card, Divider, TextInput } from "react-native-paper";
@@ -123,37 +124,41 @@ export default function NewChat() {
       </Animated.View>
 
       <View style={styles.container}>
-        <View style={styles.iconContainer}>
-          <ChatbotIcon width={120} height={120} />
-        </View>
-        <Text style={styles.title}>Capabilities</Text>
+        <ScrollView>
+          <View style={styles.iconContainer}>
+            <ChatbotIcon width={120} height={120} />
+          </View>
+          <Text style={styles.title}>Capabilities</Text>
 
-        <View style={styles.cardContainer}>
-          <Card style={styles.card} mode='contained'>
-            <Card.Content>
-              <Text style={styles.cardText}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              </Text>
-            </Card.Content>
-          </Card>
+          <View style={styles.cardContainer}>
+            <Card style={styles.card} mode='contained'>
+              <Card.Content>
+                <Text style={styles.cardText}>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                  do
+                </Text>
+              </Card.Content>
+            </Card>
 
-          <Card style={styles.card} mode='contained'>
-            <Card.Content>
-              <Text style={styles.cardText}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              </Text>
-            </Card.Content>
-          </Card>
+            <Card style={styles.card} mode='contained'>
+              <Card.Content>
+                <Text style={styles.cardText}>
+                  Loremdolor sit amet, consectetur adipiscing elit, sed do
+                  eiusmod tempor incididunt ut
+                </Text>
+              </Card.Content>
+            </Card>
 
-          <Card style={styles.card} mode='contained'>
-            <Card.Content>
-              <Text style={styles.cardText}>
-                Loremdolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                tempor incididunt ut
-              </Text>
-            </Card.Content>
-          </Card>
-        </View>
+            <Card style={styles.card} mode='contained'>
+              <Card.Content>
+                <Text style={styles.cardText}>
+                  Loremdolor sit amet, consectetur adipiscing elit, sed do
+                  eiusmod tempor incididunt ut
+                </Text>
+              </Card.Content>
+            </Card>
+          </View>
+        </ScrollView>
         <View style={styles.inputContainer}>
           <Divider style={{ marginBottom: 10 }} />
           <View>
@@ -181,7 +186,7 @@ const styles = StyleSheet.create({
     padding: 10,
     height: "100%",
     flex: 1,
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
   },
   header: {
     backgroundColor: "#36454F",
