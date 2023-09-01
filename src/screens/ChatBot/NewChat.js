@@ -61,7 +61,7 @@ export default function NewChat() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "white",
+    backgroundColor: "#FFFFFF",
     padding: 10,
     height: "100%",
     flex: 1,
