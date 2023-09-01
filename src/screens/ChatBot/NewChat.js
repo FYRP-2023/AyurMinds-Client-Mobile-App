@@ -9,7 +9,7 @@ import React, { useRef, useState } from "react";
 import { Card, Divider, TextInput } from "react-native-paper";
 import themes from "../../common/theme/themes";
 import ChatbotIcon from "../../../assets/chatbotIcon.svg";
-import { Entypo, Ionicons } from "@expo/vector-icons";
+import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 const dummyChats = [
   {
@@ -98,11 +98,22 @@ export default function NewChat() {
         <TouchableOpacity>
           {dummyChats.map((chat) => {
             return (
-              <View style={styles.sideMenuItem}>
-                <Ionicons name='chatbox-outline' size={20} color='#FFFFFF' />
-                <Text style={{ ...themes.Typography.title, color: "#FFFFFF" }}>
-                  {chat.chatName}
-                </Text>
+              <View style={styles.sideMenuItemContainer}>
+                <View style={styles.sideMenuItem}>
+                  <Ionicons name='chatbox-outline' size={20} color='#FFFFFF' />
+                  <Text
+                    style={{ ...themes.Typography.title, color: "#FFFFFF" }}
+                  >
+                    {chat.chatName}
+                  </Text>
+                </View>
+                <View style={{ paddingRight: 2 }}>
+                  <MaterialIcons
+                    name='delete-outline'
+                    size={24}
+                    color='#FFFFFF'
+                  />
+                </View>
               </View>
             );
           })}
@@ -188,13 +199,20 @@ const styles = StyleSheet.create({
     width: 300,
     height: "100%",
     backgroundColor: "#343434",
+    padding: 5,
+  },
+  sideMenuItemContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 5,
+    marginTop: 10,
   },
   sideMenuItem: {
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    padding: 5,
-    marginTop: 10,
     gap: 10,
   },
   iconContainer: {
