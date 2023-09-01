@@ -32,7 +32,6 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        {/* <LogoHeader /> */}
         <Stack.Navigator>
           <Stack.Screen
             name="Main"

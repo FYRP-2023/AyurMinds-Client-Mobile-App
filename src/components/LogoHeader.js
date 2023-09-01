@@ -20,7 +20,7 @@ const LogoHeader = () => {
     if (isLocalLogin && isLoggedIn) {
       await dispatch(access(navigate));
     }
-    timeout = setTimeout(fetchData, 2*60*1000);
+    timeout = setTimeout(fetchData, 2 * 60 * 1000);
   };
 
   const fetchData2 = async () => {
@@ -66,10 +66,10 @@ const styles = StyleSheet.create({
     height: 40,
   },
   logoText: {
-    fontSize: 24,
-    color: themes.Colors.primary,
-    padding: 8,
+    fontSize: 22,
+    color: themes.Colors.text,
+    padding: 15,
     fontWeight: "bold",
-    letterSpacing: 3,
+    // letterSpacing: 3,
   },
 });
