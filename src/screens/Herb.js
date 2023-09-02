@@ -1,11 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+} from "react-native";
 import ChatbotIcon from "../../assets/herbIcon.svg";
 import themes from "../common/theme/themes";
-import { Button } from "react-native-paper";
+import { Button, Dialog } from "react-native-paper";
 import { Camera } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import SingleHerb from "./SingleHerb";
 
 const Herb = () => {
   const [hasCameraPermission, setHasCameraPermission] = useState();
@@ -13,6 +22,8 @@ const Herb = () => {
   const [capturePhoto, setCapturePhoto] = useState();
   const [pickedPhoto, setPickedPhoto] = useState();
   const [finishCapture, setFinishCapture] = useState(false);
+  const [visibleDialogBox, setVisibleDialogBox] = useState(false);
+  const [isPredictedHerb, setIsPredictedHerb] = useState(false);
 
   const cameraRef = useRef();
 
@@ -79,6 +90,14 @@ const Herb = () => {
     }
   };
   //
+  const predictHerbDetails = async () => {
+    setVisibleDialogBox(true);
+    //pass the herb image to the model
+    setIsPredictedHerb(true);
+  };
+  //
+  const hideDialog = () => setVisibleDialogBox(false);
+  //
   if (startCamera) {
     return (
       <Camera style={styles.cameraContainer} ref={cameraRef} ratio='16:9'>
@@ -138,90 +157,116 @@ const Herb = () => {
   }
   //
   return (
-    <View style={styles.container}>
-      <View>
-        <View style={styles.iconContainer}>
-          <ChatbotIcon width={120} height={120} />
-          <Text style={themes.Typography.heading}>Identify Herbs</Text>
-          <Text style={themes.Typography.body_light}>
-            Get to know what is your known plant is
-          </Text>
-        </View>
-        {(capturePhoto && finishCapture) || pickedPhoto ? (
-          <View style={styles.capturePreviewContainer}>
-            <View style={{ width: "100%", height: "50%" }}>
-              <SafeAreaView>
-                {capturePhoto ? (
-                  <Image
-                    source={{
-                      uri: "data:image/jpg;base64," + capturePhoto.base64,
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+      <View style={styles.container}>
+        <View>
+          <View style={styles.iconContainer}>
+            <ChatbotIcon width={120} height={120} />
+            <Text style={themes.Typography.heading}>Identify Herbs</Text>
+            <Text style={themes.Typography.body_light}>
+              Get to know what is your known plant is
+            </Text>
+          </View>
+          {(capturePhoto && finishCapture) || pickedPhoto ? (
+            <View style={styles.capturePreviewContainer}>
+              <View style={{ width: "100%", height: 200 }}>
+                <SafeAreaView>
+                  {capturePhoto ? (
+                    <Image
+                      source={{
+                        uri: "data:image/jpg;base64," + capturePhoto.base64,
+                      }}
+                      style={styles.capturePreview}
+                    />
+                  ) : (
+                    <Image
+                      source={{ uri: pickedPhoto }}
+                      style={styles.capturePreview}
+                    />
+                  )}
+                </SafeAreaView>
+              </View>
+              {!isPredictedHerb && (
+                <View style={styles.findBtnGroup}>
+                  <Button
+                    icon='close-circle'
+                    mode='contained'
+                    style={styles.PrimaryBtnSmall}
+                    onPress={() => {
+                      setCapturePhoto(undefined);
+                      setPickedPhoto(undefined);
                     }}
-                    style={styles.capturePreview}
-                  />
-                ) : (
-                  <Image
-                    source={{ uri: pickedPhoto }}
-                    style={styles.capturePreview}
-                  />
-                )}
-              </SafeAreaView>
+                  >
+                    <Text style={styles.secondaryButtonText}>Cancel</Text>
+                  </Button>
+                  <Button
+                    icon='leaf-circle'
+                    mode='contained'
+                    style={styles.PrimaryBtnSmall}
+                    onPress={predictHerbDetails}
+                    // loading={true}
+                  >
+                    <Text style={styles.secondaryButtonText}>Find</Text>
+                  </Button>
+                </View>
+              )}
             </View>
-            <View style={styles.findBtnGroup}>
+          ) : (
+            <View style={styles.actionBtnGroup}>
               <Button
-                icon='close-circle'
+                icon='upload'
                 mode='contained'
-                style={styles.PrimaryBtnSmall}
-                onPress={() => {
-                  setCapturePhoto(undefined);
-                  setPickedPhoto(undefined);
-                }}
+                style={themes.PrimaryBtnSmall}
+                onPress={pickImage}
               >
-                <Text style={styles.secondaryButtonText}>Cancel</Text>
+                <Text style={styles.secondaryButtonText}>Upload Image</Text>
               </Button>
-              <Button
-                icon='leaf-circle'
-                mode='contained'
-                style={styles.PrimaryBtnSmall}
-              >
-                <Text style={styles.secondaryButtonText}>Find</Text>
-              </Button>
-            </View>
-          </View>
-        ) : (
-          <View style={styles.btnGroup}>
-            <Button
-              icon='upload'
-              mode='contained'
-              style={themes.PrimaryBtnSmall}
-              onPress={pickImage}
-            >
-              <Text style={styles.secondaryButtonText}>Upload Image</Text>
-            </Button>
 
-            <Button
-              icon='camera'
-              mode='contained'
-              loading={false}
-              style={themes.PrimaryBtnSmall}
-              onPress={__startCamera}
-            >
-              <Text style={styles.secondaryButtonText}>Take Photo</Text>
-            </Button>
-          </View>
-        )}
+              <Button
+                icon='camera'
+                mode='contained'
+                loading={false}
+                style={themes.PrimaryBtnSmall}
+                onPress={__startCamera}
+              >
+                <Text style={styles.secondaryButtonText}>Take Photo</Text>
+              </Button>
+            </View>
+          )}
+        </View>
+        {isPredictedHerb && <SingleHerb />}
       </View>
-    </View>
+      <Dialog visible={visibleDialogBox} onDismiss={hideDialog}>
+        <Dialog.Content>
+          <View
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              flexDirection: "row",
+            }}
+          >
+            <ActivityIndicator size='large' color={themes.Colors.primary} />
+            <Text style={themes.Typography.title}>
+              Plant image is processing...{" "}
+            </Text>
+          </View>
+        </Dialog.Content>
+      </Dialog>
+    </ScrollView>
   );
 };
 
 export default Herb;
 
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: "#FFFFFF",
     alignItems: "center",
-    justifyContent: "space-evenly",
+    paddingTop: 20,
     paddingHorizontal: 40,
     gap: 10,
   },
@@ -236,7 +281,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Urbanist-Semi-Bold",
   },
-  btnGroup: {
+  actionBtnGroup: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -269,9 +314,7 @@ const styles = StyleSheet.create({
   },
   capturePreviewContainer: {
     display: "flex",
-
     flexDirection: "column",
-
     alignItems: "center",
   },
   capturePreview: { objectFit: "cover", width: "100%", height: "100%" },
