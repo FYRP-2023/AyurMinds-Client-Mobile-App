@@ -42,6 +42,7 @@ export default ChatBot;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 40,

@@ -4,9 +4,10 @@ const themes = {
     secondary: "#9BA1A6",
     text: "#000000",
     status: {
-      success: "##17CE92",
+      success: "#17CE92",
       error: "#E93E3E",
       info: "#21B8E8",
+      warning: "#FFA500",
     },
   },
   //
@@ -77,12 +78,12 @@ const themes = {
   },
   //
   PrimaryBtnSmall: {
-    backgroundColor: " #17CE92",
+    backgroundColor: "#17CE92",
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 20,
+    paddingHorizontal: 5,
+    borderRadius: 25,
     marginTop: 20,
-    width: "10rem",
+    width: 200,
     textAlign: "center",
   },
   PrimaryBtnLarge: {
