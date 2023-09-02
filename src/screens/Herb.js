@@ -1,22 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
-import {
-  Image,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import ChatbotIcon from "../../assets/herbIcon.svg";
 import themes from "../common/theme/themes";
 import { Button } from "react-native-paper";
 import { Camera } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 
 const Herb = () => {
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [startCamera, setStartCamera] = useState(false);
-  const [photo, setPhoto] = useState();
+  const [capturePhoto, setCapturePhoto] = useState();
+  const [pickedPhoto, setPickedPhoto] = useState();
   const [finishCapture, setFinishCapture] = useState(false);
 
   const cameraRef = useRef();
@@ -57,10 +52,30 @@ const Herb = () => {
       const newPhoto = await cameraRef.current.takePictureAsync(options);
       if (newPhoto) {
         await cameraRef.current.pausePreview();
-        setPhoto(newPhoto);
+        setCapturePhoto(newPhoto);
+        setPickedPhoto(undefined);
         setStartCamera(false);
         setFinishCapture(false);
       }
+    }
+  };
+  //
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setPickedPhoto(result.assets[0].uri);
+      setCapturePhoto(undefined);
+    }
+    if (result.canceled) {
+      setPickedPhoto(undefined);
+      setCapturePhoto(undefined);
     }
   };
   //
@@ -87,11 +102,11 @@ const Herb = () => {
     );
   }
   //
-  if (photo && !finishCapture) {
+  if (capturePhoto && !finishCapture) {
     return (
       <SafeAreaView style={styles.saveContainer}>
         <Image
-          source={{ uri: "data:image/jpg;base64," + photo.base64 }}
+          source={{ uri: "data:image/jpg;base64," + capturePhoto.base64 }}
           style={styles.preview}
         />
         <View style={styles.shareButtonContainer}>
@@ -100,7 +115,7 @@ const Herb = () => {
             icon={"autorenew"}
             mode='contained'
             onPress={() => {
-              setPhoto(undefined);
+              setCapturePhoto(undefined);
               setStartCamera(true);
             }}
           >
@@ -132,14 +147,23 @@ const Herb = () => {
             Get to know what is your known plant is
           </Text>
         </View>
-        {photo && finishCapture ? (
+        {(capturePhoto && finishCapture) || pickedPhoto ? (
           <View style={styles.capturePreviewContainer}>
             <View style={{ width: "100%", height: "50%" }}>
               <SafeAreaView>
-                <Image
-                  source={{ uri: "data:image/jpg;base64," + photo.base64 }}
-                  style={styles.capturePreview}
-                />
+                {capturePhoto ? (
+                  <Image
+                    source={{
+                      uri: "data:image/jpg;base64," + capturePhoto.base64,
+                    }}
+                    style={styles.capturePreview}
+                  />
+                ) : (
+                  <Image
+                    source={{ uri: pickedPhoto }}
+                    style={styles.capturePreview}
+                  />
+                )}
               </SafeAreaView>
             </View>
             <View style={styles.findBtnGroup}>
@@ -147,7 +171,10 @@ const Herb = () => {
                 icon='close-circle'
                 mode='contained'
                 style={styles.PrimaryBtnSmall}
-                onPress={() => setPhoto(undefined)}
+                onPress={() => {
+                  setCapturePhoto(undefined);
+                  setPickedPhoto(undefined);
+                }}
               >
                 <Text style={styles.secondaryButtonText}>Cancel</Text>
               </Button>
@@ -166,6 +193,7 @@ const Herb = () => {
               icon='upload'
               mode='contained'
               style={themes.PrimaryBtnSmall}
+              onPress={pickImage}
             >
               <Text style={styles.secondaryButtonText}>Upload Image</Text>
             </Button>
