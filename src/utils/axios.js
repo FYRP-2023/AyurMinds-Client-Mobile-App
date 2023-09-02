@@ -10,6 +10,13 @@ export const autherizationServiceBaseURL = () => {
   return configs.AUTHERIZATION_SERVICE;
 };
 
+export const chatServiceBaseURL = () => {
+  return configs.CHAT_SERVICE;
+};
+export const messageServiceBaseURL = () => {
+  return configs.MESSAGE_SERVICE;
+};
+
 //create instance of each services here
 export const getAxiosInstance = () => {
   return axios.create({
