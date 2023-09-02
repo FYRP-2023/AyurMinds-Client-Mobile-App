@@ -5,9 +5,10 @@ const themes = {
     secondary: "#9BA1A6",
     text: "#000000",
     status: {
-      success: "##17CE92",
+      success: "#17CE92",
       error: "#E93E3E",
       info: "#21B8E8",
+      warning: "#FFA500",
     },
   },
   //
@@ -27,21 +28,28 @@ const themes = {
     },
     title: {
       fontSize: 16,
-      color: "616161",
+      color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Black",
     },
     body: {
       fontSize: 15,
-      color: "616161",
+      color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Semi-Bold",
     },
     body2: {
       fontSize: 15,
-      color: "616161",
+      color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Bold",
+    },
+    body_light: {
+      fontSize: 17,
+      color: "#9BA1A6",
+      padding: 6,
+      textAlign: "center",
+      fontFamily: "Urbanist-Light",
     },
   },
   //
@@ -71,12 +79,12 @@ const themes = {
   },
   //
   PrimaryBtnSmall: {
-    backgroundColor: " #17CE92",
+    backgroundColor: "#17CE92",
     paddingVertical: 10,
-    paddingHorizontal: 30,
-    borderRadius: 20,
+    paddingHorizontal: 5,
+    borderRadius: 25,
     marginTop: 20,
-    width: "10rem",
+    width: 200,
     textAlign: "center",
   },
   PrimaryBtnLarge: {

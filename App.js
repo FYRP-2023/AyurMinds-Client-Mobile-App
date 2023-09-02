@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import AppNavigator from "./src/navigations/AppNavigator";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -11,24 +12,32 @@ import { Text } from "react-native";
 import MessengerHeader from "./src/components/Messenger/MessengerHeader";
 import { StyleSheet } from "react-native";
 import themes from "./src/common/theme/themes";
+import MessengerNavigator from "./src/navigations/MessengerNavigator";
+
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  const [fontLoaded, setFontLoaded] = useState(false);
   //loading fonts
-  Font.loadAsync({
-    "Urbanist-Black": require("./assets/fonts/Urbanist-Black.ttf"),
-    "Urbanist-Bold": require("./assets/fonts/Urbanist-Bold.ttf"),
-    "Urbanist-Semi-Bold": require("./assets/fonts/Urbanist-SemiBold.ttf"),
-    "Urbanist-ExtraBold": require("./assets/fonts/Urbanist-ExtraBold.ttf"),
-    "Urbanist-Light": require("./assets/fonts/Urbanist-Light.ttf"),
-    "Urbanist-Regular": require("./assets/fonts/Urbanist-Regular.ttf"),
-  });
+  useEffect(() => {
+    Font.loadAsync({
+      "Urbanist-Black": require("./assets/fonts/Urbanist-Black.ttf"),
+      "Urbanist-Bold": require("./assets/fonts/Urbanist-Bold.ttf"),
+      "Urbanist-Semi-Bold": require("./assets/fonts/Urbanist-SemiBold.ttf"),
+      "Urbanist-ExtraBold": require("./assets/fonts/Urbanist-ExtraBold.ttf"),
+      "Urbanist-Light": require("./assets/fonts/Urbanist-Light.ttf"),
+      "Urbanist-Regular": require("./assets/fonts/Urbanist-Regular.ttf"),
+    }).then(() => {
+      setFontLoaded(true);
+    });
+  }, []);
+
+  if (!fontLoaded) return null;
 
   return (
     <Provider store={store}>
       <NavigationContainer>
-        {/* <LogoHeader /> */}
         <Stack.Navigator>
           <Stack.Screen
             name="Main"
@@ -87,9 +96,11 @@ const MainNavigator = () => {
       />
       <Stack.Screen
         name="Messenger"
-        component={Messenger}
+        component={MessengerNavigator}
         options={{
-          headerTitle: () => <Text style={styles.logoText}>AYURMINDS CHAT</Text>, // Customize the screen title
+          headerTitle: () => (
+            <Text style={styles.logoText}>AYURMINDS CHAT</Text>
+          ), // Customize the screen title
           headerTitleAlign: "center", // Align title at the center
           headerLeft: () => <MessengerHeader navigation={navigation} />,
           headerStyle: { backgroundColor: themes.Typography.subHeading }, // Use the custom header component
@@ -97,8 +108,5 @@ const MainNavigator = () => {
       />
     </Stack.Navigator>
   );
-  
-  
-};
+  }
 export default App;
-

@@ -8,15 +8,15 @@ import { Text, Card, Image } from "react-native";
 import { useState } from 'react';
 import { TouchableHighlight } from 'react-native';
 import { Feather } from "@expo/vector-icons";
+import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
+import themes from '../../common/theme/themes';
 
 const Chats = () => {
-  
-    const [listData, setListData] = useState(
-      Array(20)
-        .fill("")
-        .map((_, i) => ({ key: `${i}`, text: `item #${i}` }))
-    );
-
+  const listData = useSelector((state) => state.chat.messages);
+  const user = useSelector((state) => state.auth.user);
+    
+    const navigate = useNavigation();
      const closeRow = (rowMap, rowKey) => {
        if (rowMap[rowKey]) {
          rowMap[rowKey].closeRow();
@@ -33,21 +33,44 @@ const Chats = () => {
        console.log("This row opened", rowKey);
      };
 
-     const renderItem = (data) => (
-       <TouchableHighlight
-         onPress={() => console.log("You touched me")}
-         style={style.rowFront}
-         underlayColor={"#AAA"}
-       >
-         <View style={style.chatContainer}>
-           <Image source={""} style={style.avatar} />
-           <View style={style.textContainer}>
-             <Text style={style.imageName}>Name</Text>
-             <Text style={style.latestMessage}>Message</Text>
-           </View>
-         </View>
-       </TouchableHighlight>
-     );
+     const renderItem = (data) => {
+
+      let sender;
+      let reciver;
+
+      for (const u of data.item.users){
+        if (u._id === user._id) {
+          sender = u; 
+        } else{
+          reciver= u
+        }
+      }
+        return (
+          <TouchableHighlight
+            onPress={() => {
+              navigate.navigate("Chat", { sender, reciver, chat: data.item });
+            }}
+            style={
+              style.rowFront
+            }
+            underlayColor={"#AAA"}
+          >
+            <View style={style.chatContainer}>
+              <Image source={reciver.avatar} style={style.avatar} />
+              <View style={style.textContainer}>
+                <Text style={style.imageName}>
+                  {reciver.firstName + " " + reciver.lastName}
+                </Text>
+                {data.item.latestMessage && (
+                  <Text style={style.latestMessage}>
+                    {data.item.latestMessage}
+                  </Text>
+                )}
+              </View>
+            </View>
+          </TouchableHighlight>
+        );
+     };
 
      const renderHiddenItem = (data, rowMap) => (
        <View style={style.rowBack}>

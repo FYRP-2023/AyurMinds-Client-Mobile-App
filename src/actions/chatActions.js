@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import AyurMindsApi from "../api/apiService";
 import { authActions } from "../store/authSlice";
 import { getAxiosInstance } from "../utils/axios";
+import { chatActions } from "../store/chatSlice";
 
 export const fetchMessages = async(selectedChat, token, navigate) => {
     try {
@@ -21,23 +22,55 @@ export const fetchMessages = async(selectedChat, token, navigate) => {
     }
 };
 
-export const fetchChats = (userId, token) => {
+export const fetchChats = (user, token) => {
   return async (dispatch) => {
     try {
       const res = await getAxiosInstance().get(
-        AyurMindsApi.authentication_service.signIn,
-        { email, password },
+        AyurMindsApi.message_service.fetchChats + "?id=" + user._id,
+        null,
         {
           withCredentials: true,
         }
       );
-      dispatch(authActions.login());
-      await AsyncStorage.setItem("isLogin", true);
-      navigate.navigate("AppNavigator");
+      dispatch(chatActions.setMessages(res.data));
     } catch (err) {
       console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
     }
   };
+};
+
+export const accessChat = (user, toUser, token) => {
+  return async (dispatch) => {
+    try {
+      const res = await getAxiosInstance().get(
+        AyurMindsApi.message_service.accessChat + "?id=" + user._id,
+        {
+          userId: toUser._id
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(chatActions.setMessages());
+    } catch (err) {
+      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
+    }
+  };
+};
+export const allMessages = async (chat) => {
+  try {
+    const res = await getAxiosInstance().get(
+      AyurMindsApi.message_service.allMessages + "?chatId=" + chat._id,
+      null,
+      {
+        withCredentials: true,
+      }
+    );
+    return res.data;
+  } catch (err) {
+    console.log("🚀 ~ file: chatActions.js:71 ~ allMessages ~ err:", err)
+    throw new Error(err)
+  }
 };
 
 // router.route("/:chatId").get(allMessages);

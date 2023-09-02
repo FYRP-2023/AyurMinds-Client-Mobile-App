@@ -1,7 +1,7 @@
 import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Profile from "../screens/Profile";
-import ChatBot from "../screens/ChatBot";
+import ChatBot from "../screens/ChatBot/ChatBot";
 import Doctor from "../screens/Doctor";
 import SocialNetwork from "../screens/SocialNetwork";
 import Herb from "../screens/Herb";
@@ -10,11 +10,11 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import themes from "../common/theme/themes";
 import LogoHeader from "../components/LogoHeader";
+import ChatBotNavigator from "./ChatBotNavigator";
 
 const Tab = createMaterialTopTabNavigator();
 
 const AppNavigator = () => {
-  
   return (
     <>
       <LogoHeader />
@@ -35,8 +35,8 @@ const AppNavigator = () => {
               />
             ),
           }}
-          component={ChatBot}
-          name='ChatBot'
+          component={ChatBotNavigator}
+          name="ChatBot"
         />
         <Tab.Screen
           options={{
@@ -51,7 +51,7 @@ const AppNavigator = () => {
             ),
           }}
           component={Doctor}
-          name='Doctor'
+          name="Doctor"
         />
 
         <Tab.Screen
@@ -67,7 +67,7 @@ const AppNavigator = () => {
             ),
           }}
           component={Herb}
-          name='Herb'
+          name="Herb"
         />
         <Tab.Screen
           options={{
@@ -82,7 +82,7 @@ const AppNavigator = () => {
             ),
           }}
           component={SocialNetwork}
-          name='SocialNetwork'
+          name="SocialNetwork"
         />
         <Tab.Screen
           options={{
@@ -97,7 +97,7 @@ const AppNavigator = () => {
             ),
           }}
           component={Profile}
-          name='Profile'
+          name="Profile"
         />
       </Tab.Navigator>
     </>

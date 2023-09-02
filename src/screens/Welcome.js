@@ -5,10 +5,11 @@ import themes from "../common/theme/themes";
 import { useNavigation } from "@react-navigation/native";
 import SocialMediaContainer from "../components/SocialMediaContainer";
 import { SafeAreaView } from "react-native";
+// import LogoSvg from "../../assets/LogoGreen.svg";
 
 const Welcome = () => {
   const navigate = useNavigation();
-  
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -93,12 +94,11 @@ const styles = StyleSheet.create({
   },
   btnGroup: {
     width: "100%",
-    marginTop: 100,
+    marginTop: 50,
   },
   textGroup: { alignItems: "center", justifyContent: "center", gap: 5 },
   logo: {
-    width: 120,
-    height: 110,
     marginBottom: 50,
+    marginTop: 50,
   },
 });

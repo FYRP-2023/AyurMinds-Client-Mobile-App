@@ -40,6 +40,7 @@ export const style = StyleSheet.create({
     justifyContent: "center",
     height: 60,
     marginBottom: 10,
+    borderBottomColor: themes.Colors.primary,
   },
   rowBack: {
     alignItems: "center",

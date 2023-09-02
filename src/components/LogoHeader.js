@@ -11,6 +11,8 @@ import io from "socket.io-client";
 import { configs } from "../../configs";
 import { authActions } from "../store/authSlice";
 
+import { fetchChats } from "../actions/chatActions";
+
 const LogoHeader = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const token = useSelector((state) => state.auth.token);
@@ -21,6 +23,17 @@ const LogoHeader = () => {
   const navigate = useNavigation();
   let timeout;
   const SOCKET_URL = configs.API_GATWAY_URL;
+
+    // useEffect(() => {
+    //   const subscription = Notifications.addNotificationReceivedListener(
+    //     (notification) => {
+    //       console.log("Notification received:", notification);
+    //       // Handle the received notification
+    //     }
+    //   );
+
+    //   return () => subscription.remove();
+    // }, []);
 
   const fetchData = async () => {
     const isLocalLogin = await AsyncStorage.getItem("isLogin");
@@ -36,12 +49,20 @@ const LogoHeader = () => {
     }
   };
 
+    const fetchChat = async () => {
+       if (token && user) {
+         await dispatch(fetchChats(user, token));
+       }
+      timeout = setTimeout(fetchData, 2 * 60 * 1000);
+    };
+
   useEffect(() => {
     fetchData();
   }, [isLoggedIn, dispatch]);
 
   useEffect(() => {
     fetchData2();
+    fetchChat();
   }, [token, user, dispatch]);
 
   useEffect(() => {
@@ -132,10 +153,10 @@ const styles = StyleSheet.create({
     height: 40,
   },
   logoText: {
-    fontSize: 24,
-    color: themes.Colors.primary,
-    padding: 8,
+    fontSize: 22,
+    color: themes.Colors.text,
+    padding: 15,
     fontWeight: "bold",
-    letterSpacing: 3,
+    // letterSpacing: 3,
   },
 });
