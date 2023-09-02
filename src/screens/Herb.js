@@ -129,8 +129,7 @@ const Herb = () => {
           <ChatbotIcon width={120} height={120} />
           <Text style={themes.Typography.heading}>Identify Herbs</Text>
           <Text style={themes.Typography.body_light}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor
+            Get to know what is your known plant is
           </Text>
         </View>
         {photo && finishCapture ? (
