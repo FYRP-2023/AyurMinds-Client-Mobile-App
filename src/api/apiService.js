@@ -23,6 +23,7 @@ const AyurMindsApi = {
   },
   social_network_service: {
     content: 'content',
+    response: 'response',
   }
 };
 
