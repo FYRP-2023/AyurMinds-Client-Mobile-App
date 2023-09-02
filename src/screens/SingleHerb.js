@@ -4,7 +4,7 @@ import themes from "../common/theme/themes";
 import { Button, Divider } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 
-const SingleHerb = () => {
+const SingleHerb = (props) => {
   return (
     <View style={styles.container}>
       <Divider />
@@ -106,18 +106,29 @@ const SingleHerb = () => {
       </View>
       <View style={styles.findBtnGroup}>
         <Button
+          icon='autorenew'
+          mode='contained'
+          style={styles.PrimaryBtnSmall}
+          onPress={() => {
+            props.setCapturePhoto(undefined);
+            props.setPickedPhoto(undefined);
+            props.setIsPredictedHerb(false);
+            props.setStartCamera(true);
+          }}
+        >
+          <Text style={styles.secondaryButtonText}>Re-try</Text>
+        </Button>
+        <Button
           icon='close-circle'
           mode='contained'
           style={styles.PrimaryBtnSmall}
+          onPress={() => {
+            props.setCapturePhoto(undefined);
+            props.setPickedPhoto(undefined);
+            props.setIsPredictedHerb(false);
+          }}
         >
           <Text style={styles.secondaryButtonText}>Cancel</Text>
-        </Button>
-        <Button
-          icon='leaf-circle'
-          mode='contained'
-          style={styles.PrimaryBtnSmall}
-        >
-          <Text style={styles.secondaryButtonText}>Find</Text>
         </Button>
       </View>
     </View>

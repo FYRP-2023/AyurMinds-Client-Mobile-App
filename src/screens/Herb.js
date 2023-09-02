@@ -234,7 +234,14 @@ const Herb = () => {
             </View>
           )}
         </View>
-        {isPredictedHerb && <SingleHerb />}
+        {isPredictedHerb && (
+          <SingleHerb
+            setStartCamera={setStartCamera}
+            setCapturePhoto={setCapturePhoto}
+            setPickedPhoto={setPickedPhoto}
+            setIsPredictedHerb={setIsPredictedHerb}
+          />
+        )}
       </View>
       <Dialog visible={visibleDialogBox} onDismiss={hideDialog}>
         <Dialog.Content>
