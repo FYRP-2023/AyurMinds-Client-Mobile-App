@@ -3,11 +3,10 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import Profile from "../screens/Profile";
 import ChatBot from "../screens/ChatBot/ChatBot";
 import Doctor from "../screens/Doctor";
-import SocialNetwork from "../screens/SocialNetwork";
+import SocialNetworkBottomTabNavigator from "../screens/Social Network/SocialNetworkBottomTabNavigator";
 import Herb from "../screens/Herb";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
+import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import themes from "../common/theme/themes";
 import LogoHeader from "../components/LogoHeader";
 import ChatBotNavigator from "./ChatBotNavigator";
@@ -69,6 +68,7 @@ const AppNavigator = () => {
           component={Herb}
           name="Herb"
         />
+
         <Tab.Screen
           options={{
             title: ({ color, focused }) => (
@@ -81,9 +81,10 @@ const AppNavigator = () => {
               />
             ),
           }}
-          component={SocialNetwork}
+          component={SocialNetworkBottomTabNavigator}
           name="SocialNetwork"
         />
+
         <Tab.Screen
           options={{
             title: ({ color, focused }) => (

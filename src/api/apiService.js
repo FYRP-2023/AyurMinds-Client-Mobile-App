@@ -21,6 +21,10 @@ const AyurMindsApi = {
     //     .catch((err) => handleError(err));
     // },
   },
+  social_network_service: {
+    content: 'content',
+    response: 'response',
+  }
 };
 
 export default AyurMindsApi;
