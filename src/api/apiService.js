@@ -2,6 +2,8 @@
 import {
   authenticationServiceBaseURL,
   autherizationServiceBaseURL,
+  chatServiceBaseURL,
+  messageServiceBaseURL,
 } from "../utils/axios";
 
 const AyurMindsApi = {
@@ -20,6 +22,17 @@ const AyurMindsApi = {
     //     .then((res) => handleResponse(res))
     //     .catch((err) => handleError(err));
     // },
+  },
+
+  message_service: {
+    allMessages: `${messageServiceBaseURL()}/`,
+    sendMessage: `${messageServiceBaseURL()}/`,
+    accessChat: `${chatServiceBaseURL()}/`,
+    fetchChats: `${chatServiceBaseURL()}/`,
+    createGroupChat: `${chatServiceBaseURL()}/group`,
+    rename: `${chatServiceBaseURL()}/rename`,
+    groupremove: `${chatServiceBaseURL()}/removeFromGroup`,
+    addToGroup: `${chatServiceBaseURL()}/groupadd`,
   },
 };
 

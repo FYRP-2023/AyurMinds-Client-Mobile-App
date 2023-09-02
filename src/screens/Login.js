@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, SafeAreaView, ScrollView } from "react-native";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import themes from "../common/theme/themes";
@@ -19,88 +19,90 @@ const Login = () => {
 
   //need to be added login dispatch
   const handleLogin = () => {
-    navigate.navigate("AppNavigator");
+    dispatch(login(email, password, navigate));
   };
 
   return (
-    <View style={styles.container}>
-      <Ionicons
-        name='arrow-back-sharp'
-        size={30}
-        color='#071421'
-        style={{ margin: 5 }}
-        onPress={() => navigate.goBack()}
-      />
-      <Text style={themes.Typography.heading}>Hello there👋</Text>
-      <Text style={themes.Typography.subHeading}>
-        Please enter your email & password to log in.
-      </Text>
-
-      <View style={{ marginTop: 20 }}>
-        <Text style={themes.Typography.title}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='imasha@example.com'
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          // right={<AntDesign name='eyeo' size={24} color='red' />}
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <Ionicons
+          name="arrow-back-sharp"
+          size={30}
+          color="#071421"
+          style={{ margin: 5 }}
+          onPress={() => navigate.goBack()}
         />
+        <Text style={themes.Typography.heading}>Hello there👋</Text>
+        <Text style={themes.Typography.subHeading}>
+          Please enter your email & password to log in.
+        </Text>
 
-        <Text style={themes.Typography.title}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='password'
-          secureTextEntry
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          // right={<AntDesign name='eyeo' size={24} color='red' />}
-        />
-
-        <View style={styles.agreement}>
-          <Checkbox
-            onPress={() => {
-              setChecked(!checked);
-            }}
-            color={themes.Colors.primary}
-            status={checked ? "checked" : "unchecked"}
+        <View style={{ marginTop: 20 }}>
+          <Text style={themes.Typography.title}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="imasha@example.com"
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            // right={<AntDesign name='eyeo' size={24} color='red' />}
           />
 
-          <Text style={themes.Typography.body2}>Remember me</Text>
-        </View>
+          <Text style={themes.Typography.title}>Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="password"
+            secureTextEntry
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            // right={<AntDesign name='eyeo' size={24} color='red' />}
+          />
 
-        <View style={{ alignItems: "center", marginTop: 35 }}>
-          <Text style={themes.Typography.body}>
-            <Text
-              // onClick={() => navigate.navigate("ForgetPassword")}
-              style={{ color: themes.Colors.primary }}
-            >
-              Forget password
+          <View style={styles.agreement}>
+            <Checkbox
+              onPress={() => {
+                setChecked(!checked);
+              }}
+              color={themes.Colors.primary}
+              status={checked ? "checked" : "unchecked"}
+            />
+
+            <Text style={themes.Typography.body2}>Remember me</Text>
+          </View>
+
+          <View style={{ alignItems: "center", marginTop: 35 }}>
+            <Text style={themes.Typography.body}>
+              <Text
+                // onClick={() => navigate.navigate("ForgetPassword")}
+                style={{ color: themes.Colors.primary }}
+              >
+                Forget password
+              </Text>
             </Text>
-          </Text>
-        </View>
-        <View style={{ alignItems: "center", marginTop: 25 }}>
-          <Text style={themes.Typography.body}>
-            Don't have an account?{" "}
-            <Text
-              onClick={() => navigate.navigate("SignUp")}
-              style={{ color: themes.Colors.primary }}
-            >
-              Sign up
+          </View>
+          <View style={{ alignItems: "center", marginTop: 25 }}>
+            <Text style={themes.Typography.body}>
+              Don't have an account?{" "}
+              <Text
+                onClick={() => navigate.navigate("SignUp")}
+                style={{ color: themes.Colors.primary }}
+              >
+                Sign up
+              </Text>
             </Text>
-          </Text>
+          </View>
+
+          <View style={{ marginTop: 10 }}>
+            <SocialMediaContainer />
+          </View>
+
+          <Divider style={styles.divider} />
+
+          <Button style={themes.PrimaryBtnLarge} onPress={handleLogin}>
+            <Text style={styles.primaryButtonText}>Log in</Text>
+          </Button>
         </View>
-
-        <View style={{ marginTop: 10 }}>
-          <SocialMediaContainer />
-        </View>
-
-        <Divider style={styles.divider} />
-
-        <Button style={themes.PrimaryBtnLarge} onPress={handleLogin}>
-          <Text style={styles.primaryButtonText}>Log in</Text>
-        </Button>
-      </View>
-    </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 

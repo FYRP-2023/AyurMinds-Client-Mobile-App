@@ -8,13 +8,13 @@ export const login = (email, password, navigate) => {
     try {
       const res = await getAxiosInstance().post(
         AyurMindsApi.authentication_service.signIn,
-        { email, password }
-        // {
-        //   withCredentials: true,
-        // }
+        { email, password },
+        {
+          withCredentials: true,
+        }
       );
       dispatch(authActions.login());
-      await AsyncStorage.setItem("isLogin", true);
+      await AsyncStorage.setItem("isLogin", "true");
       navigate.navigate("AppNavigator");
     } catch (err) {
       console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
