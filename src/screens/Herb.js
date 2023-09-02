@@ -23,6 +23,8 @@ const Herb = () => {
   const [pickedPhoto, setPickedPhoto] = useState();
   const [finishCapture, setFinishCapture] = useState(false);
   const [visibleDialogBox, setVisibleDialogBox] = useState(false);
+  const [visibleHerbDetailsDialog, setVisibleHerbDetailsDialog] =
+    useState(false);
   const [isPredictedHerb, setIsPredictedHerb] = useState(false);
 
   const cameraRef = useRef();
@@ -97,6 +99,8 @@ const Herb = () => {
   };
   //
   const hideDialog = () => setVisibleDialogBox(false);
+  //
+  const hideHerbDetailsDialog = () => setVisibleHerbDetailsDialog(false);
   //
   if (startCamera) {
     return (
@@ -240,6 +244,7 @@ const Herb = () => {
             setCapturePhoto={setCapturePhoto}
             setPickedPhoto={setPickedPhoto}
             setIsPredictedHerb={setIsPredictedHerb}
+            setVisibleHerbDetailsDialog={setVisibleHerbDetailsDialog}
           />
         )}
       </View>
@@ -258,6 +263,28 @@ const Herb = () => {
             </Text>
           </View>
         </Dialog.Content>
+      </Dialog>
+      <Dialog
+        visible={visibleHerbDetailsDialog}
+        onDismiss={hideHerbDetailsDialog}
+      >
+        <Dialog.ScrollArea>
+          <Dialog.Title>Herb Name</Dialog.Title>
+          <ScrollView contentContainerStyle={{ paddingHorizontal: 24 }}>
+            <Text style={themes.Typography.bodyNormal}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+              reprehenderit in voluptate velit esse cillum dolore eu fugiat
+              nulla pariatur. Excepteur sint occaecat cupidatat non pr , quis
+              nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+              consequat. Duis aute irure dolor in reprehenderit in voluptate
+              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+              occaecat cupidatat non pr
+            </Text>
+          </ScrollView>
+        </Dialog.ScrollArea>
       </Dialog>
     </ScrollView>
   );

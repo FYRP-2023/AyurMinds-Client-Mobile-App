@@ -1,7 +1,7 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import themes from "../common/theme/themes";
-import { Button, Divider } from "react-native-paper";
+import { Button, Dialog, Divider } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 
 const SingleHerb = (props) => {
@@ -35,6 +35,7 @@ const SingleHerb = (props) => {
                   ...themes.Typography.bodyNormal,
                   color: themes.Colors.primary,
                 }}
+                onPress={() => props.setVisibleHerbDetailsDialog(true)}
               >
                 Details
               </Text>
