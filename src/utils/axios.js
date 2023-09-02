@@ -24,6 +24,12 @@ export const getAxiosInstance = () => {
   });
 };
 
+export const getAxiosSocialNetworkInstance = () => {
+  return axios.create({
+    baseURL: configs.SOCIAL_NETWROK_SERVICE,
+  });
+};
+
 // export const handleResponse = (response) => {
 //   console.log("🚀 ~ file: axios.js:31 ~ handleResponse ~ response:", response)
 //   return {

@@ -34,6 +34,10 @@ const AyurMindsApi = {
     groupremove: `${chatServiceBaseURL()}/removeFromGroup`,
     addToGroup: `${chatServiceBaseURL()}/groupadd`,
   },
+  social_network_service: {
+    content: 'content',
+    response: 'response',
+  }
 };
 
 export default AyurMindsApi;
