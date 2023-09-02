@@ -50,6 +50,16 @@ const themes = {
       textAlign: "center",
       fontFamily: "Urbanist-Light",
     },
+    bodyNormal: {
+      fontSize: 15,
+      color: "#616161",
+      fontFamily: "Urbanist-Semi-Bold",
+    },
+    body2Normal: {
+      fontSize: 16,
+      color: "#616161",
+      fontFamily: "Urbanist-Bold",
+    },
   },
   //
   Spacing: {
