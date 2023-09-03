@@ -11,6 +11,7 @@ import themes from "../common/theme/themes";
 import LogoHeader from "../components/LogoHeader";
 import ChatBotNavigator from "./ChatBotNavigator";
 import DoctorNavigator from "./DoctorNavigator";
+import ProfileNavigator from "./ProfileNavigater";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -98,7 +99,7 @@ const AppNavigator = () => {
               />
             ),
           }}
-          component={Profile}
+          component={ProfileNavigator}
           name="Profile"
         />
       </Tab.Navigator>
