@@ -21,6 +21,22 @@ export const login = (email, password, navigate) => {
     }
   };
 };
+export const signup = (data, navigate) => {
+  return async (dispatch) => {
+    try {
+      const res = await getAxiosInstance().post(
+        AyurMindsApi.authentication_service.register,
+        {...data},
+        {
+          withCredentials: true,
+        }
+      );
+      navigate.navigate("Login");
+    } catch (err) {
+      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err.response.data);
+    }
+  };
+};
 export const logout = (navigate) => {
   return async (dispatch) => {
     try {
