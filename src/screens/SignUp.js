@@ -26,17 +26,22 @@ const SignUp = () => {
   const handleSignup = () => {
     if (password === cFpassword) {
       let userRole;
-      if(checkedRadio ==="u" ) { userRole = "user"}else if
-          (checkedRadio == "d" ) { userRole = "doctor"} else if
-          (checkedRadio == "p" ){ userRole = "pharmacist"}else {
-            userRole = "user"
-          }
+      if (checkedRadioRole === "u") {
+        userRole = "user";
+      } else if (checkedRadioRole == "d") {
+        userRole = "doctor";
+      } else if (checkedRadioRole == "p") {
+        userRole = "pharmacist";
+      } else {
+        userRole = "user";
+      }
       let usergender ;
       if(checkedRadio == "m" ) { usergender = "male"}else if
           (checkedRadio == "f" ) { usergender = "female"} else if
           (checkedRadio == "o" ){ usergender = "other"}else {
             usergender = "male"
           }
+
       const data = {
         firstName,
         lastName,
