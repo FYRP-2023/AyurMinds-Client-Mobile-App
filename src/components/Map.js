@@ -3,7 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import themes from "../common/theme/themes";
-import { fetchAddressByCoords, fetchCoordinatesByAddress, fetchDirections } from "../actions/googleMapActions";
+import {
+  fetchAddressByCoords,
+  fetchCoordinatesByAddress,
+  fetchDirections,
+} from "../actions/googleMapActions";
 // const a = {
 //   address_components: [
 //     { long_name: "PWMC+84X", short_name: "PWMC+84X", types: [Array] },
@@ -21,7 +25,7 @@ import { fetchAddressByCoords, fetchCoordinatesByAddress, fetchDirections } from
 //   place_id: "ChIJceUraz9P4joRBzYzE5RzLRQ",
 //   types: ["establishment", "food", "point_of_interest", "restaurant"],
 // };
-const Map = ({data}) => {
+const Map = ({ data }) => {
   const [region, setRegion] = useState({
     latitude: 0,
     longitude: 0,
@@ -32,67 +36,63 @@ const Map = ({data}) => {
 
   useEffect(() => {
     (async () => {
-  try {
-    // Check if location services are enabled
-    const isEnabled = await Location.hasServicesEnabledAsync();
-    if (isEnabled) {
-      // Request permission to access the device's location
-      const { status } = await Location.requestForegroundPermissionsAsync();
+      try {
+        // Check if location services are enabled
+        const isEnabled = await Location.hasServicesEnabledAsync();
+        if (isEnabled) {
+          // Request permission to access the device's location
+          const { status } = await Location.requestForegroundPermissionsAsync();
 
-      if (status === "granted") {
-        // Get the current location
-        const location = await Location.getCurrentPositionAsync({});
-        const { latitude, longitude } = location.coords;
-        setRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        });
-      } else {
-        // Handle the case when location permission is not granted
-        setLocationEnabled(false);
+          if (status === "granted") {
+            // Get the current location
+            const location = await Location.getCurrentPositionAsync({});
+            const { latitude, longitude } = location.coords;
+            setRegion({
+              latitude,
+              longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            });
+          } else {
+            // Handle the case when location permission is not granted
+            setLocationEnabled(false);
+          }
+        } else {
+          // Handle the case when location services are disabled
+          setLocationEnabled(false);
+        }
+      } catch (error) {
+        console.log("🚀 ~ file: Map.js:20 ~ error:", error);
       }
-    } else {
-      // Handle the case when location services are disabled
-      setLocationEnabled(false);
-    }
-  } catch (error) {
-    console.log("🚀 ~ file: Map.js:20 ~ error:", error)
-    
-  }
     })();
   }, []);
- const [placeaddress, setPlaceaddress] = useState(null);
+  const [placeaddress, setPlaceaddress] = useState(null);
 
   useEffect(() => {
-    const getPlace = async()=>{
-        try {
-            const [latitude, longitude] = data.cordinate.split(", ");
-            const res = await fetchAddressByCoords(latitude, longitude);
-            setPlaceaddress(res);
-        } catch (error) {
-            console.log("🚀 ~ file: Map.js:55 ~ getPlace ~ error:", error)
-        }
-    }
-getPlace()
-
-  }, [])
+    const getPlace = async () => {
+      try {
+        const [latitude, longitude] = data.cordinate.split(", ");
+        const res = await fetchAddressByCoords(latitude, longitude);
+        setPlaceaddress(res);
+      } catch (error) {
+        console.log("🚀 ~ file: Map.js:55 ~ getPlace ~ error:", error);
+      }
+    };
+    getPlace();
+  }, []);
 
   useEffect(() => {
-    const getPlace = async()=>{
-        try {
-            const [latitude, longitude] = data.cordinate.split(", ");
-            const res = await fetchDirections(latitude, longitude);
-            setPlaceaddress(res);
-        } catch (error) {
-            console.log("🚀 ~ file: Map.js:55 ~ getPlace ~ error:", error)
-        }
-    }
-getPlace()
-
-  }, [])
-  
+    const getPlace = async () => {
+      try {
+        const [latitude, longitude] = data.cordinate.split(", ");
+        const res = await fetchDirections(latitude, longitude);
+        setPlaceaddress(res);
+      } catch (error) {
+        console.log("🚀 ~ file: Map.js:55 ~ getPlace ~ error:", error);
+      }
+    };
+    getPlace();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -111,9 +111,7 @@ getPlace()
             width: "30%",
           }}
         >
-          <Text style={{ ...themes.Typography.body }}>
-            {placeaddress}
-          </Text>
+          <Text style={{ ...themes.Typography.body }}>{placeaddress}</Text>
         </View>
         <View
           style={{

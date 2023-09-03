@@ -25,6 +25,12 @@ const themes = {
       padding: 6,
       fontFamily: "Urbanist-Bold",
     },
+    subHeading2: {
+      fontSize: 18,
+      color: "#B60000",
+      padding: 6,
+      fontFamily: "Urbanist-Bold",
+    },
     title: {
       fontSize: 16,
       color: "#616161",
