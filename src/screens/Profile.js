@@ -4,6 +4,8 @@ import themes from "../common/theme/themes";
 import { logout } from "../actions/authActions";
 import { useNavigation } from "@react-navigation/core";
 import { useDispatch } from "react-redux";
+import { ScrollView } from "react-native-gesture-handler";
+import { AntDesign, Feather, Fontisto, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 const Profile = () => {
  const navigate = useNavigation()
@@ -22,17 +24,213 @@ const Profile = () => {
         height: "100%",
       }}
     >
-      <View></View>
+      <ScrollView>
+        <View
+          style={{
+            padding: 15,
+            justifyContent: "space-around",
+            backgroundColor: "#F1F1F1",
+            marginBottom: 2,
+          }}
+        >
+          <TouchableOpacity
+            onPress={logoutHandler}
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <MaterialCommunityIcons
+              name="face-man-profile"
+              size={24}
+              color="black"
+            />
+            <Text style={{ ...themes.Typography.subHeading }}>Profile</Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            padding: 15,
+            justifyContent: "space-around",
+            backgroundColor: "#F1F1F1",
+            marginBottom: 2,
+          }}
+        >
+          <TouchableOpacity
+            onPress={logoutHandler}
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <Fontisto name="doctor" size={24} color="black" />
+            <Text style={{ ...themes.Typography.subHeading }}>Doctor</Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            padding: 15,
+            justifyContent: "space-around",
+            backgroundColor: "#F1F1F1",
+            marginBottom: 2,
+          }}
+        >
+          <TouchableOpacity
+            onPress={logoutHandler}
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <MaterialCommunityIcons name="doctor" size={24} color="black" />
+            <Text style={{ ...themes.Typography.subHeading }}>Pharmacist</Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            padding: 15,
+            justifyContent: "space-around",
+            backgroundColor: "#F1F1F1",
+            marginBottom: 2,
+          }}
+        >
+          <TouchableOpacity
+            onPress={logoutHandler}
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <Ionicons name="notifications" size={24} color="black" />
+            <Text style={{ ...themes.Typography.subHeading }}>
+              Notifications
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            padding: 15,
+            justifyContent: "space-around",
+            backgroundColor: "#F1F1F1",
+            marginBottom: 2,
+          }}
+        >
+          <TouchableOpacity
+            onPress={logoutHandler}
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <Feather name="settings" size={24} color="black" />
+            <Text style={{ ...themes.Typography.subHeading }}>Settings</Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            padding: 15,
+            justifyContent: "space-around",
+            backgroundColor: "#F1F1F1",
+            marginBottom: 2,
+          }}
+        >
+          <TouchableOpacity
+            onPress={logoutHandler}
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <Feather name="unlock" size={24} color="black" />
+            <Text style={{ ...themes.Typography.subHeading }}>
+              Tearms & Conditions
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            padding: 15,
+            justifyContent: "space-around",
+            backgroundColor: "#F1F1F1",
+            marginBottom: 2,
+          }}
+        >
+          <TouchableOpacity
+            onPress={logoutHandler}
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <Ionicons name="help-circle-outline" size={24} color="black" />
+            <Text style={{ ...themes.Typography.subHeading }}>Help</Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            padding: 15,
+            justifyContent: "space-around",
+            backgroundColor: "#F1F1F1",
+            marginBottom: 2,
+          }}
+        >
+          <TouchableOpacity
+            onPress={logoutHandler}
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <AntDesign name="team" size={24} color="black" />
+            <Text style={{ ...themes.Typography.subHeading }}>About us</Text>
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            padding: 15,
+            justifyContent: "space-around",
+            backgroundColor: "#F1F1F1",
+            marginBottom: 2,
+          }}
+        >
+          <TouchableOpacity
+            onPress={logoutHandler}
+            style={{
+              flexDirection: "row",
+              gap: 10,
+              alignItems: "center",
+            }}
+          >
+            <MaterialIcons name="contact-support" size={24} color="black" />
+            <Text style={{ ...themes.Typography.subHeading }}>Contact us</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
 
       <View
         style={{
-          padding: 10,
-          justifyContent: "center",
-          backgroundColor: "#929292",
+          padding: 15,
+          justifyContent: "space-around",
+          backgroundColor: "#D8D8D8",
         }}
       >
-        <Divider style={{ marginBottom: 10 }} />
-        <TouchableOpacity onPress={logoutHandler}>
+        <TouchableOpacity
+          onPress={logoutHandler}
+          style={{
+            flexDirection: "row",
+            gap: 10,
+            alignItems: "center",
+          }}
+        >
+          <AntDesign name="logout" size={24} color="#B60000" />
           <Text style={{ ...themes.Typography.subHeading2 }}>Logout</Text>
         </TouchableOpacity>
       </View>
