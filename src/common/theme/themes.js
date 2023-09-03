@@ -25,11 +25,23 @@ const themes = {
       padding: 6,
       fontFamily: "Urbanist-Bold",
     },
+    subHeading2: {
+      fontSize: 18,
+      color: "#B60000",
+      padding: 6,
+      fontFamily: "Urbanist-Bold",
+    },
     title: {
       fontSize: 16,
       color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Black",
+    },
+    title2: {
+      fontSize: 14,
+      color: "#616161",
+      padding: 6,
+      fontFamily: "Urbanist-Light",
     },
     body: {
       fontSize: 15,
@@ -49,6 +61,16 @@ const themes = {
       padding: 6,
       textAlign: "center",
       fontFamily: "Urbanist-Light",
+    },
+    bodyNormal: {
+      fontSize: 15,
+      color: "#616161",
+      fontFamily: "Urbanist-Semi-Bold",
+    },
+    body2Normal: {
+      fontSize: 16,
+      color: "#616161",
+      fontFamily: "Urbanist-Bold",
     },
   },
   //

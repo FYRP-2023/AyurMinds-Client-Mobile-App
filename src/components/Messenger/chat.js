@@ -7,7 +7,7 @@ import { TouchableOpacity } from "react-native";
 import { Text, Card, Image } from "react-native";
 import { useState } from "react";
 import { TouchableHighlight } from "react-native";
-import { Entypo, Feather } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { allMessages } from "../../actions/chatActions";
@@ -75,31 +75,35 @@ const Chat = ({ route, navigation }) => {
     if (callback) fetchMessages();
   }, [callback]);
 
-  // Simulate fetching user data based on the user ID
-  useEffect(() => {
-    // Customize the header
-    navigation.setOptions({
-      headerTitle: reciver.firstName + " " + reciver.lastName,
-      headerTitleStyle: {
-        ...themes.Typography.subHeading,
-        color: "#FFFFFF",
-      },
-      headerStyle: {
-        backgroundColor: "#36454F",
-      },
-      headerLeft: () => (
-        // Customize the back button to close
-        <TouchableOpacity
-          style={{
-            marginLeft: 10,
-          }}
-          onPress={() => navigation.goBack()}
-        >
-          <Feather name="x" size={20} color="white" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [reciver, navigation]);
+  // // Simulate fetching user data based on the user ID
+  // useEffect(() => {
+  //   // Customize the header
+  //   navigation.setOptions({
+  //     headerTitle: reciver.firstName + " " + reciver.lastName,
+  //     headerTitleStyle: {
+  //       fontSize: 18,
+  //       color: "#071421",
+  //       letterSpacing: 2,
+  //       fontFamily: "Urbanist-ExtraBold",
+  //       color: "#FFFFFF",
+  //       textAlign:"center"
+  //     },
+  //     headerStyle: {
+  //       backgroundColor: "#36454F",
+  //     },
+  //     headerLeft: () => (
+  //       // Customize the back button to close
+  //       <TouchableOpacity
+  //         style={{
+  //           marginLeft: 10,
+  //         }}
+  //         onPress={() => navigation.goBack()}
+  //       >
+  //         <Feather name="x" size={20} color="white" />
+  //       </TouchableOpacity>
+  //     ),
+  //   });
+  // }, [reciver, navigation]);
 
 const handleFileUpload = async () => {
   // try {
@@ -192,51 +196,76 @@ const handleChangeText=(e)=>{
         height: "100%",
       }}
     >
+      <View
+        style={{
+          backgroundColor: "#36454F",
+          width: "100%",
+          height: 50,
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingLeft: 10,
+          paddingRight: 10,
+        }}
+      >
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
+          <AntDesign name="back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+
+        <View>
+          <Text style={{ ...themes.Typography.subHeading, color: "#FFFFFF" }}>
+            {reciver.firstName + " " + reciver.lastName}
+          </Text>
+        </View>
+        <View></View>
+      </View>
       {messages.length > 0 ? (
-            <ScrollView
-              style={{paddingLeft:10,paddingRight:10}}
-              ref={flatListRef}
-              onContentSizeChange={() => {
-                if (flatListRef.current) {
-                  flatListRef.current.scrollToEnd({ animated: true });
-                }
+        <ScrollView
+          style={{ paddingLeft: 10, paddingRight: 10 }}
+          ref={flatListRef}
+          onContentSizeChange={() => {
+            if (flatListRef.current) {
+              flatListRef.current.scrollToEnd({ animated: true });
+            }
+          }}
+        >
+          {messages.map((item) => (
+            <View
+              key={item._id}
+              style={{
+                flexDirection:
+                  item.sender._id === sender._id ? "row-reverse" : "row",
               }}
             >
-              {messages.map((item) => (
-                <View
-                  key={item._id}
+              <View
+                style={{
+                  backgroundColor:
+                    item.sender._id === sender._id ? "#303849" : "#17CE92",
+                  borderRadius: 10,
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                  margin: 4,
+                  maxWidth: "70%", // Adjust the max width as per your design
+                  alignSelf:
+                    item.sender._id === sender._id ? "flex-end" : "flex-start",
+                }}
+              >
+                <Text
                   style={{
-                    flexDirection:
-                      item.sender._id === sender._id ? "row-reverse" : "row",
+                    color: "white" ,
                   }}
                 >
-                  <View
-                    style={{
-                      backgroundColor:
-                        item.sender._id === sender._id ? "#303849" : "#17CE92",
-                      borderRadius: 10,
-                      paddingHorizontal: 12,
-                      paddingVertical: 8,
-                      margin: 4,
-                      maxWidth: "70%", // Adjust the max width as per your design
-                      alignSelf:
-                        item.sender._id === sender._id
-                          ? "flex-end"
-                          : "flex-start",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color:
-                          item.sender._id === sender._id ? "white" : "black",
-                      }}
-                    >
-                      {item.content}
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </ScrollView>
+                  {item.content}
+                </Text>
+              </View>
+            </View>
+          ))}
+        </ScrollView>
       ) : (
         <View></View>
       )}

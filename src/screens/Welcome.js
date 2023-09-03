@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, ScrollView } from "react-native";
 import React from "react";
 import { Button } from "react-native-paper";
 import themes from "../common/theme/themes";
@@ -10,36 +10,38 @@ const Welcome = () => {
   const navigate = useNavigation();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.logo}>
-        <LogoSvg width={200} height={152} />
-      </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.logo}>
+          <LogoSvg width={200} height={152} />
+        </View>
 
-      <View style={styles.textGroup}>
-        <Text style={styles.title}>Welcome to </Text>
-        <Text style={styles.title}>Future of </Text>
-        <Text style={styles.subTitle}>Ayurvedha</Text>
-      </View>
+        <View style={styles.textGroup}>
+          <Text style={styles.title}>Welcome to </Text>
+          <Text style={styles.title}>Future of </Text>
+          <Text style={styles.subTitle}>Ayurvedha</Text>
+        </View>
 
-      <View style={styles.btnGroup}>
-        <Button
-          mode='contained'
-          style={themes.PrimaryBtnLarge}
-          onPress={() => navigate.navigate("Login")}
-        >
-          <Text style={styles.primaryButtonText}>Log in</Text>
-        </Button>
-        <Button
-          mode='contained'
-          style={themes.SecondaryBtnLarge}
-          onPress={() => navigate.navigate("SignUp")}
-        >
-          <Text style={styles.secondaryButtonText}>Sign up</Text>
-        </Button>
-      </View>
+        <View style={styles.btnGroup}>
+          <Button
+            mode="contained"
+            style={themes.PrimaryBtnLarge}
+            onPress={() => navigate.navigate("Login")}
+          >
+            <Text style={styles.primaryButtonText}>Log in</Text>
+          </Button>
+          <Button
+            mode="contained"
+            style={themes.SecondaryBtnLarge}
+            onPress={() => navigate.navigate("SignUp")}
+          >
+            <Text style={styles.secondaryButtonText}>Sign up</Text>
+          </Button>
+        </View>
 
-      <SocialMediaContainer />
-    </View>
+        <SocialMediaContainer />
+      </View>
+    </ScrollView>
   );
 };
 
