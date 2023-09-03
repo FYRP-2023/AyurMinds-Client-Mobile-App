@@ -1,14 +1,15 @@
 import * as React from 'react';
-import { useNavigation, useRoute } from "@react-navigation/native";
 import { View, StyleSheet, ToastAndroid } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useSelector } from 'react-redux';
 import { TextInput, Button } from 'react-native-paper';
 import themes from "../../common/theme/themes";
-import { CONTENT_TYPE_QUESTION } from '../../constants/SocialNetworkConstants';
 import { getAxiosSocialNetworkInstance } from '../../utils/axios';
 import AyurMindsApi from '../../api/apiService';
+import { CONTENT_TYPE_QUESTION } from '../../constants/SocialNetworkConstants';
 
 function PostContent() {
-    const userId = "1111";
+    const userId = useSelector((state) => state.auth.user)._id;
     const id = 0;
 
     const navigator = useNavigation();
@@ -29,14 +30,14 @@ function PostContent() {
     return (
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
             <TextInput
+                mode="outlined"
+                theme={{ colors: { onSurfaceVariant: themes.Colors.primary, onBackground: 'white' } }}
+                outlineColor={themes.Colors.primary}
+                activeOutlineColor={themes.Colors.primary}
                 style={{
                     width: '90%',
                     marginTop: 10
                 }}
-                theme={{ colors: { onSurfaceVariant: themes.Colors.primary, onBackground: 'white' } }}
-                outlineColor={themes.Colors.primary}
-                activeOutlineColor={themes.Colors.primary}
-                mode="outlined"
                 multiline={true}
                 label="Header"
                 value={header}
@@ -44,14 +45,14 @@ function PostContent() {
             />
 
             <TextInput
+                mode="outlined"
+                theme={{ colors: { onSurfaceVariant: themes.Colors.primary, onBackground: 'white' } }}
+                outlineColor={themes.Colors.primary}
+                activeOutlineColor={themes.Colors.primary}
                 style={{
                     width: '90%',
                     marginTop: 10
                 }}
-                theme={{ colors: { onSurfaceVariant: themes.Colors.primary, onBackground: 'white' } }}
-                outlineColor={themes.Colors.primary}
-                activeOutlineColor={themes.Colors.primary}
-                mode="outlined"
                 multiline={true}
                 label="Body"
                 value={body}

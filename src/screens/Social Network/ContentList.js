@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, FlatList, Alert, ToastAndroid, Keyboard, View } from "react-native";
+import { useSelector } from "react-redux";
+import { Overlay } from "@rneui/themed";
 import { Card, ActivityIndicator, MD2Colors, IconButton, Divider, Text, TextInput } from 'react-native-paper';
 import { getAxiosSocialNetworkInstance } from "../../utils/axios";
 import AyurMindsApi from "../../api/apiService";
-import { CONTENT_TYPE_USER, FILTER_CRITERIA_ASCENDING } from "../../constants/SocialNetworkConstants";
 import themes from "../../common/theme/themes";
-import { Icon, Input, Overlay } from "@rneui/themed";
+import { CONTENT_TYPE_USER, FILTER_CRITERIA_ASCENDING } from "../../constants/SocialNetworkConstants";
 
 function ContentList({ contentType }) {
-    const userId = "1111";
+    const userId = useSelector((state) => state.auth.user)._id;
     const responseId = "0";
 
     const [isContentsRefreshing, setIsContentsRefreshing] = useState(false);
@@ -72,7 +73,7 @@ function ContentList({ contentType }) {
             <FlatList
                 refreshing={isContentsRefreshing}
                 onRefresh={() => {
-                    fetchResponseList();
+                    fetchContentList();
                 }}
                 data={contentList}
                 renderItem={renderContent}
@@ -129,8 +130,8 @@ function ContentList({ contentType }) {
                 </Card.Content>
                 <Card.Actions>
                     {response.userId === userId && !response.isDeleted ?
-                        <IconButton mode="contained-tonal" iconColor="#ff0000" icon="delete" containerColor="white" onPress={() => showDeleteContentWarning(response.id)} /> :
-                        <IconButton mode="contained-tonal" iconColor="#0000ff" icon="thumb-up" containerColor="white" />
+                        <IconButton mode="contained-tonal" icon="delete" iconColor="#ff0000" containerColor="white" onPress={() => showDeleteContentWarning(response.id)} /> :
+                        <IconButton mode="contained-tonal" icon="thumb-up" iconColor="#0000ff" containerColor="white" />
                     }
                 </Card.Actions>
             </Card>
@@ -162,14 +163,14 @@ function ContentList({ contentType }) {
     const deleteContent = async (contentId) => {
         if (contentId) {
             await getAxiosSocialNetworkInstance()
-                .delete(AyurMindsApi.social_network_service.response.concat("/").concat(contentId));
-            fetchResponseList();
-            ToastAndroid.showWithGravity('Your comment has been deleted from public.', ToastAndroid.LONG, ToastAndroid.BOTTOM,)
-        } else {
-            await getAxiosSocialNetworkInstance()
                 .delete(AyurMindsApi.social_network_service.content.concat("/").concat(contentId));
             fetchContentList();
             ToastAndroid.showWithGravity('Your content has been deleted from public.', ToastAndroid.LONG, ToastAndroid.BOTTOM,)
+        } else {
+            await getAxiosSocialNetworkInstance()
+                .delete(AyurMindsApi.social_network_service.content.concat("/").concat(contentId));
+            fetchResponseList();
+            ToastAndroid.showWithGravity('Your comment has been deleted from public.', ToastAndroid.LONG, ToastAndroid.BOTTOM,)
         }
     }
 
@@ -204,12 +205,14 @@ function ContentList({ contentType }) {
                         <Divider style={{ marginBottom: 10 }} />
                         <View>
                             <TextInput
-                                placeholder='Ask me...'
+                                placeholder='What are your thoughts...'
                                 placeholderTextColor='#bdbdbd'
-                                style={styles.input}
-                                multiline
                                 underlineColor='none'
                                 activeUnderlineColor='none'
+                                selectionColor={themes.Colors.primary}
+                                cursorColor={themes.Colors.primary}
+                                style={styles.input}
+                                multiline
                                 onChangeText={(value) => setBody(value)}
                                 value={body}
                                 right={
@@ -250,7 +253,7 @@ const styles = StyleSheet.create({
     },
     input: {
         borderRadius: 10,
-        backgroundColor: "#F1F1F1",
+        backgroundColor: "#f1f1f1",
     },
 });
 
