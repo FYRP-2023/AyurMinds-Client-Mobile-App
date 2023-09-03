@@ -23,6 +23,7 @@ const LogoHeader = () => {
   // let timeout;
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const isUserUpdate = useSelector((state) => state.auth.isUserUpdate);
   const newMessage = useSelector((state) => state.chat.newMessage);
   const token = useSelector((state) => state.auth.token);
   const isSocketConnect = useSelector((state) => state.auth.isSocketConnect);
@@ -59,9 +60,9 @@ const LogoHeader = () => {
   }, [isLoggedIn, dispatch]);
 
   useEffect(() => {
-    fetchData2();
+    isUserUpdate && fetchData2();
     fetchChat();
-  }, [token, user, dispatch]);
+  }, [token, user, isUserUpdate, dispatch]);
 
    useEffect(() => {
      if (!isSocketConnect) {

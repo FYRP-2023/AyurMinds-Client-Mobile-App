@@ -3,11 +3,12 @@ import { Divider, TextInput } from "react-native-paper";
 import themes from "../common/theme/themes";
 import { logout } from "../actions/authActions";
 import { useNavigation } from "@react-navigation/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ScrollView } from "react-native-gesture-handler";
 import { AntDesign, Feather, Fontisto, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 const Profile = () => {
+    const user = useSelector((state) => state.auth.user);
  const navigate = useNavigation()
  const dispatch = useDispatch();
   const logoutHandler=()=>{
@@ -34,7 +35,7 @@ const Profile = () => {
           }}
         >
           <TouchableOpacity
-            onPress={logoutHandler}
+            // onPress={logoutHandler}
             style={{
               flexDirection: "row",
               gap: 10,
@@ -49,26 +50,31 @@ const Profile = () => {
             <Text style={{ ...themes.Typography.subHeading }}>Profile</Text>
           </TouchableOpacity>
         </View>
-        <View
-          style={{
-            padding: 15,
-            justifyContent: "space-around",
-            backgroundColor: "#F1F1F1",
-            marginBottom: 2,
-          }}
-        >
-          <TouchableOpacity
-            onPress={logoutHandler}
+        {user.isDoctor && (
+          <View
             style={{
-              flexDirection: "row",
-              gap: 10,
-              alignItems: "center",
+              padding: 15,
+              justifyContent: "space-around",
+              backgroundColor: "#F1F1F1",
+              marginBottom: 2,
             }}
           >
-            <Fontisto name="doctor" size={24} color="black" />
-            <Text style={{ ...themes.Typography.subHeading }}>Doctor</Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              onPress={()=>{
+                navigate.navigate("DoctorDetailsSettings");
+              }}
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                alignItems: "center",
+              }}
+            >
+              <Fontisto name="doctor" size={24} color="black" />
+              <Text style={{ ...themes.Typography.subHeading }}>Doctor</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {user.isPharmacist && (
         <View
           style={{
             padding: 15,
@@ -78,7 +84,7 @@ const Profile = () => {
           }}
         >
           <TouchableOpacity
-            onPress={logoutHandler}
+            // onPress={logoutHandler}
             style={{
               flexDirection: "row",
               gap: 10,
@@ -89,6 +95,7 @@ const Profile = () => {
             <Text style={{ ...themes.Typography.subHeading }}>Pharmacist</Text>
           </TouchableOpacity>
         </View>
+        )}
         <View
           style={{
             padding: 15,
@@ -98,7 +105,7 @@ const Profile = () => {
           }}
         >
           <TouchableOpacity
-            onPress={logoutHandler}
+            // onPress={logoutHandler}
             style={{
               flexDirection: "row",
               gap: 10,
@@ -120,7 +127,7 @@ const Profile = () => {
           }}
         >
           <TouchableOpacity
-            onPress={logoutHandler}
+            // onPress={logoutHandler}
             style={{
               flexDirection: "row",
               gap: 10,
@@ -140,7 +147,7 @@ const Profile = () => {
           }}
         >
           <TouchableOpacity
-            onPress={logoutHandler}
+            // onPress={logoutHandler}
             style={{
               flexDirection: "row",
               gap: 10,
@@ -162,7 +169,7 @@ const Profile = () => {
           }}
         >
           <TouchableOpacity
-            onPress={logoutHandler}
+            // onPress={logoutHandler}
             style={{
               flexDirection: "row",
               gap: 10,
@@ -182,7 +189,7 @@ const Profile = () => {
           }}
         >
           <TouchableOpacity
-            onPress={logoutHandler}
+            // onPress={logoutHandler}
             style={{
               flexDirection: "row",
               gap: 10,
@@ -202,7 +209,7 @@ const Profile = () => {
           }}
         >
           <TouchableOpacity
-            onPress={logoutHandler}
+            // onPress={logoutHandler}
             style={{
               flexDirection: "row",
               gap: 10,

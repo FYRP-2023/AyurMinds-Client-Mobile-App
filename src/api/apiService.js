@@ -4,6 +4,7 @@ import {
   autherizationServiceBaseURL,
   chatServiceBaseURL,
   messageServiceBaseURL,
+  doctorServiceBaseURL,
 } from "../utils/axios";
 
 const AyurMindsApi = {
@@ -35,9 +36,14 @@ const AyurMindsApi = {
     addToGroup: `${chatServiceBaseURL()}/groupadd`,
   },
   social_network_service: {
-    content: 'content',
-    response: 'response',
-  }
+    content: "content",
+    response: "response",
+  },
+
+  doctor_service: {
+    getDiseases: `${doctorServiceBaseURL()}/getDiseases`,
+    updateDoctorDetails: `${doctorServiceBaseURL()}/updateDoctorDetails`,
+  },
 };
 
 export default AyurMindsApi;

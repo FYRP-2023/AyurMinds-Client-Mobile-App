@@ -66,6 +66,7 @@ export const access = (navigate) => {
         // }
       );
       dispatch(authActions.access(res.data.ac_token));
+      dispatch(authActions.userUpdate(true));
     } catch (err) {
       console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
       dispatch(logout(navigate));
@@ -82,6 +83,7 @@ export const info = (token, navigate) => {
         }
       );
       dispatch(authActions.setInfo(res.data));
+      dispatch(authActions.userUpdate(false));
     } catch (err) {
       console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
       dispatch(logout(navigate));
