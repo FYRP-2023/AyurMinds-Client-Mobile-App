@@ -4,5 +4,6 @@ export const configs = {
   AUTHERIZATION_SERVICE: "/api/authorization_service",
   CHAT_SERVICE: "/api/chat_service",
   MESSAGE_SERVICE: "/api/message_service",
-  SOCIAL_NETWROK_SERVICE: "https://ayurconnect-service-1.azurewebsites.net/api"
+  SOCIAL_NETWROK_SERVICE: "https://ayurconnect-service-1.azurewebsites.net/api",
+  GOOGLE_MAP_API_KEY: "AIzaSyDVrRktQwOIwxvcK5JxGka8smIqJBGmY4U",
 };

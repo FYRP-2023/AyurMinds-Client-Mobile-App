@@ -31,6 +31,12 @@ const themes = {
       padding: 6,
       fontFamily: "Urbanist-Black",
     },
+    title2: {
+      fontSize: 14,
+      color: "#616161",
+      padding: 6,
+      fontFamily: "Urbanist-Light",
+    },
     body: {
       fontSize: 15,
       color: "#616161",
