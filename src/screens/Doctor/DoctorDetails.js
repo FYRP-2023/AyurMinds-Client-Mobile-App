@@ -8,10 +8,11 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useRef, useState } from "react";
-import { Button, Card, Chip, Divider, TextInput } from "react-native-paper";
+import { Button, Card, Chip, Divider, Modal, TextInput } from "react-native-paper";
 import themes from "../../common/theme/themes";
 import ChatbotIcon from "../../../assets/chatbotIcon.svg";
 import MultiSelect from "react-native-multiple-select";
+import * as Location from "expo-location";
 import {
   AntDesign,
   Entypo,
@@ -30,6 +31,7 @@ import { useEffect } from "react";
 import Map from "../../components/Map";
 import { authActions } from "../../store/authSlice";
 import { info } from "../../actions/authActions";
+import MapView, { Marker } from "react-native-maps";
 let ITEMS = [];
 export default function DoctorDetails({ navigation }) {
   const [selectedItems, setselectedItems] = useState([]);
@@ -37,7 +39,10 @@ export default function DoctorDetails({ navigation }) {
   const [allDiseases, setallDiseases] = useState([]);
   const [availablePlacesData, setavailablePlacesData] = useState([]);
   const [callback, setCallBack] = useState(true);
+  const [name, setName] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showOptionsModal, setShowOptionsModal] = useState(false);
+  console.log("🚀 ~ file: DoctorDetails.js:42 ~ DoctorDetails ~ showOptionsModal:", showOptionsModal)
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isDoctorDetailsOpen, setDoctorDetailsOpen] = useState(true);
   const [isDoctorPlacesOpen, setDoctorPlacesOpen] = useState(true);
@@ -49,9 +54,47 @@ export default function DoctorDetails({ navigation }) {
   const doctor = useSelector((state) => state.auth.user);
   const [bio, setBio] = useState(doctor.doctor.bio);
   const [contactNo, setcontactNo] = useState(doctor.doctor.contactNo);
+  const [myCordinates, setMyCordinats] = useState(
+    doctor.doctor.availablePlaces
+  );
   const [specializedIn, setcspecializedIn] = useState(
     doctor.doctor.specializedIn
   );
+ 
+   const [region, setRegion] = useState({
+     latitude: 0,
+     longitude: 0,
+     latitudeDelta: 0.01,
+     longitudeDelta: 0.01,
+   });
+   const [locationEnabled, setLocationEnabled] = useState(true);
+   const [placeaddress, setPlaceaddress] = useState(null);
+   const [addressInput, setAddressInput] = useState("");
+   const [selectedCoordinates, setSelectedCoordinates] = useState(null);
+   console.log("🚀 ~ file: DoctorDetails.js:70 ~ DoctorDetails ~ selectedCoordinates:", selectedCoordinates)
+   const [showMap, setShowMap] = useState(false);
+
+   const handleMapPress = (latitude, longitude) => {
+     setSelectedCoordinates({ latitude, longitude });
+     setShowMap(true);
+   };
+
+   const handleAddressInput = async () => {
+     try {
+       const res = await fetchCoordinatesByAddress(addressInput);
+       if (res && res.latitude && res.longitude) {
+         setSelectedCoordinates({
+           latitude: res.latitude,
+           longitude: res.longitude,
+         });
+         setPlaceaddress(res.formatted_address);
+         setShowMap(true);
+       }
+     } catch (error) {
+       console.log("Error fetching coordinates by address:", error);
+     }
+   };
+
   const calculateOverallRating = () => {
     if (doctor.doctor.ratings.length === 0) return 0;
 
@@ -87,10 +130,6 @@ export default function DoctorDetails({ navigation }) {
   }, [callback, doctor, ITEMS, isEditMode]);
 
   const [selectedItemData, setSelectedItemData] = useState([]);
-  console.log(
-    "🚀 ~ file: DoctorDetails.js:87 ~ DoctorDetails ~ selectedItemData:",
-    selectedItemData
-  );
   const [selectedItemDataCall, setSelectedItemDataCall] = useState(true);
 
 
@@ -166,6 +205,44 @@ export default function DoctorDetails({ navigation }) {
         
     }
   };
+
+ const [initLoad , setInitLoad]=useState(true)
+  useEffect(() => {
+    (async () => {
+      try {
+        // Check if location services are enabled
+        const isEnabled = await Location.hasServicesEnabledAsync();
+        if (isEnabled) {
+          // Request permission to access the device's location
+          const { status } = await Location.requestForegroundPermissionsAsync();
+
+          if (status === "granted") {
+            // Get the current location
+            const location = await Location.getCurrentPositionAsync({});
+            const { latitude, longitude } = location.coords;
+            setRegion({
+              latitude,
+              longitude,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
+            });
+            setSelectedCoordinates({ latitude, longitude });
+            setInitLoad(false);
+          } else {
+            // Handle the case when location permission is not granted
+            setLocationEnabled(false);
+          }
+        } else {
+          // Handle the case when location services are disabled
+          setLocationEnabled(false);
+        }
+      } catch (error) {
+        console.log("🚀 ~ file: Map.js:20 ~ error:", error);
+      }
+
+    })();
+    
+  }, [initLoad]);
 
   return (
     <>
@@ -321,22 +398,6 @@ export default function DoctorDetails({ navigation }) {
                       })}
                     </View>
                   </View>
-                  <View style={{ alignItems: "center", marginBottom: 5 }}>
-                    <Button
-                      style={themes.PrimaryBtnSmall}
-                      onPress={handleupdate}
-                    >
-                      <Text
-                        style={{
-                          color: "#FFF",
-                          fontSize: 16,
-                          fontFamily: "Urbanist-Semi-Bold",
-                        }}
-                      >
-                        Update
-                      </Text>
-                    </Button>
-                  </View>
                 </>
               ) : (
                 <>
@@ -438,25 +499,107 @@ export default function DoctorDetails({ navigation }) {
             {isDoctorPlacesOpen && (
               <View>
                 {isEditMode ? (
-                  doctor.doctor.availablePlaces.length > 0 ? (
-                    <>
-                      <View>
-                        <Button
-                          style={themes.PrimaryBtnSmall}
-                          onPress={handleupdate}
-                        >
-                          <Text
-                            style={{
-                              color: "#FFF",
-                              fontSize: 16,
-                              fontFamily: "Urbanist-Semi-Bold",
+                  doctor.doctor.availablePlaces.length === 0 ? (
+                    showOptionsModal ? (
+                      <>
+                        <View style={{ alignItems: "center" }}>
+                          <Button
+                            style={themes.SecondaryBtnLarge2}
+                            onPress={() => {
+                              setShowOptionsModal(!showOptionsModal);
                             }}
                           >
-                            Add Your Work Place
+                            <Text
+                              style={{
+                                color: "#FFF",
+                                fontSize: 16,
+                                fontFamily: "Urbanist-Semi-Bold",
+                              }}
+                            >
+                              Add Your Work address
+                            </Text>
+                          </Button>
+                        </View>
+                      </>
+                    ) : (
+                      <>
+                        <View style={{ padding: 20 }}>
+                          <Text style={themes.Typography.title}>Name</Text>
+                          <TextInput
+                            style={{
+                              height: 40,
+                              width: "100%",
+                              borderBottomColor: themes.Colors.primary,
+                              borderBottomWidth: 1,
+                              marginBottom: 10,
+                              placeholderTextColor: themes.Colors.secondary,
+                              backgroundColor: "#ffff",
+                            }}
+                            placeholder="Name of the Place"
+                            onChangeText={(text) => setName(text)}
+                            value={name}
+                            // right={<AntDesign name='eyeo' size={24} color='red' />}
+                          />
+                          <Text style={themes.Typography.title}>Location</Text>
+                          {/* <TextInput
+                            style={{
+                              height: 40,
+                              width: "100%",
+                              borderBottomColor: themes.Colors.primary,
+                              borderBottomWidth: 1,
+                              marginBottom: 10,
+                              placeholderTextColor: themes.Colors.secondary,
+                              backgroundColor: "#ffff",
+                            }}
+                            placeholder="Name of the Place"
+                            value={addressInput}
+                            onChangeText={(text) => setAddressInput(text)}
+                            // right={<AntDesign name='eyeo' size={24} color='red' />}
+                          />
+                          <Button
+                            title="Get Coordinates"
+                            onPress={handleAddressInput}
+                          /> */}
+                          <Text style={themes.Typography.title2}>
+                            Choose from Map
                           </Text>
-                        </Button>
-                      </View>
-                    </>
+                          {!locationEnabled && (
+                            <View style={styles.locationDisabledContainer}>
+                              <Text style={styles.locationDisabledText}>
+                                Location services are disabled. Please enable
+                                them to use this feature.
+                              </Text>
+                              <TouchableOpacity
+                                style={styles.enableLocationButton}
+                                onPress={() =>
+                                  Location.requestForegroundPermissionsAsync()
+                                }
+                              >
+                                <Text style={styles.enableLocationButtonText}>
+                                  Enable Location Services
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          )}
+                          <MapView
+                            style={styles.map}
+                            region={region}
+                            onPress={(e) =>
+                              handleMapPress(
+                                e.nativeEvent.coordinate.latitude,
+                                e.nativeEvent.coordinate.longitude
+                              )
+                            }
+                          >
+                            <Marker
+                              coordinate={selectedCoordinates}
+                              title="Selected Location"
+                            />
+                          </MapView>
+                          <View></View>
+                        </View>
+                      </>
+                    )
                   ) : (
                     <></>
                   )
@@ -614,6 +757,23 @@ export default function DoctorDetails({ navigation }) {
           )}
         </View>
       </ScrollView>
+      {isEditMode && (
+        <View>
+          <View style={{ alignItems: "center", marginBottom: 5 }}>
+            <Button style={themes.PrimaryBtnSmall} onPress={handleupdate}>
+              <Text
+                style={{
+                  color: "#FFF",
+                  fontSize: 16,
+                  fontFamily: "Urbanist-Semi-Bold",
+                }}
+              >
+                Update
+              </Text>
+            </Button>
+          </View>
+        </View>
+      )}
     </>
   );
 }
@@ -754,4 +914,27 @@ const styles = StyleSheet.create({
     fontFamily: "Urbanist-Regular",
   },
   doctorDetails: {},
+  map: {
+    width: 300,
+    height: 200,
+  },
+  locationDisabledContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  locationDisabledText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  enableLocationButton: {
+    backgroundColor: "blue",
+    padding: 10,
+    borderRadius: 5,
+  },
+  enableLocationButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
 });
