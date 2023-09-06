@@ -5,91 +5,26 @@ import {
   TouchableOpacity,
   Animated,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Card, Divider, TextInput } from "react-native-paper";
 import themes from "../../common/theme/themes";
 import ChatbotIcon from "../../../assets/chatbotIcon.svg";
 import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import SingleChat from "./SingleChat";
+import axios from "axios";
 
-const dummyChats = [
-  {
-    chatName: "Lorem ipsum Chat one",
-    modifiedAt: new Date(),
-    dialogs: [
-      {
-        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo Lorem ipsum dolor sit amet, consectetur adipiscing  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut lelit, sed do eiusmod tempor incididunt ut labo",
-        bot: {
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-          herbs: ["herb 1", "herb 2"],
-          symptoms: ["symptoms 1", "symptoms2"],
-        },
-      },
-      {
-        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-        bot: {
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-          herbs: ["herb 1", "herb 2"],
-          symptoms: ["symptoms 1", "symptoms2"],
-        },
-      },
-    ],
-  },
-  {
-    chatName: "Lorem ipsum Chat two",
-    modifiedAt: new Date(),
-    dialogs: [
-      {
-        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-        bot: {
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-          herbs: ["herb 1", "herb 2"],
-          symptoms: ["symptoms 1", "symptoms2"],
-        },
-      },
-    ],
-  },
-  {
-    chatName: "Lorem ipsum Chat three",
-    modifiedAt: new Date(),
-    dialogs: [
-      {
-        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-        bot: {
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-          herbs: ["herb 1", "herb 2"],
-          symptoms: ["symptoms 1", "symptoms2"],
-        },
-      },
-    ],
-  },
-  {
-    chatName: "Lorem ipsum Chat four",
-    modifiedAt: new Date(),
-    dialogs: [
-      {
-        user: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-        bot: {
-          answer:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labo",
-          herbs: ["herb 1", "herb 2"],
-          symptoms: ["symptoms 1", "symptoms2"],
-        },
-      },
-    ],
-  },
-];
-
+const apiUrl = "http://192.168.43.229:5005/webhooks/rest/webhook";
+let sender = "userID001";
 export default function NewChat() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const menuPosition = useRef(new Animated.Value(-300)).current;
   const [selectedSingleChat, setSelectedSingleChat] = useState({});
   const [isNewChat, setIsNewChat] = useState(true);
+  const [userQuestion, setUserQuestion] = useState("");
+  const [chats, setChats] = useState([]);
+  const [isSubmittingQuestion, setIsSubmittingQuestion] = useState(false);
 
   const openMenu = () => {
     Animated.timing(menuPosition, {
@@ -99,7 +34,7 @@ export default function NewChat() {
     }).start();
     setMenuOpen(true);
   };
-
+  //
   const closeMenu = () => {
     Animated.timing(menuPosition, {
       toValue: -300, // Close the menu
@@ -108,7 +43,7 @@ export default function NewChat() {
     }).start();
     setMenuOpen(false);
   };
-
+  //
   const toggleMenu = () => {
     if (isMenuOpen) {
       closeMenu(); // Close the menu when it's already open
@@ -116,6 +51,79 @@ export default function NewChat() {
       openMenu(); // Open the menu when it's closed
     }
   };
+  //
+  const submitQuestion = async () => {
+    setIsSubmittingQuestion(true);
+    const requestBody = {
+      sender: sender,
+      message: userQuestion,
+    };
+    //
+    await axios
+      .post(apiUrl, requestBody)
+      .then((response) => {
+        // Handle the response data here
+        setChatHistory(response.data);
+        setIsSubmittingQuestion(false);
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error("Error:", error);
+        setIsSubmittingQuestion(false);
+      });
+  };
+  //
+  const setChatHistory = async (reply) => {
+    await axios
+      .post("http://192.168.43.229:5004/messages", {
+        userId: sender,
+        chats: [
+          {
+            chatName: "Lorem ipsum Chat one",
+            modifiedAt: "2023-09-03T12:00:00.000Z",
+            dialogs: [
+              {
+                user: userQuestion,
+                bot: {
+                  answer: reply[0]?.text,
+                  herbs: reply[1]?.image,
+                  symptoms: ["symptom 1", "symptom 2"],
+                },
+              },
+            ],
+          },
+        ],
+      })
+      .then((response) => {
+        setIsNewChat(false);
+        setSelectedSingleChat(response.data);
+      });
+  };
+  //
+  const handleChatDelete = async (id) => {
+    try {
+      await axios.delete(`http://192.168.43.229:5004/messages/${sender}/${id}`);
+      console.log("DELETED");
+      setIsNewChat(true);
+      closeMenu();
+      // You can handle the success or any other logic here
+    } catch (error) {
+      // Handle errors here
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    // Make an HTTP GET request to retrieve the chats
+    axios
+      .get(`http://192.168.43.229:5004/messages/${sender}`)
+      .then((response) => {
+        setChats(response.data); // Assuming your API returns an array of chats
+      })
+      .catch((error) => {
+        console.error("Error fetching chats:", error);
+      });
+  }, [chats]);
 
   return (
     <>
@@ -126,8 +134,8 @@ export default function NewChat() {
         </TouchableOpacity>
         <View>
           <Text style={{ ...themes.Typography.subHeading, color: "#FFFFFF" }}>
-            {selectedSingleChat?.chatName
-              ? selectedSingleChat?.chatName
+            {selectedSingleChat?._id && !isNewChat
+              ? selectedSingleChat?._id
               : "New Chat"}
           </Text>
         </View>
@@ -146,7 +154,7 @@ export default function NewChat() {
       <Animated.View style={[styles.sideMenu, { left: menuPosition, top: 49 }]}>
         {/* Menu Content */}
         <View>
-          {dummyChats.map((chat) => {
+          {chats.map((chat) => {
             return (
               <View style={styles.sideMenuItemContainer}>
                 <View style={styles.sideMenuItem}>
@@ -161,11 +169,14 @@ export default function NewChat() {
                     <Text
                       style={{ ...themes.Typography.title, color: "#FFFFFF" }}
                     >
-                      {chat.chatName}
+                      {chat?._id}
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={{ paddingRight: 2 }}>
+                <TouchableOpacity
+                  style={{ paddingRight: 2 }}
+                  onPress={() => handleChatDelete(chat?._id)}
+                >
                   <MaterialIcons
                     name='delete-outline'
                     size={24}
@@ -181,41 +192,50 @@ export default function NewChat() {
       {/* New chat field  */}
       {isNewChat ? (
         <View style={styles.container}>
-          <ScrollView>
-            <View style={styles.iconContainer}>
-              <ChatbotIcon width={120} height={120} />
-            </View>
-            <Text style={styles.title}>Capabilities</Text>
+          {isSubmittingQuestion ? (
+            <ActivityIndicator
+              size='large'
+              color={themes.Colors.primary}
+              style={{ marginTop: 250, marginBottom: 250 }}
+            />
+          ) : (
+            <ScrollView>
+              <View style={styles.iconContainer}>
+                <ChatbotIcon width={120} height={120} />
+              </View>
+              <Text style={styles.title}>Capabilities</Text>
 
-            <View style={styles.cardContainer}>
-              <Card style={styles.card} mode='contained'>
-                <Card.Content>
-                  <Text style={styles.cardText}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do
-                  </Text>
-                </Card.Content>
-              </Card>
+              <View style={styles.cardContainer}>
+                <Card style={styles.card} mode='contained'>
+                  <Card.Content>
+                    <Text style={styles.cardText}>
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do
+                    </Text>
+                  </Card.Content>
+                </Card>
 
-              <Card style={styles.card} mode='contained'>
-                <Card.Content>
-                  <Text style={styles.cardText}>
-                    Loremdolor sit amet, consectetur adipiscing elit, sed do
-                    eiusmod tempor incididunt ut
-                  </Text>
-                </Card.Content>
-              </Card>
+                <Card style={styles.card} mode='contained'>
+                  <Card.Content>
+                    <Text style={styles.cardText}>
+                      Loremdolor sit amet, consectetur adipiscing elit, sed do
+                      eiusmod tempor incididunt ut
+                    </Text>
+                  </Card.Content>
+                </Card>
 
-              <Card style={styles.card} mode='contained'>
-                <Card.Content>
-                  <Text style={styles.cardText}>
-                    Loremdolor sit amet, consectetur adipiscing elit, sed do
-                    eiusmod tempor incididunt ut
-                  </Text>
-                </Card.Content>
-              </Card>
-            </View>
-          </ScrollView>
+                <Card style={styles.card} mode='contained'>
+                  <Card.Content>
+                    <Text style={styles.cardText}>
+                      Loremdolor sit amet, consectetur adipiscing elit, sed do
+                      eiusmod tempor incididunt ut
+                    </Text>
+                  </Card.Content>
+                </Card>
+              </View>
+            </ScrollView>
+          )}
+
           <View style={styles.inputContainer}>
             <Divider style={{ marginBottom: 10 }} />
             <View>
@@ -227,14 +247,19 @@ export default function NewChat() {
                 underlineColor='none'
                 activeUnderlineColor='none'
                 right={
-                  <TextInput.Icon icon='send' color={themes.Colors.primary} />
+                  <TextInput.Icon
+                    icon='send'
+                    color={themes.Colors.primary}
+                    onPress={submitQuestion}
+                  />
                 }
+                onChangeText={(text) => setUserQuestion(text)}
               />
             </View>
           </View>
         </View>
       ) : (
-        <SingleChat chat={selectedSingleChat} />
+        selectedSingleChat && <SingleChat chat={selectedSingleChat} />
       )}
     </>
   );

@@ -14,59 +14,66 @@ const SingleChat = (props) => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        {chat?.dialogs?.map((dialog, index) => {
+        {chat?.chats?.map((chat, index) => {
+          console.log(chat?.dialogs, "SINGLE");
           return (
             <View key={index}>
-              <View style={styles.userQuestion}>
-                <FontAwesome
-                  name='user-o'
-                  size={28}
-                  color={themes.Colors.secondary}
-                  style={{ marginTop: 10 }}
-                />
-                <View style={{ flex: 1 }}>
-                  <Text
-                    style={{
-                      ...themes.Typography.body,
-                      color: "#36454F",
-                    }}
-                  >
-                    {dialog?.user}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.botAnswerContainer}>
-                <View style={styles.botAnswer}>
-                  <MaterialCommunityIcons
-                    name='robot-outline'
-                    size={30}
-                    color={themes.Colors.primary}
-                    style={{ marginTop: 10 }}
-                  />
-                  <View style={{ flex: 1 }}>
-                    <Text
-                      style={{
-                        ...themes.Typography.body,
-                        color: "#36454F",
-                      }}
-                    >
-                      {dialog?.bot?.answer}
-                    </Text>
+              {chat?.dialogs?.map((dialog) => {
+                return (
+                  <View>
+                    <View style={styles.userQuestion}>
+                      <FontAwesome
+                        name='user-o'
+                        size={28}
+                        color={themes.Colors.secondary}
+                        style={{ marginTop: 10 }}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={{
+                            ...themes.Typography.body,
+                            color: "#36454F",
+                          }}
+                        >
+                          {dialog?.user}
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.botAnswerContainer}>
+                      <View style={styles.botAnswer}>
+                        <MaterialCommunityIcons
+                          name='robot-outline'
+                          size={30}
+                          color={themes.Colors.primary}
+                          style={{ marginTop: 10 }}
+                        />
+                        <View style={{ flex: 1 }}>
+                          <Text
+                            style={{
+                              ...themes.Typography.body,
+                              color: "#36454F",
+                            }}
+                          >
+                            {dialog?.bot?.answer}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.botAnswerIcons}>
+                        <Ionicons
+                          name='leaf'
+                          size={24}
+                          color={themes.Colors.status.success}
+                        />
+                        <MaterialCommunityIcons
+                          name='doctor'
+                          size={24}
+                          color={themes.Colors.status.warning}
+                        />
+                      </View>
+                    </View>
                   </View>
-                </View>
-                <View style={styles.botAnswerIcons}>
-                  <Ionicons
-                    name='leaf'
-                    size={24}
-                    color={themes.Colors.status.success}
-                  />
-                  <MaterialCommunityIcons
-                    name='doctor'
-                    size={24}
-                    color={themes.Colors.status.warning}
-                  />
-                </View>
-              </View>
+                );
+              })}
             </View>
           );
         })}

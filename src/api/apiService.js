@@ -1,5 +1,6 @@
 // All API's endpoints uses here
 import {
+  ChatBotServiceBaseURL,
   authenticationServiceBaseURL,
   autherizationServiceBaseURL,
   chatServiceBaseURL,
@@ -35,9 +36,15 @@ const AyurMindsApi = {
     addToGroup: `${chatServiceBaseURL()}/groupadd`,
   },
   social_network_service: {
-    content: 'content',
-    response: 'response',
-  }
+    content: "content",
+    response: "response",
+  },
+  // chatBotService: {
+  //   createChat: `${ChatBotServiceBaseURL()}/`,
+  //   getChats: `${ChatBotServiceBaseURL()}/`,
+  //   updateChat: `${ChatBotServiceBaseURL()}/`,
+  //   deleteChat: `${ChatBotServiceBaseURL()}/`,
+  // },
 };
 
 export default AyurMindsApi;

@@ -30,6 +30,12 @@ export const getAxiosSocialNetworkInstance = () => {
   });
 };
 
+// export const getAxiosChatBotInstance = () => {
+//   return axios.create({
+//     baseURL: configs.CHATBOT_SERVICE,
+//   });
+// };
+
 // export const handleResponse = (response) => {
 //   console.log("🚀 ~ file: axios.js:31 ~ handleResponse ~ response:", response)
 //   return {
