@@ -1,5 +1,5 @@
 import { View, StyleSheet, StatusBar, Text } from "react-native";
-import React from "react";
+import React, { useRef } from "react";
 import themes from "../common/theme/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -13,6 +13,9 @@ import { authActions } from "../store/authSlice";
 import { fetchChats } from "../actions/chatActions";
 import { useState } from "react";
 import { chatActions } from "../store/chatSlice";
+import * as Permissions from "expo-permissions";
+import { addNotificationReceivedListener, addNotificationResponseReceivedListener, registerForPushNotificationsAsync, removeNotificationSubscription, sendNotification } from "../utils/Notifications";
+
 
 const LogoHeader = () => {
   // const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
@@ -23,6 +26,7 @@ const LogoHeader = () => {
   // let timeout;
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const isUserUpdate = useSelector((state) => state.auth.isUserUpdate);
   const newMessage = useSelector((state) => state.chat.newMessage);
   const token = useSelector((state) => state.auth.token);
   const isSocketConnect = useSelector((state) => state.auth.isSocketConnect);
@@ -31,11 +35,42 @@ const LogoHeader = () => {
   const dispatch = useDispatch();
   const navigate = useNavigation();
   let timeout;
-  const SOCKET_URL = configs.API_GATWAY_URL;
-  const [isChat, setIsChat]=useState(true)
+  const MESSAGE_SOCKET = configs.MESSAGE_SOCKET;
+  const [isChat, setIsChat] = useState(true);
+
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+    // useEffect(() => {
+    //   registerForPushNotificationsAsync().then((token) =>
+    //     setExpoPushToken(token)
+    //   );
+
+    //   notificationListener.current =
+    //     addNotificationReceivedListener((notification) => {
+    //       setNotification(notification);
+    //     });
+
+    //   responseListener.current =
+    //     addNotificationResponseReceivedListener((response) => {
+    //       console.log(response);
+    //     });
+
+    //   return () => {
+    //    removeNotificationSubscription(
+    //       notificationListener.current
+    //     );
+    //    removeNotificationSubscription(responseListener.current);
+    //   };
+    // }, []);
+
+
 
   const fetchData = async () => {
-    const isLocalLogin = await AsyncStorage.getItem("isLogin") === "true" ? true : false;
+    const isLocalLogin =
+      (await AsyncStorage.getItem("isLogin")) === "true" ? true : false;
     if (isLocalLogin && isLoggedIn) {
       await dispatch(access(navigate));
     }
@@ -59,87 +94,63 @@ const LogoHeader = () => {
   }, [isLoggedIn, dispatch]);
 
   useEffect(() => {
-    fetchData2();
+    isUserUpdate && fetchData2();
     fetchChat();
-  }, [token, user, dispatch]);
+  }, [token, user, isUserUpdate, dispatch]);
 
-   useEffect(() => {
-     if (!isSocketConnect) {
-       const socket = io(SOCKET_URL);
-       dispatch(authActions.socketConnect(socket));
-     }
-   }, [isSocketConnect]);
+  //messeage socket
+  useEffect(() => {
+    if (!isSocketConnect) {
+      const socket = io(MESSAGE_SOCKET);
+      dispatch(authActions.socketConnect(socket));
+    }
+  }, [isSocketConnect]);
 
-   useEffect(() => {
-     if (isSocketConnect && user && token && wsSocket) {
-       wsSocket.emit("setup", {
-         user: user,
-         headers: {
-           authorization: token,
-         },
-       });
-     }
-   }, [wsSocket, user]);
+  useEffect(() => {
+    if (isSocketConnect && user && token && wsSocket) {
+      wsSocket.emit("setup", {
+        user: user,
+        headers: {
+          authorization: token,
+        },
+      });
+    }
+  }, [wsSocket, user]);
 
-   useEffect(() => {
-     if (wsSocket !== null) {
-       if (user && isChat) {
-         wsSocket.on("connected", (data) => {
-           console.log(
-             "🚀 ~ file: LogoHeader.js:71 ~ wsSocket.on ~ data:",
-             data
-           );
-           wsSocket.emit("chat_service", {
-             emit_message: "chat_setup",
-             user: user,
-           });
-         });
-         setIsChat(false);
-       }
-     }
-   }, [user, isChat]);
+  useEffect(() => {
+    if (wsSocket !== null) {
+      if (user && isChat) {
+        wsSocket.on("connected", (data) => {});
+        setIsChat(false);
+      }
+    }
+  }, [user, isChat]);
 
-   useEffect(() => {
-     if (wsSocket !== null) {
-       if (user && !isChat) {
-          wsSocket.on("message_recieved", (data) => {
-            dispatch(chatActions.setNewMessage(data));
-          });
-         wsSocket.on("error", (data) => {
-           console.log(
-             "🚀 ~ file: LogoHeader.js:72 ~ wsSocket.on ~ data err:",
-             data
-           );
-           setIsChat(true);
-           dispatch(authActions.socketDisconnect());
-         });
-         wsSocket.on("chat_service", (data) => {
-           console.log(
-             "🚀 ~ file: LogoHeader.js:114 ~ wsSocket.on ~ data:",
-             data
-           );
-         });
-         wsSocket.on("notification_service", (data) => {
-           console.log(
-             "🚀 ~ file: notification_service ~ wsSocket.on ~ data:",
-             data
-           );
-         });
-         wsSocket.on("chat_connected", (data) => {
-           if (!data) {
-             dispatch(authActions.socketDisconnect());
-           }
-         });
-       }
-     }
-   }, [wsSocket,isChat]);
+  useEffect(() => {
+    if (wsSocket !== null) {
 
-   useEffect(() => {
-   
-   }, [wsSocket]);
-   
+        wsSocket.on("message recieved", (data) => {
+          dispatch(chatActions.setNewMessage(data));
+          // sendNotification({
+          //   title: data.sender.firstName + " " + data.sender.lastName,
+          //   message: data.content,
+          //   notificationId: data.chat._id,
+          // });
+        });
 
-   
+        wsSocket.on("error", (data) => {
+          console.error(
+            "🚀 ~ file: LogoHeader.js:72 ~ wsSocket.on ~ data err:",
+            data
+          );
+          setIsChat(true);
+          dispatch(authActions.socketDisconnect());
+        });
+      
+    }
+  }, [wsSocket, isChat]);
+
+  useEffect(() => {}, [wsSocket]);
 
   return (
     <View style={styles.container}>

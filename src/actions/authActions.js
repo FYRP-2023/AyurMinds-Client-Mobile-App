@@ -17,10 +17,11 @@ export const login = (email, password, navigate) => {
       await AsyncStorage.setItem("isLogin", "true");
       navigate.navigate("AppNavigator");
     } catch (err) {
-      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
+      console.log("login ~ return ~ err:", err);
     }
   };
 };
+
 export const signup = (data, navigate) => {
   return async (dispatch) => {
     try {
@@ -33,7 +34,7 @@ export const signup = (data, navigate) => {
       );
       navigate.navigate("Login");
     } catch (err) {
-      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err.response.data);
+      console.log("signup ~ return ~ err:", err.response.data);
     }
   };
 };
@@ -51,7 +52,7 @@ export const logout = (navigate) => {
       await AsyncStorage.removeItem("isLogin");
       navigate.navigate("Welcome");
     } catch (err) {
-      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
+      console.log("logout ~ return ~ err:", err);
     }
   };
 };
@@ -66,8 +67,9 @@ export const access = (navigate) => {
         // }
       );
       dispatch(authActions.access(res.data.ac_token));
+      dispatch(authActions.userUpdate(true));
     } catch (err) {
-      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
+      console.log("get access ~ return ~ err:", err);
       dispatch(logout(navigate));
     }
   };
@@ -82,8 +84,9 @@ export const info = (token, navigate) => {
         }
       );
       dispatch(authActions.setInfo(res.data));
+      dispatch(authActions.userUpdate(false));
     } catch (err) {
-      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
+      console.log("info ~ return ~ err:", err);
       dispatch(logout(navigate));
     }
   };

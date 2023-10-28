@@ -131,6 +131,15 @@ const themes = {
     width: "100%",
     textAlign: "center",
   },
+  SecondaryBtnLarge2: {
+    backgroundColor: "#17CE92",
+    paddingVertical: 8,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginTop: 20,
+    width: "100%",
+    textAlign: "center",
+  },
 };
 
 export default themes;
