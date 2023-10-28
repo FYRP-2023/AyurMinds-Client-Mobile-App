@@ -8,7 +8,14 @@ import {
   SafeAreaView,
 } from "react-native";
 import React, { useRef, useState } from "react";
-import { Button, Card, Chip, Divider, Modal, TextInput } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Chip,
+  Divider,
+  Modal,
+  TextInput,
+} from "react-native-paper";
 import themes from "../../common/theme/themes";
 import ChatbotIcon from "../../../assets/chatbotIcon.svg";
 import MultiSelect from "react-native-multiple-select";
@@ -32,17 +39,26 @@ import Map from "../../components/Map";
 import { authActions } from "../../store/authSlice";
 import { info } from "../../actions/authActions";
 import MapView, { Marker } from "react-native-maps";
+import SelectDropdown from "react-native-select-dropdown";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
+
 let ITEMS = [];
+
+
+const DayTypes = ["EveryDay", "Weekdays", "Weekends"];
+
 export default function DoctorDetails({ navigation }) {
+//   DateTimePickerAndroid.open({params: AndroidNativeProps})
+// DateTimePickerAndroid.dismiss({mode: AndroidNativeProps['mode']})
   const [selectedItems, setselectedItems] = useState([]);
   const multiSelectRef = useRef(null);
   const [allDiseases, setallDiseases] = useState([]);
   const [availablePlacesData, setavailablePlacesData] = useState([]);
   const [callback, setCallBack] = useState(true);
-  const [name, setName] = useState("");
+  const [locationName, setLocationName] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
   const [showOptionsModal, setShowOptionsModal] = useState(false);
-  console.log("🚀 ~ file: DoctorDetails.js:42 ~ DoctorDetails ~ showOptionsModal:", showOptionsModal)
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isDoctorDetailsOpen, setDoctorDetailsOpen] = useState(true);
   const [isDoctorPlacesOpen, setDoctorPlacesOpen] = useState(true);
@@ -60,40 +76,58 @@ export default function DoctorDetails({ navigation }) {
   const [specializedIn, setcspecializedIn] = useState(
     doctor.doctor.specializedIn
   );
- 
-   const [region, setRegion] = useState({
-     latitude: 0,
-     longitude: 0,
-     latitudeDelta: 0.01,
-     longitudeDelta: 0.01,
-   });
-   const [locationEnabled, setLocationEnabled] = useState(true);
-   const [placeaddress, setPlaceaddress] = useState(null);
-   const [addressInput, setAddressInput] = useState("");
-   const [selectedCoordinates, setSelectedCoordinates] = useState(null);
-   console.log("🚀 ~ file: DoctorDetails.js:70 ~ DoctorDetails ~ selectedCoordinates:", selectedCoordinates)
-   const [showMap, setShowMap] = useState(false);
 
-   const handleMapPress = (latitude, longitude) => {
-     setSelectedCoordinates({ latitude, longitude });
-     setShowMap(true);
-   };
+  const [region, setRegion] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  });
+  const [locationEnabled, setLocationEnabled] = useState(true);
+  const [addNewLoaction, setAddnNewLocation] = useState(false);
+  const [placeaddress, setPlaceaddress] = useState(null);
+  const [addressInput, setAddressInput] = useState("");
+  const [selectedCoordinates, setSelectedCoordinates] = useState(null);
+  const [isUpdateButtonDisable, setIsUpdateButtonDisable] = useState(false);
+  const [showMap, setShowMap] = useState(false);
 
-   const handleAddressInput = async () => {
-     try {
-       const res = await fetchCoordinatesByAddress(addressInput);
-       if (res && res.latitude && res.longitude) {
-         setSelectedCoordinates({
-           latitude: res.latitude,
-           longitude: res.longitude,
-         });
-         setPlaceaddress(res.formatted_address);
-         setShowMap(true);
-       }
-     } catch (error) {
-       console.log("Error fetching coordinates by address:", error);
-     }
-   };
+
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    hideDatePicker();
+  };
+
+
+  const handleMapPress = (latitude, longitude) => {
+    setSelectedCoordinates({ latitude, longitude });
+    setShowMap(true);
+  };
+
+  const handleAddressInput = async () => {
+    try {
+      const res = await fetchCoordinatesByAddress(addressInput);
+      if (res && res.latitude && res.longitude) {
+        setSelectedCoordinates({
+          latitude: res.latitude,
+          longitude: res.longitude,
+        });
+        setPlaceaddress(res.formatted_address);
+        setShowMap(true);
+      }
+    } catch (error) {
+      console.log("Error fetching coordinates by address:", error);
+    }
+  };
 
   const calculateOverallRating = () => {
     if (doctor.doctor.ratings.length === 0) return 0;
@@ -132,11 +166,9 @@ export default function DoctorDetails({ navigation }) {
   const [selectedItemData, setSelectedItemData] = useState([]);
   const [selectedItemDataCall, setSelectedItemDataCall] = useState(true);
 
-
-
   const onSelectedItemsChange = (selectedItems) => {
     setselectedItems(selectedItems);
-      setSelectedItemDataCall(true);
+    setSelectedItemDataCall(true);
   };
 
   useEffect(() => {
@@ -150,99 +182,127 @@ export default function DoctorDetails({ navigation }) {
     }
   }, [isEditMode]);
 
-    useEffect(() => {
-      if (
-        selectedItemDataCall &&
-        allDiseases.length > 0 &&
-        selectedItems.length > 0
-      ) {
-        let sid = [];
-        for (const d of selectedItems) {
-          for (const de of allDiseases) {
-            if (d == de._id) {
-              sid.push({
-                _id: de._id,
-                name: de.name,
-              });
-            }
+  useEffect(() => {
+    if (
+      selectedItemDataCall &&
+      allDiseases.length > 0 &&
+      selectedItems.length > 0
+    ) {
+      let sid = [];
+      for (const d of selectedItems) {
+        for (const de of allDiseases) {
+          if (d == de._id) {
+            sid.push({
+              _id: de._id,
+              name: de.name,
+            });
           }
         }
-        setSelectedItemData(sid);
-        setSelectedItemDataCall(false);
       }
-    }, [selectedItemDataCall, allDiseases, selectedItems]);
+      setSelectedItemData(sid);
+      setSelectedItemDataCall(false);
+    }
+  }, [selectedItemDataCall, allDiseases, selectedItems]);
 
   const handleRemoveItems = (id) => {
     const data = selectedItems.filter((i) => {
       return i != id;
     });
     setselectedItems(data);
-      setSelectedItemDataCall(true);
+    setSelectedItemDataCall(true);
   };
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const handleupdate = async () => {
     try {
-        const res = await getAxiosInstance().patch(
-          AyurMindsApi.doctor_service.updateDoctorDetails,
-          {
-            bio,
-            contactNo,
-            userId: doctor._id,
-            specializedIn: selectedItems,
-            availablePlaces: availablePlacesData,
-          },
-          {
-            withCredentials: true,
-          }
-        );
-        // setCallBack(true);
-        await dispatch(info(token, navigate));
-        setIsEditMode(false)
-          setSelectedItemDataCall(true);
+      const res = await getAxiosInstance().patch(
+        AyurMindsApi.doctor_service.updateDoctorDetails,
+        {
+          bio,
+          contactNo,
+          userId: doctor._id,
+          specializedIn: selectedItems,
+          availablePlaces: availablePlacesData,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      // setCallBack(true);
+      await dispatch(info(token, navigate));
+      setIsEditMode(false);
+      setSelectedItemDataCall(true);
     } catch (error) {
-        console.log("🚀 ~ file: DoctorDetails.js:138 ~ handleupdate ~ error:", error)
-        
+      console.log(
+        "🚀 ~ file: DoctorDetails.js:138 ~ handleupdate ~ error:",
+        error
+      );
     }
   };
 
- const [initLoad , setInitLoad]=useState(true)
-  useEffect(() => {
-    (async () => {
-      try {
-        // Check if location services are enabled
-        const isEnabled = await Location.hasServicesEnabledAsync();
-        if (isEnabled) {
-          // Request permission to access the device's location
-          const { status } = await Location.requestForegroundPermissionsAsync();
+  const handleAddLocation =()=>{
+    let docPlaces = availablePlacesData;
+    let timeSlotTemp = []
+    timeSlotTemp = availablePlacesData?.timeSlots;
 
-          if (status === "granted") {
-            // Get the current location
-            const location = await Location.getCurrentPositionAsync({});
-            const { latitude, longitude } = location.coords;
-            setRegion({
-              latitude,
-              longitude,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-            });
-            setSelectedCoordinates({ latitude, longitude });
-            setInitLoad(false);
-          } else {
-            // Handle the case when location permission is not granted
-            setLocationEnabled(false);
-          }
+
+    const data = {
+      name: locationName,
+      cordinate: selectedCoordinates,
+      timeSlots: [
+        {
+          daysType: String,
+          from: String,
+          to: String,
+          isAvailable: Boolean,
+        },
+      ],
+    };
+    docPlaces.push(data);
+    setavailablePlacesData(docPlaces);
+    setLocationName("")
+    setAddnNewLocation(false)
+    setSelectedCoordinates(null)
+    setIsUpdateButtonDisable(false)
+  }
+
+  const getLiveLocation = async () => {
+    try {
+      // Check if location services are enabled
+      const isEnabled = await Location.hasServicesEnabledAsync();
+      if (isEnabled) {
+        // Request permission to access the device's location
+        const { status } = await Location.requestForegroundPermissionsAsync();
+
+        if (status === "granted") {
+          // Get the current location
+          const location = await Location.getCurrentPositionAsync({});
+          const { latitude, longitude } = location.coords;
+          setRegion({
+            latitude,
+            longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+          });
+          setSelectedCoordinates({ latitude, longitude });
+          setInitLoad(false);
         } else {
-          // Handle the case when location services are disabled
+          // Handle the case when location permission is not granted
           setLocationEnabled(false);
         }
-      } catch (error) {
-        console.log("🚀 ~ file: Map.js:20 ~ error:", error);
+      } else {
+        // Handle the case when location services are disabled
+        setLocationEnabled(false);
       }
+    } catch (error) {
+      console.log("🚀 ~ file: Map.js:20 ~ error:", error);
+    }
+  };
 
-    })();
-    
-  }, [initLoad]);
+  const [initLoad, setInitLoad] = useState(true);
+  useEffect(() => {
+    getLiveLocation();
+  }, [initLoad, isEditMode]);
 
   return (
     <>
@@ -523,81 +583,172 @@ export default function DoctorDetails({ navigation }) {
                       </>
                     ) : (
                       <>
-                        <View style={{ padding: 20 }}>
-                          <Text style={themes.Typography.title}>Name</Text>
-                          <TextInput
-                            style={{
-                              height: 40,
-                              width: "100%",
-                              borderBottomColor: themes.Colors.primary,
-                              borderBottomWidth: 1,
-                              marginBottom: 10,
-                              placeholderTextColor: themes.Colors.secondary,
-                              backgroundColor: "#ffff",
-                            }}
-                            placeholder="Name of the Place"
-                            onChangeText={(text) => setName(text)}
-                            value={name}
-                            // right={<AntDesign name='eyeo' size={24} color='red' />}
-                          />
-                          <Text style={themes.Typography.title}>Location</Text>
-                          {/* <TextInput
-                            style={{
-                              height: 40,
-                              width: "100%",
-                              borderBottomColor: themes.Colors.primary,
-                              borderBottomWidth: 1,
-                              marginBottom: 10,
-                              placeholderTextColor: themes.Colors.secondary,
-                              backgroundColor: "#ffff",
-                            }}
-                            placeholder="Name of the Place"
-                            value={addressInput}
-                            onChangeText={(text) => setAddressInput(text)}
-                            // right={<AntDesign name='eyeo' size={24} color='red' />}
-                          />
-                          <Button
-                            title="Get Coordinates"
-                            onPress={handleAddressInput}
-                          /> */}
-                          <Text style={themes.Typography.title2}>
-                            Choose from Map
-                          </Text>
-                          {!locationEnabled && (
-                            <View style={styles.locationDisabledContainer}>
-                              <Text style={styles.locationDisabledText}>
-                                Location services are disabled. Please enable
-                                them to use this feature.
+                        {addNewLoaction ? (
+                          <>
+                            <View style={{ padding: 20 }}>
+                              <Text style={themes.Typography.title}>Name</Text>
+                              <TextInput
+                                style={{
+                                  height: 40,
+                                  width: "100%",
+                                  borderBottomColor: themes.Colors.primary,
+                                  borderBottomWidth: 1,
+                                  marginBottom: 10,
+                                  placeholderTextColor: themes.Colors.secondary,
+                                  backgroundColor: "#ffff",
+                                }}
+                                placeholder="Name of the Place"
+                                onChangeText={(text) => setLocationName(text)}
+                                value={locationName}
+                                // right={<AntDesign name='eyeo' size={24} color='red' />}
+                              />
+                              <Text style={themes.Typography.title}>
+                                Location
                               </Text>
-                              <TouchableOpacity
-                                style={styles.enableLocationButton}
-                                onPress={() =>
-                                  Location.requestForegroundPermissionsAsync()
-                                }
+                              <Text style={themes.Typography.title2}>
+                                Choose from Map
+                              </Text>
+
+                              {selectedCoordinates ? (
+                                <MapView
+                                  style={styles.map}
+                                  region={region}
+                                  onPress={(e) =>
+                                    handleMapPress(
+                                      e.nativeEvent.coordinate.latitude,
+                                      e.nativeEvent.coordinate.longitude
+                                    )
+                                  }
+                                >
+                                  <Marker
+                                    coordinate={selectedCoordinates}
+                                    title="Selected Location"
+                                  />
+                                </MapView>
+                              ) : (
+                                <View style={styles.locationDisabledContainer}>
+                                  <Text style={styles.locationDisabledText}>
+                                    Location services are disabled. Please
+                                    enable them to use this feature.
+                                  </Text>
+                                  <TouchableOpacity
+                                    style={styles.enableLocationButton}
+                                    onPress={() => getLiveLocation()}
+                                  >
+                                    <Text
+                                      style={styles.enableLocationButtonText}
+                                    >
+                                      Enable Location Services
+                                    </Text>
+                                  </TouchableOpacity>
+                                </View>
+                              )}
+                              <View></View>
+                              <Text
+                                style={{
+                                  ...themes.Typography.title,
+                                  marginTop: 10,
+                                }}
                               >
-                                <Text style={styles.enableLocationButtonText}>
-                                  Enable Location Services
-                                </Text>
-                              </TouchableOpacity>
+                                Time Slot
+                              </Text>
+                              <View
+                                style={{
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <View>
+                                  <SelectDropdown
+                                    defaultButtonText="Select Day Type"
+                                    buttonTextStyle={{
+                                      ...themes.Typography.title2,
+                                      textAlign: "left",
+                                    }}
+                                    buttonStyle={{
+                                      backgroundColor: "white",
+                                      width: "100%",
+                                      borderBottomWidth: 2,
+                                      borderBottomColor: "#17CE92",
+                                      marginBottom: 5,
+                                    }}
+                                    data={DayTypes}
+                                    onSelect={(selectedItem, index) => {
+                                      console.log(selectedItem, index);
+                                    }}
+                                    buttonTextAfterSelection={(
+                                      selectedItem,
+                                      index
+                                    ) => {
+                                      // text represented after item is selected
+                                      // if data array is an array of objects then return selectedItem.property to render after item is selected
+                                      return selectedItem;
+                                    }}
+                                    rowTextForSelection={(item, index) => {
+                                      // text represented for each item in dropdown
+                                      // if data array is an array of objects then return item.property to represent item in dropdown
+                                      return item;
+                                    }}
+                                  />
+                                </View>
+                                <View>
+                                  <View>
+                                    <Button
+                                      title="Show Date Picker"
+                                      onPress={showDatePicker}
+                                    />
+                                    <DateTimePickerModal
+                                      isVisible={isDatePickerVisible}
+                                      mode="time"
+                                      onConfirm={handleConfirm}
+                                      onCancel={hideDatePicker}
+                                    />
+                                  </View>
+                                </View>
+                              </View>
+                              <View style={{ alignItems: "center" }}>
+                                <Button
+                                  style={themes.SecondaryBtnLarge2}
+                                  onPress={() => {
+                                    handleAddLocation();
+                                  }}
+                                >
+                                  <Text
+                                    style={{
+                                      color: "#FFF",
+                                      fontSize: 16,
+                                      fontFamily: "Urbanist-Semi-Bold",
+                                    }}
+                                  >
+                                    Add
+                                  </Text>
+                                </Button>
+                              </View>
                             </View>
-                          )}
-                          <MapView
-                            style={styles.map}
-                            region={region}
-                            onPress={(e) =>
-                              handleMapPress(
-                                e.nativeEvent.coordinate.latitude,
-                                e.nativeEvent.coordinate.longitude
-                              )
-                            }
-                          >
-                            <Marker
-                              coordinate={selectedCoordinates}
-                              title="Selected Location"
-                            />
-                          </MapView>
-                          <View></View>
-                        </View>
+                          </>
+                        ) : (
+                          <>
+                            <View style={{ alignItems: "center" }}>
+                              <Button
+                                style={themes.SecondaryBtnLarge2}
+                                onPress={() => {
+                                  setIsUpdateButtonDisable(true);
+                                  setAddnNewLocation(!addNewLoaction);
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    color: "#FFF",
+                                    fontSize: 16,
+                                    fontFamily: "Urbanist-Semi-Bold",
+                                  }}
+                                >
+                                  Add Your Work address
+                                </Text>
+                              </Button>
+                            </View>
+                          </>
+                        )}
                       </>
                     )
                   ) : (
@@ -760,7 +911,11 @@ export default function DoctorDetails({ navigation }) {
       {isEditMode && (
         <View>
           <View style={{ alignItems: "center", marginBottom: 5 }}>
-            <Button style={themes.PrimaryBtnSmall} onPress={handleupdate}>
+            <Button
+              style={themes.PrimaryBtnSmall}
+              onPress={handleupdate}
+              disabled={isUpdateButtonDisable}
+            >
               <Text
                 style={{
                   color: "#FFF",

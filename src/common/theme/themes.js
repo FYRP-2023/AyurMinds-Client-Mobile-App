@@ -132,7 +132,7 @@ const themes = {
     textAlign: "center",
   },
   SecondaryBtnLarge2: {
-    backgroundColor: "#82E9C5",
+    backgroundColor: "#17CE92",
     paddingVertical: 8,
     paddingHorizontal: 30,
     borderRadius: 25,
