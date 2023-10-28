@@ -35,22 +35,15 @@ const Chat = ({ route, navigation }) => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [messegeText, setMessegeText] = useState("");
-  const [isChatLive, setIsChatLLive] = useState(false);
+
 
   const toggleOptionsModal = () => {
     setShowOptionsModal(!showOptionsModal);
   };
 
   useEffect(() => {
-    if(!isChatLive){
-      wsSocket.emit("chat_service", {
-        emit_message: "join_chat",
-        user:user,
-        selectedChatId: chat._id,
-      });
-      setIsChatLLive(true)
-    }
-  }, [isChatLive]);
+      wsSocket.emit("join chat", chat._id);    
+  }, []);
 
   useEffect(() => {
 
@@ -169,10 +162,10 @@ const handleChangeText=(e)=>{
             }
           );
           setMessegeText("")
-          wsSocket.emit("chat_service", {
-            emit_message: "new_message",
-            chat: res.data,
-            user: user,
+          console.log(res.data);
+          wsSocket.emit("new message", {
+            chat: res.data.chat,
+            sender: {...user},
           });
           setCallback(true);
         } catch (error) {

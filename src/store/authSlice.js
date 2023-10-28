@@ -8,6 +8,7 @@ const authSlice = createSlice({
     user: "",
     socket: null,
     isSocketConnect: false,
+    isUserUpdate:false
   },
   reducers: {
     setInfo(state, action) {
@@ -27,6 +28,9 @@ const authSlice = createSlice({
     socketDisconnect(state, action) {
       state.socket = null;
       state.isSocketConnect = false;
+    },
+    userUpdate(state, action) {
+      state.isUserUpdate = action.payload;
     },
     logout(state, action) {
       state.isLoggedIn = false;
