@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, ToastAndroid } from "react-native";
+import { View, StyleSheet, ToastAndroid, ScrollView } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useSelector } from 'react-redux';
 import { TextInput, Button } from 'react-native-paper';
@@ -28,7 +28,7 @@ function PostContent() {
     }
 
     return (
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
             <TextInput
                 mode="outlined"
                 theme={{ colors: { onSurfaceVariant: themes.Colors.primary, onBackground: 'white' } }}
@@ -54,6 +54,7 @@ function PostContent() {
                     marginTop: 10
                 }}
                 multiline={true}
+                numberOfLines={20}
                 label="Body"
                 value={body}
                 onChangeText={text => setBody(text)}
@@ -65,7 +66,7 @@ function PostContent() {
                 style={styles.item} buttonColor={themes.Colors.primary}>
                 {contentType === CONTENT_TYPE_QUESTION ? "Ask" : "Post"}
             </Button>
-        </View>
+        </ScrollView>
     );
 }
 

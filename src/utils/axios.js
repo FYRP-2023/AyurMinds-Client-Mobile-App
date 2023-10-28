@@ -24,11 +24,18 @@ export const getAxiosInstance = () => {
   });
 };
 
-export const getAxiosSocialNetworkInstance = () => {
+export const getAxiosSocialNetworkService1Instance = () => {
   return axios.create({
-    baseURL: configs.SOCIAL_NETWROK_SERVICE,
+    baseURL: configs.SOCIAL_NETWROK_SERVICE_1,
   });
 };
+
+export const getAxiosSocialNetworkService2Instance = () => {
+  return axios.create({
+    baseURL: configs.SOCIAL_NETWROK_SERVICE_2,
+  });
+};
+
 
 // export const handleResponse = (response) => {
 //   console.log("🚀 ~ file: axios.js:31 ~ handleResponse ~ response:", response)

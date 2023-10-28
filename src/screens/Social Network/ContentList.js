@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { StyleSheet, FlatList, Alert, ToastAndroid, Keyboard, View } from "react-native";
 import { useSelector } from "react-redux";
 import { Overlay } from "@rneui/themed";
-import { Card, ActivityIndicator, MD2Colors, IconButton, Divider, Text, TextInput } from 'react-native-paper';
-import { getAxiosSocialNetworkInstance } from "../../utils/axios";
+import { Card, ActivityIndicator, MD2Colors, IconButton, Divider, Text, TextInput, Searchbar } from 'react-native-paper';
+import { getAxiosSocialNetworkService1Instance, getAxiosSocialNetworkService2Instance } from "../../utils/axios";
 import AyurMindsApi from "../../api/apiService";
 import themes from "../../common/theme/themes";
 import { CONTENT_TYPE_USER, FILTER_CRITERIA_ASCENDING } from "../../constants/SocialNetworkConstants";
@@ -19,6 +19,8 @@ function ContentList({ contentType }) {
     const [responseList, setResponseList] = useState([]);
     const [body, setBody] = useState('');
     const [contentId, setContentId] = useState('');
+    const [selectedContentUserId, setSelectedContentUserId] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         fetchContentList();
@@ -34,22 +36,35 @@ function ContentList({ contentType }) {
         try {
             setIsContentsRefreshing(true);
             if (contentType === CONTENT_TYPE_USER) {
-                const response = await getAxiosSocialNetworkInstance()
+                const response = await getAxiosSocialNetworkService1Instance()
                     .get(AyurMindsApi.social_network_service.content,
                         { params: { UserId: userId } });
-                console.dir(response.data);
                 setContentList(response.data);
             } else {
-                const response = await getAxiosSocialNetworkInstance()
+                const response = await getAxiosSocialNetworkService1Instance()
                     .get(AyurMindsApi.social_network_service.content,
                         { params: { ContentType: contentType, DateSortType: FILTER_CRITERIA_ASCENDING } });
-                console.dir(response.data);
                 setContentList(response.data);
             }
 
             setIsContentsRefreshing(false);
         } catch (error) {
-            console.error(error);
+            console.log(error);
+        }
+    }
+
+    const fetchSearchedContentList = async () => {
+        try {
+            setIsContentsRefreshing(true);
+
+            const response = await getAxiosSocialNetworkService2Instance()
+                .get(AyurMindsApi.social_network_service.search,
+                    { params: { query: searchQuery } });
+            setContentList(response.data);
+
+            setIsContentsRefreshing(false);
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -57,13 +72,13 @@ function ContentList({ contentType }) {
         if (contentId) {
             try {
                 setIsResponsesRefreshing(true);
-                const response = await getAxiosSocialNetworkInstance()
+                const response = await getAxiosSocialNetworkService1Instance()
                     .get(AyurMindsApi.social_network_service.response,
                         { params: { contentId: contentId } });
                 setResponseList(response.data);
                 setIsResponsesRefreshing(false);
             } catch (error) {
-                console.error(error);
+                console.log(error);
             }
         }
     }
@@ -96,7 +111,9 @@ function ContentList({ contentType }) {
                 renderItem={renderResponse}
                 keyExtractor={response => response.id}
                 ListEmptyComponent={
-                    <Text variant="bodyLarge" style={styles.container}>No one here. Can you please start the discussion?</Text>
+                    userId !== selectedContentUserId ?
+                        <Text variant="bodyLarge" style={styles.container}>No one here. Can you please start the discussion?</Text> :
+                        <Text variant="bodyLarge" style={styles.container}>Let's wait until someone share their thoughts. You can't comment on your own post.</Text>
                 }
             />
         )
@@ -112,9 +129,7 @@ function ContentList({ contentType }) {
                     <Text variant="bodyMedium" style={{ marginTop: 10 }}>{content.body}</Text>
                 </Card.Content>
                 <Card.Actions>
-                    <IconButton mode="contained-tonal" iconColor={themes.Colors.primary} containerColor="#ffffff" icon="comment" onPress={() => showResponsesOverlay(content.id)} />
-                    {contentType === CONTENT_TYPE_USER && !content.isDeleted ?
-                        <IconButton mode="contained-tonal" iconColor="#0000ff" containerColor="#ffffff" icon="note-edit" /> : <></>}
+                    <IconButton mode="contained-tonal" iconColor={themes.Colors.primary} containerColor="#ffffff" icon="comment" onPress={() => showResponsesOverlay(content.id, content.userId)} />
                     {contentType === CONTENT_TYPE_USER && !content.isDeleted ?
                         <IconButton mode="contained-tonal" iconColor="#ff0000" containerColor="#ffffff" icon="delete" onPress={() => showDeleteContentWarning(content.id)} /> : <></>}
                 </Card.Actions>
@@ -138,8 +153,9 @@ function ContentList({ contentType }) {
         )
     }
 
-    const showResponsesOverlay = (contentId) => {
+    const showResponsesOverlay = (contentId, contentUserId) => {
         setContentId(contentId);
+        setSelectedContentUserId(contentUserId);
         setResponsesVisible(true);
     };
 
@@ -162,12 +178,12 @@ function ContentList({ contentType }) {
 
     const deleteContent = async (contentId) => {
         if (contentId) {
-            await getAxiosSocialNetworkInstance()
+            await getAxiosSocialNetworkService1Instance()
                 .delete(AyurMindsApi.social_network_service.content.concat("/").concat(contentId));
             fetchContentList();
             ToastAndroid.showWithGravity('Your content has been deleted from public.', ToastAndroid.LONG, ToastAndroid.BOTTOM,)
         } else {
-            await getAxiosSocialNetworkInstance()
+            await getAxiosSocialNetworkService1Instance()
                 .delete(AyurMindsApi.social_network_service.content.concat("/").concat(contentId));
             fetchResponseList();
             ToastAndroid.showWithGravity('Your comment has been deleted from public.', ToastAndroid.LONG, ToastAndroid.BOTTOM,)
@@ -176,7 +192,7 @@ function ContentList({ contentType }) {
 
     const saveRespnse = async () => {
         if (body) {
-            await getAxiosSocialNetworkInstance()
+            await getAxiosSocialNetworkService1Instance()
                 .post(AyurMindsApi.social_network_service.response, { responseId, userId, contentId, body });
             Keyboard.dismiss();
             setBody('');
@@ -187,6 +203,17 @@ function ContentList({ contentType }) {
 
     return (
         <>
+            <Searchbar
+                placeholder="Search"
+                onChangeText={(query) => setSearchQuery(query)}
+                value={searchQuery}
+                iconColor={MD2Colors.greenA700}
+                cursorColor={MD2Colors.black}
+                style={styles.item}
+                onSubmitEditing={() => fetchSearchedContentList()}
+                onIconPress={() => fetchSearchedContentList()}
+                onClearIconPress={() => fetchContentList()}
+            />
             {isContentsRefreshing ?? <ActivityIndicator marginTop={50} animating={true} color={MD2Colors.greenA700} />}
             {renderContentList()}
             <Overlay
@@ -194,13 +221,14 @@ function ContentList({ contentType }) {
                 onBackdropPress={() => {
                     setResponsesVisible(false);
                     setContentId('');
+                    setSelectedContentUserId('');
                     setResponseList([]);
                 }}
                 overlayStyle={{ padding: 10, height: '75%', width: '80%', backgroundColor: '#e1e1e1', borderRadius: 10 }}
             >
                 {isResponsesRefreshing ?? <ActivityIndicator marginTop={50} animating={true} color={MD2Colors.greenA700} />}
                 {renderResponseList()}
-                {contentType !== CONTENT_TYPE_USER ?
+                {contentType !== CONTENT_TYPE_USER && userId !== selectedContentUserId ?
                     <View style={styles.inputContainer}>
                         <Divider style={{ marginBottom: 10 }} />
                         <View>
