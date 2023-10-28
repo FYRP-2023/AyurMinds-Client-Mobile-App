@@ -46,26 +46,29 @@ function ContentList({ contentType }) {
                         { params: { ContentType: contentType, DateSortType: FILTER_CRITERIA_ASCENDING } });
                 setContentList(response.data);
             }
-
-            setIsContentsRefreshing(false);
         } catch (error) {
             console.log(error);
         }
+        setIsContentsRefreshing(false);
     }
 
     const fetchSearchedContentList = async () => {
         try {
-            setIsContentsRefreshing(true);
+            if (searchQuery) {
+                setIsContentsRefreshing(true);
 
-            const response = await getAxiosSocialNetworkService2Instance()
-                .get(AyurMindsApi.social_network_service.search,
-                    { params: { query: searchQuery } });
-            setContentList(response.data);
-
-            setIsContentsRefreshing(false);
+                const response = await getAxiosSocialNetworkService2Instance()
+                    .get(AyurMindsApi.social_network_service.search,
+                        { params: { query: searchQuery } });
+                setContentList(response.data);
+            } else {
+                ToastAndroid.showWithGravity('Please input search text!', ToastAndroid.SHORT, ToastAndroid.BOTTOM,)
+            }
         } catch (error) {
+            ToastAndroid.showWithGravity('Something went wrong from our end. Please refresh the application again.', ToastAndroid.LONG, ToastAndroid.BOTTOM,)
             console.log(error);
         }
+        setIsContentsRefreshing(false);
     }
 
     const fetchResponseList = async () => {
@@ -203,17 +206,19 @@ function ContentList({ contentType }) {
 
     return (
         <>
-            <Searchbar
-                placeholder="Search"
-                onChangeText={(query) => setSearchQuery(query)}
-                value={searchQuery}
-                iconColor={MD2Colors.greenA700}
-                cursorColor={MD2Colors.black}
-                style={styles.item}
-                onSubmitEditing={() => fetchSearchedContentList()}
-                onIconPress={() => fetchSearchedContentList()}
-                onClearIconPress={() => fetchContentList()}
-            />
+            {contentType !== CONTENT_TYPE_USER &&
+                <Searchbar
+                    placeholder="Search"
+                    onChangeText={(query) => setSearchQuery(query)}
+                    value={searchQuery}
+                    iconColor={MD2Colors.greenA700}
+                    cursorColor={MD2Colors.black}
+                    style={styles.item}
+                    onSubmitEditing={() => fetchSearchedContentList()}
+                    onIconPress={() => fetchSearchedContentList()}
+                    onClearIconPress={() => fetchContentList()}
+                />
+            }
             {isContentsRefreshing ?? <ActivityIndicator marginTop={50} animating={true} color={MD2Colors.greenA700} />}
             {renderContentList()}
             <Overlay

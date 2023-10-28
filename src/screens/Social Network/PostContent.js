@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { View, StyleSheet, ToastAndroid, ScrollView } from "react-native";
+import { StyleSheet, ToastAndroid, ScrollView } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useSelector } from 'react-redux';
 import { TextInput, Button } from 'react-native-paper';
 import themes from "../../common/theme/themes";
-import { getAxiosSocialNetworkInstance } from '../../utils/axios';
+import { getAxiosSocialNetworkService1Instance } from '../../utils/axios';
 import AyurMindsApi from '../../api/apiService';
 import { CONTENT_TYPE_QUESTION } from '../../constants/SocialNetworkConstants';
 
@@ -21,7 +21,7 @@ function PostContent() {
     const [body, setBody] = React.useState("");
 
     const onSubmit = async () => {
-        await getAxiosSocialNetworkInstance()
+        await getAxiosSocialNetworkService1Instance()
             .post(AyurMindsApi.social_network_service.content, { id, userId, header, body, contentType });
         ToastAndroid.showWithGravity('Your content has been made publicly available.', ToastAndroid.LONG, ToastAndroid.BOTTOM,)
         navigator.goBack();
