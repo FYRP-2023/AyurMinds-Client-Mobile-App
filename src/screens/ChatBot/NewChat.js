@@ -15,7 +15,7 @@ import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import SingleChat from "./SingleChat";
 import axios from "axios";
 
-const apiUrl = "http://192.168.43.229:5005/webhooks/rest/webhook";
+const apiUrl = "http://192.168.1.6:5005/webhooks/rest/webhook";
 let sender = "userID001";
 export default function NewChat() {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -75,7 +75,7 @@ export default function NewChat() {
   //
   const setChatHistory = async (reply) => {
     await axios
-      .post("http://192.168.43.229:5004/messages", {
+      .post("http://192.168.1.6:5000/api/chatbot_service", {
         userId: sender,
         chats: [
           {
@@ -116,7 +116,7 @@ export default function NewChat() {
   useEffect(() => {
     // Make an HTTP GET request to retrieve the chats
     axios
-      .get(`http://192.168.43.229:5004/messages/${sender}`)
+      .get("http://localhost:5000/api/chatbot_service/?userId=userID001")
       .then((response) => {
         setChats(response.data); // Assuming your API returns an array of chats
       })
