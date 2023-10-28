@@ -14,7 +14,13 @@ const MessengerNavigator = () => {
           headerShown: false,
         }}
       />
-      <MessengerStack.Screen name="Chat" component={Chat} />
+      <MessengerStack.Screen
+        name="Chat"
+        component={Chat}
+        options={{
+          headerShown: false,
+        }}
+      />
     </MessengerStack.Navigator>
   );
 }

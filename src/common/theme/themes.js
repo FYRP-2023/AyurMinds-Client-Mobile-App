@@ -25,11 +25,23 @@ const themes = {
       padding: 6,
       fontFamily: "Urbanist-Bold",
     },
+    subHeading2: {
+      fontSize: 18,
+      color: "#B60000",
+      padding: 6,
+      fontFamily: "Urbanist-Bold",
+    },
     title: {
       fontSize: 16,
       color: "#616161",
       padding: 6,
       fontFamily: "Urbanist-Black",
+    },
+    title2: {
+      fontSize: 14,
+      color: "#616161",
+      padding: 6,
+      fontFamily: "Urbanist-Light",
     },
     body: {
       fontSize: 15,
@@ -112,6 +124,15 @@ const themes = {
   },
   SecondaryBtnLarge: {
     backgroundColor: "#D9E7E2",
+    paddingVertical: 8,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    marginTop: 20,
+    width: "100%",
+    textAlign: "center",
+  },
+  SecondaryBtnLarge2: {
+    backgroundColor: "#17CE92",
     paddingVertical: 8,
     paddingHorizontal: 30,
     borderRadius: 25,

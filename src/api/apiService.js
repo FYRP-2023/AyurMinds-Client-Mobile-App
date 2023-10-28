@@ -5,6 +5,7 @@ import {
   autherizationServiceBaseURL,
   chatServiceBaseURL,
   messageServiceBaseURL,
+  doctorServiceBaseURL,
 } from "../utils/axios";
 
 const AyurMindsApi = {
@@ -39,12 +40,11 @@ const AyurMindsApi = {
     content: "content",
     response: "response",
   },
-  // chatBotService: {
-  //   createChat: `${ChatBotServiceBaseURL()}/`,
-  //   getChats: `${ChatBotServiceBaseURL()}/`,
-  //   updateChat: `${ChatBotServiceBaseURL()}/`,
-  //   deleteChat: `${ChatBotServiceBaseURL()}/`,
-  // },
+
+  doctor_service: {
+    getDiseases: `${doctorServiceBaseURL()}/getDiseases`,
+    updateDoctorDetails: `${doctorServiceBaseURL()}/updateDoctorDetails`,
+  },
 };
 
 export default AyurMindsApi;

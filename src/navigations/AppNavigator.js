@@ -2,7 +2,7 @@ import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import Profile from "../screens/Profile";
 import ChatBot from "../screens/ChatBot/ChatBot";
-import Doctor from "../screens/Doctor";
+import Doctor from "../screens/Doctor/Doctor";
 import SocialNetworkBottomTabNavigator from "../screens/Social Network/SocialNetworkBottomTabNavigator";
 import Herb from "../screens/Herb";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -10,6 +10,8 @@ import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import themes from "../common/theme/themes";
 import LogoHeader from "../components/LogoHeader";
 import ChatBotNavigator from "./ChatBotNavigator";
+import DoctorNavigator from "./DoctorNavigator";
+import ProfileNavigator from "./ProfileNavigater";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -49,7 +51,7 @@ const AppNavigator = () => {
               />
             ),
           }}
-          component={Doctor}
+          component={DoctorNavigator}
           name="Doctor"
         />
 
@@ -97,7 +99,7 @@ const AppNavigator = () => {
               />
             ),
           }}
-          component={Profile}
+          component={ProfileNavigator}
           name="Profile"
         />
       </Tab.Navigator>

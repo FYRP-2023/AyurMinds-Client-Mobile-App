@@ -18,7 +18,7 @@ export const fetchMessages = async(selectedChat, token, navigate) => {
       );
       return res.data
     } catch (err) {
-      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
+      console.log("fetchChat ~ return ~ err:", err);
     }
 };
 
@@ -34,7 +34,7 @@ export const fetchChats = (user, token) => {
       );
       dispatch(chatActions.setMessages(res.data));
     } catch (err) {
-      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
+      console.log("fetchChats ~ return ~ err:", err);
     }
   };
 };
@@ -53,7 +53,7 @@ export const accessChat = (user, toUser, token) => {
       );
       dispatch(chatActions.setMessages());
     } catch (err) {
-      console.log("🚀 ~ file: authActions.js:14 ~ return ~ err:", err);
+      console.log("access chat ~ return ~ err:", err);
     }
   };
 };
@@ -68,7 +68,7 @@ export const allMessages = async (chat) => {
     );
     return res.data;
   } catch (err) {
-    console.log("🚀 ~ file: chatActions.js:71 ~ allMessages ~ err:", err)
+    console.log("~ allMessages ~ err:", err)
     throw new Error(err)
   }
 };
