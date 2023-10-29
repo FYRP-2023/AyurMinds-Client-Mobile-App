@@ -14,6 +14,8 @@ import ChatbotIcon from "../../../assets/chatbotIcon.svg";
 import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import SingleChat from "./SingleChat";
 import axios from "axios";
+import { getAxiosInstance } from "../../utils/axios";
+import { configs } from "../../../configs";
 
 // const RASA_URL = "http://192.168.40.245:5005/webhooks/rest/webhook";
 let sender = "userID001";
@@ -60,11 +62,8 @@ export default function NewChat() {
       message: userQuestion,
     };
     //
-    await axios
-      .post(
-        "http://192.168.40.245:5000/api/chatbot_service/predict",
-        requestBody
-      )
+    await getAxiosInstance()
+      .post(configs.CHATBOT_SERVICE + "/predict", requestBody)
       .then((response) => {
         // Handle the response data here
         setChatHistory(response.data);
@@ -82,8 +81,8 @@ export default function NewChat() {
   const setChatHistory = async (reply) => {
     const firstFourWords = userQuestion.split(" ").slice(0, 10).join(" ");
 
-    await axios
-      .post("http://192.168.40.245:5000/api/chatbot_service/", {
+    await getAxiosInstance()
+      .post(configs.CHATBOT_SERVICE + "/", {
         userId: sender,
         chats: [
           {
@@ -107,8 +106,8 @@ export default function NewChat() {
   //
   const handleChatDelete = async (id) => {
     try {
-      await axios.delete(
-        `http://192.168.40.245:5000/api/chatbot_service/?userId=${sender}&chatId=${id}`
+      await getAxiosInstance().delete(
+        configs.CHATBOT_SERVICE + `/?userId=${sender}&chatId=${id}`
       );
       setIsNewChat(true);
       setReFetch(true);
@@ -122,8 +121,8 @@ export default function NewChat() {
 
   useEffect(() => {
     // Make an HTTP GET request to retrieve the chats
-    axios
-      .get("http://192.168.40.245:5000/api/chatbot_service/?userId=userID001")
+    getAxiosInstance()
+      .get(configs.CHATBOT_SERVICE + "/?userId=userID001")
       .then((response) => {
         setChats(response.data); // Assuming your API returns an array of chats
       })
