@@ -28,6 +28,9 @@ export default {
     },
     extra: {
       googleMapsApiKey: "AIzaSyDVrRktQwOIwxvcK5JxGka8smIqJBGmY4U",
+      eas: {
+        projectId: "f0cfb282-deec-4d44-ac1a-7705fe1a2c4f",
+      },
     },
   },
 };

@@ -43,28 +43,28 @@ const LogoHeader = () => {
   const notificationListener = useRef();
   const responseListener = useRef();
 
-    // useEffect(() => {
-    //   registerForPushNotificationsAsync().then((token) =>
-    //     setExpoPushToken(token)
-    //   );
+    useEffect(() => {
+      registerForPushNotificationsAsync().then((token) =>
+        setExpoPushToken(token)
+      );
 
-    //   notificationListener.current =
-    //     addNotificationReceivedListener((notification) => {
-    //       setNotification(notification);
-    //     });
+      notificationListener.current =
+        addNotificationReceivedListener((notification) => {
+          setNotification(notification);
+        });
 
-    //   responseListener.current =
-    //     addNotificationResponseReceivedListener((response) => {
-    //       console.log(response);
-    //     });
+      responseListener.current =
+        addNotificationResponseReceivedListener((response) => {
+          console.log(response);
+        });
 
-    //   return () => {
-    //    removeNotificationSubscription(
-    //       notificationListener.current
-    //     );
-    //    removeNotificationSubscription(responseListener.current);
-    //   };
-    // }, []);
+      return () => {
+       removeNotificationSubscription(
+          notificationListener.current
+        );
+       removeNotificationSubscription(responseListener.current);
+      };
+    }, []);
 
 
 
@@ -129,13 +129,15 @@ const LogoHeader = () => {
   useEffect(() => {
     if (wsSocket !== null) {
 
-        wsSocket.on("message recieved", (data) => {
+        wsSocket.on("message recieved", async(data) => {
+          console.log("🚀 ~ file: LogoHeader.js:133 ~ wsSocket.on ~ data:", data)
           dispatch(chatActions.setNewMessage(data));
-          // sendNotification({
-          //   title: data.sender.firstName + " " + data.sender.lastName,
-          //   message: data.content,
-          //   notificationId: data.chat._id,
-          // });
+          await sendNotification({
+            token : expoPushToken,
+            title: data.sender.firstName + " " + data.sender.lastName,
+            message: data.chat.latestMessege,
+            notificationId: data.chat._id,
+          });
         });
 
         wsSocket.on("error", (data) => {

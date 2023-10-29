@@ -42,6 +42,7 @@ const AyurMindsApi = {
 
   doctor_service: {
     getDiseases: `${doctorServiceBaseURL()}/getDiseases`,
+    getDoctors: `${doctorServiceBaseURL()}/getAllDoctors`,
     updateDoctorDetails: `${doctorServiceBaseURL()}/updateDoctorDetails`,
   },
 };

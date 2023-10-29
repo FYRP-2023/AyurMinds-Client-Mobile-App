@@ -1,5 +1,5 @@
 export const configs = {
-  MESSAGE_SOCKET: "http://192.168.1.3:5008", //add your IP address here
+  MESSAGE_SOCKET: "https://ayurminds-chat-service.azurewebsites.net", //add your IP address here
   API_GATWAY_URL: "http://192.168.1.3:5000", //add your IP address here
   AUTHENTICATION_SERVICE: "/api/authentication_service",
   AUTHERIZATION_SERVICE: "/api/authorization_service",

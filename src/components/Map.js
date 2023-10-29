@@ -104,7 +104,7 @@ const Map = ({ data }) => {
           width: "100%",
         }}
       >
-        <View
+        {/* <View
           style={{
             padding: 10,
 
@@ -112,8 +112,8 @@ const Map = ({ data }) => {
           }}
         >
           <Text style={{ ...themes.Typography.body }}>{placeaddress}</Text>
-        </View>
-        <View
+        </View> */}
+        {/* <View
           style={{
             padding: 10,
 
@@ -121,7 +121,7 @@ const Map = ({ data }) => {
           }}
         >
           <Text style={{ ...themes.Typography.body }}>Distence</Text>
-        </View>
+        </View> */}
         <View
           style={{
             padding: 10,
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   map: {
-    width: 100,
+    width: 300,
     height: 100,
   },
   locationDisabledContainer: {

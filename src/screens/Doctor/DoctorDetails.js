@@ -42,15 +42,19 @@ import MapView, { Marker } from "react-native-maps";
 import SelectDropdown from "react-native-select-dropdown";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
-
 let ITEMS = [];
-
 
 const DayTypes = ["EveryDay", "Weekdays", "Weekends"];
 
+
+
+
 export default function DoctorDetails({ navigation }) {
-//   DateTimePickerAndroid.open({params: AndroidNativeProps})
-// DateTimePickerAndroid.dismiss({mode: AndroidNativeProps['mode']})
+  //   DateTimePickerAndroid.open({params: AndroidNativeProps})
+  // DateTimePickerAndroid.dismiss({mode: AndroidNativeProps['mode']})
+  // Example usage:
+  const minNumber = 1;
+  const maxNumber = 100000000;
   const [selectedItems, setselectedItems] = useState([]);
   const multiSelectRef = useRef(null);
   const [allDiseases, setallDiseases] = useState([]);
@@ -70,10 +74,25 @@ export default function DoctorDetails({ navigation }) {
   const doctor = useSelector((state) => state.auth.user);
   const [bio, setBio] = useState(doctor.doctor.bio);
   const [contactNo, setcontactNo] = useState(doctor.doctor.contactNo);
-  const [myCordinates, setMyCordinats] = useState(
-    doctor.doctor.availablePlaces
-  );
-  const [specializedIn, setcspecializedIn] = useState(
+  const [availablePlaces, setAvailablePlaces] = useState([
+    ...doctor.doctor.availablePlaces,
+  ]);
+ 
+  const [availablePlace, setAvailablePlace] = useState({
+    id: 0,
+    name: "",
+    cordinate: {},
+    timeSlots: [
+      {
+        id: 0,
+        daysType: "",
+        from: "",
+        to: "",
+        isAvailable: false,
+      },
+    ],
+  });
+    const [specializedIn, setcspecializedIn] = useState(
     doctor.doctor.specializedIn
   );
 
@@ -90,23 +109,68 @@ export default function DoctorDetails({ navigation }) {
   const [selectedCoordinates, setSelectedCoordinates] = useState(null);
   const [isUpdateButtonDisable, setIsUpdateButtonDisable] = useState(false);
   const [showMap, setShowMap] = useState(false);
-
-
+  let usedNumbers =[];
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isDatePickerVisible1, setDatePickerVisibility1] = useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
+  };
+  const showDatePicker1 = () => {
+    setDatePickerVisibility1(true);
   };
 
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
-
-  const handleConfirm = (date) => {
-    hideDatePicker();
+  const hideDatePicker1 = () => {
+    setDatePickerVisibility1(false);
   };
 
+  // Function to generate a unique random number
+  const generateUniqueRandomNumber=(min, max)=> {
+    let randomNumber;
+    do {
+      randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    } while (usedNumbers.includes(randomNumber));
+
+    usedNumbers.push(randomNumber); // Add the generated number to the used numbers array
+
+    return randomNumber;
+  }
+
+  function getTimeFromTimestamp(timestamp) {
+    // Create a Date object from the timestamp string
+    const date = new Date(timestamp);
+
+    // Get the individual time components
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
+
+    // Return the time as a string
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  const handleConfirm = (date, data, type) => {
+      let timeSlot = availablePlace.timeSlots.map((s) => {
+        if(s.id === data.id ){
+          return {
+            id: s.id,
+            daysType: s.daysType,
+            from: type === "from" ? getTimeFromTimestamp(date): s.from,
+            to:type === "to" ? getTimeFromTimestamp(date): s.to,
+            isAvailable: s.isAvailable,
+          };
+        }
+        return s
+      });
+      setAvailablePlace({ ...availablePlace, timeSlots: timeSlot });
+
+    hideDatePicker();
+    hideDatePicker1();
+  };
 
   const handleMapPress = (latitude, longitude) => {
     setSelectedCoordinates({ latitude, longitude });
@@ -179,6 +243,16 @@ export default function DoctorDetails({ navigation }) {
       }
       setselectedItems(sItems);
       setSelectedItemDataCall(true);
+      if(availablePlace && availablePlace.timeSlots.length > 0){
+          let avp = [];
+          avp = availablePlace.timeSlots.map(ss=>{
+            return {
+              ...ss,
+              id:generateUniqueRandomNumber(minNumber, maxNumber)
+            }
+          })
+          setAvailablePlace({...availablePlace, timeSlots:avp})
+      }
     }
   }, [isEditMode]);
 
@@ -211,10 +285,29 @@ export default function DoctorDetails({ navigation }) {
     setselectedItems(data);
     setSelectedItemDataCall(true);
   };
+  
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
   const handleupdate = async () => {
     try {
+      let newAvailblePlaces = [];
+      newAvailblePlaces = availablePlaces.map((ap) => {
+        let timeSlotes = [];
+        timeSlotes = ap.timeSlots.map((ts) => {
+          return {
+            daysType: ts.daysType,
+            from:ts.from,
+            to: ts.to,
+            isAvailable: true,
+          };
+        });
+
+        return {
+          name: ap.name,
+          cordinate: ap.cordinate,
+          timeSlots: timeSlotes,
+        };
+      });
       const res = await getAxiosInstance().patch(
         AyurMindsApi.doctor_service.updateDoctorDetails,
         {
@@ -222,7 +315,7 @@ export default function DoctorDetails({ navigation }) {
           contactNo,
           userId: doctor._id,
           specializedIn: selectedItems,
-          availablePlaces: availablePlacesData,
+          availablePlaces: newAvailblePlaces,
         },
         {
           withCredentials: true,
@@ -240,31 +333,39 @@ export default function DoctorDetails({ navigation }) {
     }
   };
 
-  const handleAddLocation =()=>{
+  const handleAddLocation = () => {
     let docPlaces = availablePlacesData;
-    let timeSlotTemp = []
-    timeSlotTemp = availablePlacesData?.timeSlots;
-
-
+    
     const data = {
-      name: locationName,
+      id: generateUniqueRandomNumber(minNumber,maxNumber),
+      name: availablePlace.name,
       cordinate: selectedCoordinates,
+      timeSlots: availablePlace.timeSlots
+    };
+
+   
+    docPlaces.push(data);
+    setAvailablePlaces(docPlaces);
+    setLocationName("");
+    setAddnNewLocation(false);
+    setSelectedCoordinates(null);
+    setIsUpdateButtonDisable(false);
+    setShowOptionsModal(false);
+    setAvailablePlace({
+      id: 0,
+      name: "",
+      cordinate: {},
       timeSlots: [
         {
-          daysType: String,
-          from: String,
-          to: String,
-          isAvailable: Boolean,
+          id: 0,
+          daysType: "",
+          from: "",
+          to: "",
+          isAvailable: false,
         },
       ],
-    };
-    docPlaces.push(data);
-    setavailablePlacesData(docPlaces);
-    setLocationName("")
-    setAddnNewLocation(false)
-    setSelectedCoordinates(null)
-    setIsUpdateButtonDisable(false)
-  }
+    });
+  };
 
   const getLiveLocation = async () => {
     try {
@@ -304,13 +405,33 @@ export default function DoctorDetails({ navigation }) {
     getLiveLocation();
   }, [initLoad, isEditMode]);
 
+  const handleDayTypeChange = (item, data)=>{
+     let timeSlot = availablePlace.timeSlots.map((s) => {
+       if (s.id === data.id) {
+         return {
+           id: s.id,
+           daysType: item,
+           from: s.from,
+           to: s.to,
+           isAvailable: s.isAvailable,
+         };
+       }
+       return s;
+     });
+     setAvailablePlace({ ...availablePlace, timeSlots: timeSlot });
+
+  }
+
+
+
   return (
     <>
-      <View key={doctor._id} style={styles.header}>
+      <View key={doctor._id} style={{ ...styles.header }}>
         <TouchableOpacity
           onPress={() => {
             navigation.goBack();
           }}
+          style={{ marginLeft: 10, marginRight: 10 }}
         >
           <AntDesign name="back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
@@ -323,7 +444,11 @@ export default function DoctorDetails({ navigation }) {
         <TouchableOpacity
           onPress={() => {
             setIsEditMode(!isEditMode);
+            setAddnNewLocation(false);
+            setShowOptionsModal(false);
+            setIsUpdateButtonDisable(false);
           }}
+          style={{ marginLeft: 10, marginRight: 10 }}
         >
           {isEditMode ? (
             <MaterialIcons name="edit-off" size={24} color="#FF0000" />
@@ -559,8 +684,8 @@ export default function DoctorDetails({ navigation }) {
             {isDoctorPlacesOpen && (
               <View>
                 {isEditMode ? (
-                  doctor.doctor.availablePlaces.length === 0 ? (
-                    showOptionsModal ? (
+                  availablePlaces.length === 0 ? (
+                    !showOptionsModal ? (
                       <>
                         <View style={{ alignItems: "center" }}>
                           <Button
@@ -576,74 +701,83 @@ export default function DoctorDetails({ navigation }) {
                                 fontFamily: "Urbanist-Semi-Bold",
                               }}
                             >
-                              Add Your Work address
+                              Add New Work Place
                             </Text>
                           </Button>
                         </View>
                       </>
                     ) : (
                       <>
-                        {addNewLoaction ? (
-                          <>
-                            <View style={{ padding: 20 }}>
-                              <Text style={themes.Typography.title}>Name</Text>
-                              <TextInput
-                                style={{
-                                  height: 40,
-                                  width: "100%",
-                                  borderBottomColor: themes.Colors.primary,
-                                  borderBottomWidth: 1,
-                                  marginBottom: 10,
-                                  placeholderTextColor: themes.Colors.secondary,
-                                  backgroundColor: "#ffff",
-                                }}
-                                placeholder="Name of the Place"
-                                onChangeText={(text) => setLocationName(text)}
-                                value={locationName}
-                                // right={<AntDesign name='eyeo' size={24} color='red' />}
-                              />
-                              <Text style={themes.Typography.title}>
-                                Location
-                              </Text>
-                              <Text style={themes.Typography.title2}>
-                                Choose from Map
-                              </Text>
+                        <View style={{ padding: 20, gap: 10 }}>
+                          <Text style={themes.Typography.title}>Name</Text>
+                          <TextInput
+                            style={{
+                              height: 40,
+                              width: "100%",
+                              borderBottomColor: themes.Colors.primary,
+                              borderBottomWidth: 1,
+                              marginBottom: 10,
+                              placeholderTextColor: themes.Colors.secondary,
+                              backgroundColor: "#ffff",
+                            }}
+                            placeholder="Name of the Place"
+                            onChangeText={(text) =>
+                              setAvailablePlace({
+                                ...availablePlace,
+                                name: text,
+                              })
+                            }
+                            value={availablePlace.name}
+                            // right={<AntDesign name='eyeo' size={24} color='red' />}
+                          />
+                          <Text style={themes.Typography.title}>Location</Text>
+                          <Text style={themes.Typography.title2}>
+                            Choose from Map
+                          </Text>
 
-                              {selectedCoordinates ? (
-                                <MapView
-                                  style={styles.map}
-                                  region={region}
-                                  onPress={(e) =>
-                                    handleMapPress(
-                                      e.nativeEvent.coordinate.latitude,
-                                      e.nativeEvent.coordinate.longitude
-                                    )
-                                  }
-                                >
-                                  <Marker
-                                    coordinate={selectedCoordinates}
-                                    title="Selected Location"
-                                  />
-                                </MapView>
-                              ) : (
-                                <View style={styles.locationDisabledContainer}>
-                                  <Text style={styles.locationDisabledText}>
-                                    Location services are disabled. Please
-                                    enable them to use this feature.
-                                  </Text>
-                                  <TouchableOpacity
-                                    style={styles.enableLocationButton}
-                                    onPress={() => getLiveLocation()}
-                                  >
-                                    <Text
-                                      style={styles.enableLocationButtonText}
-                                    >
-                                      Enable Location Services
-                                    </Text>
-                                  </TouchableOpacity>
-                                </View>
-                              )}
-                              <View></View>
+                          {selectedCoordinates ? (
+                            <MapView
+                              style={styles.map}
+                              region={region}
+                              onPress={(e) =>
+                                handleMapPress(
+                                  e.nativeEvent.coordinate.latitude,
+                                  e.nativeEvent.coordinate.longitude
+                                )
+                              }
+                            >
+                              <Marker
+                                coordinate={selectedCoordinates}
+                                title="Selected Location"
+                              />
+                            </MapView>
+                          ) : (
+                            <View style={styles.locationDisabledContainer}>
+                              <Text style={styles.locationDisabledText}>
+                                Location services are disabled. Please enable
+                                them to use this feature.
+                              </Text>
+                              <TouchableOpacity
+                                style={styles.enableLocationButton}
+                                onPress={() => getLiveLocation()}
+                              >
+                                <Text style={styles.enableLocationButtonText}>
+                                  Enable Location Services
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          )}
+                          <View></View>
+                          {availablePlace.timeSlots.map((p) => (
+                            <View
+                              key={p.id}
+                              style={{
+                                borderWidth: 2,
+                                borderColor: "#4F645D",
+                                padding: 10,
+                                borderRadius: 50,
+                              }}
+                            >
                               <Text
                                 style={{
                                   ...themes.Typography.title,
@@ -674,7 +808,7 @@ export default function DoctorDetails({ navigation }) {
                                     }}
                                     data={DayTypes}
                                     onSelect={(selectedItem, index) => {
-                                      console.log(selectedItem, index);
+                                      handleDayTypeChange(selectedItem, p);
                                     }}
                                     buttonTextAfterSelection={(
                                       selectedItem,
@@ -682,7 +816,7 @@ export default function DoctorDetails({ navigation }) {
                                     ) => {
                                       // text represented after item is selected
                                       // if data array is an array of objects then return selectedItem.property to render after item is selected
-                                      return selectedItem;
+                                      return p.daysType;
                                     }}
                                     rowTextForSelection={(item, index) => {
                                       // text represented for each item in dropdown
@@ -691,118 +825,520 @@ export default function DoctorDetails({ navigation }) {
                                     }}
                                   />
                                 </View>
-                                <View>
+                                <View
+                                  style={{
+                                    display: "flex",
+                                    gap: 5,
+                                  }}
+                                >
                                   <View>
                                     <Button
+                                      key={"btnfrom" + p.id}
+                                      id={"btnfrom" + p.id}
                                       title="Show Date Picker"
-                                      onPress={showDatePicker}
-                                    />
+                                      onPress={() => showDatePicker()}
+                                      style={{
+                                        borderColor: "#4F645D",
+                                        borderWidth: 2,
+                                        alignItems: "center",
+                                        alignContent: "center",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <MaterialCommunityIcons
+                                        name="clock-outline"
+                                        size={24}
+                                        color="#4F645D"
+                                        style={{
+                                          padding: 10,
+                                          marginLeft: 5,
+                                          marginRight: 5,
+                                        }}
+                                      />{" "}
+                                      <Text
+                                        style={{
+                                          textAlign: "center",
+                                          marginLeft: 5,
+                                        }}
+                                      >
+                                        From: {" " + p.from}
+                                      </Text>
+                                    </Button>
                                     <DateTimePickerModal
+                                      key={"from" + p.id}
+                                      id={"from" + p.id}
                                       isVisible={isDatePickerVisible}
                                       mode="time"
-                                      onConfirm={handleConfirm}
-                                      onCancel={hideDatePicker}
+                                      onConfirm={(date) =>
+                                        handleConfirm(date, p, "from")
+                                      }
+                                      onCancel={() => hideDatePicker()}
+                                    />
+                                  </View>
+                                  <View>
+                                    <Button
+                                      key={"btnto" + p.id}
+                                      id={"btnto" + p.id}
+                                      title="Show Date Picker"
+                                      onPress={() => showDatePicker1()}
+                                      style={{
+                                        borderColor: "#4F645D",
+                                        borderWidth: 2,
+                                        alignItems: "center",
+                                        alignContent: "center",
+                                      }}
+                                    >
+                                      <MaterialCommunityIcons
+                                        name="clock-outline"
+                                        size={24}
+                                        color="#4F645D"
+                                        style={{
+                                          padding: 5,
+                                          padding: 10,
+                                          marginLeft: 5,
+                                          marginRight: 5,
+                                        }}
+                                      />{" "}
+                                      <Text
+                                        style={{
+                                          textAlign: "center",
+                                          marginLeft: 5,
+                                        }}
+                                      >
+                                        To: {" " + p.to}
+                                      </Text>
+                                    </Button>
+                                    <DateTimePickerModal
+                                      key={"to" + p.id}
+                                      id={"to" + p.id}
+                                      isVisible={isDatePickerVisible1}
+                                      mode="time"
+                                      onConfirm={(date) =>
+                                        handleConfirm(date, p, "to")
+                                      }
+                                      onCancel={() => hideDatePicker1()}
                                     />
                                   </View>
                                 </View>
                               </View>
-                              <View style={{ alignItems: "center" }}>
-                                <Button
-                                  style={themes.SecondaryBtnLarge2}
-                                  onPress={() => {
-                                    handleAddLocation();
-                                  }}
-                                >
-                                  <Text
-                                    style={{
-                                      color: "#FFF",
-                                      fontSize: 16,
-                                      fontFamily: "Urbanist-Semi-Bold",
-                                    }}
-                                  >
-                                    Add
-                                  </Text>
-                                </Button>
-                              </View>
                             </View>
-                          </>
-                        ) : (
-                          <>
-                            <View style={{ alignItems: "center" }}>
-                              <Button
-                                style={themes.SecondaryBtnLarge2}
-                                onPress={() => {
-                                  setIsUpdateButtonDisable(true);
-                                  setAddnNewLocation(!addNewLoaction);
+                          ))}
+                          <Button
+                            onPress={() => {
+                              let exTimeSlots = availablePlace.timeSlots;
+                              const newTimeSlot = {
+                                id: generateUniqueRandomNumber(
+                                  minNumber,
+                                  maxNumber
+                                ),
+                                daysType: "",
+                                from: "",
+                                to: "",
+                                isAvailable: "",
+                              };
+                              exTimeSlots.push(newTimeSlot);
+                              setAvailablePlace({
+                                ...availablePlace,
+                                timeSlots: exTimeSlots,
+                              });
+                            }}
+                          >
+                            Add Another New Time Slots
+                          </Button>
+                          <View style={{ alignItems: "center" }}>
+                            <Button
+                              style={themes.SecondaryBtnLarge2}
+                              onPress={() => {
+                                handleAddLocation();
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  color: "#FFF",
+                                  fontSize: 16,
+                                  fontFamily: "Urbanist-Semi-Bold",
                                 }}
                               >
-                                <Text
-                                  style={{
-                                    color: "#FFF",
-                                    fontSize: 16,
-                                    fontFamily: "Urbanist-Semi-Bold",
-                                  }}
-                                >
-                                  Add Your Work address
-                                </Text>
-                              </Button>
-                            </View>
-                          </>
-                        )}
+                                Add
+                              </Text>
+                            </Button>
+                          </View>
+                        </View>
                       </>
                     )
                   ) : (
-                    <></>
+                    <>
+                      {showOptionsModal ? (
+                        <View style={{ padding: 20, gap: 10 }}>
+                          <Text style={themes.Typography.title}>Name</Text>
+                          <TextInput
+                            style={{
+                              height: 40,
+                              width: "100%",
+                              borderBottomColor: themes.Colors.primary,
+                              borderBottomWidth: 1,
+                              marginBottom: 10,
+                              placeholderTextColor: themes.Colors.secondary,
+                              backgroundColor: "#ffff",
+                            }}
+                            placeholder="Name of the Place"
+                            onChangeText={(text) =>
+                              setAvailablePlace({
+                                ...availablePlace,
+                                name: text,
+                              })
+                            }
+                            value={availablePlace.name}
+                            // right={<AntDesign name='eyeo' size={24} color='red' />}
+                          />
+                          <Text style={themes.Typography.title}>Location</Text>
+                          <Text style={themes.Typography.title2}>
+                            Choose from Map
+                          </Text>
+
+                          {selectedCoordinates ? (
+                            <MapView
+                              style={styles.map}
+                              region={region}
+                              onPress={(e) =>
+                                handleMapPress(
+                                  e.nativeEvent.coordinate.latitude,
+                                  e.nativeEvent.coordinate.longitude
+                                )
+                              }
+                            >
+                              <Marker
+                                coordinate={selectedCoordinates}
+                                title="Selected Location"
+                              />
+                            </MapView>
+                          ) : (
+                            <View style={styles.locationDisabledContainer}>
+                              <Text style={styles.locationDisabledText}>
+                                Location services are disabled. Please enable
+                                them to use this feature.
+                              </Text>
+                              <TouchableOpacity
+                                style={styles.enableLocationButton}
+                                onPress={() => getLiveLocation()}
+                              >
+                                <Text style={styles.enableLocationButtonText}>
+                                  Enable Location Services
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          )}
+                          <View></View>
+                          {availablePlace.timeSlots.map((p) => (
+                            <View
+                              key={p.id}
+                              style={{
+                                borderWidth: 2,
+                                borderColor: "#4F645D",
+                                padding: 10,
+                                borderRadius: 50,
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  ...themes.Typography.title,
+                                  marginTop: 10,
+                                }}
+                              >
+                                Time Slot
+                              </Text>
+                              <View
+                                style={{
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <View>
+                                  <SelectDropdown
+                                    defaultButtonText="Select Day Type"
+                                    buttonTextStyle={{
+                                      ...themes.Typography.title2,
+                                      textAlign: "left",
+                                    }}
+                                    buttonStyle={{
+                                      backgroundColor: "white",
+                                      width: "100%",
+                                      borderBottomWidth: 2,
+                                      borderBottomColor: "#17CE92",
+                                      marginBottom: 5,
+                                    }}
+                                    data={DayTypes}
+                                    onSelect={(selectedItem, index) => {
+                                      handleDayTypeChange(selectedItem, p);
+                                    }}
+                                    buttonTextAfterSelection={(
+                                      selectedItem,
+                                      index
+                                    ) => {
+                                      // text represented after item is selected
+                                      // if data array is an array of objects then return selectedItem.property to render after item is selected
+                                      return p.daysType;
+                                    }}
+                                    rowTextForSelection={(item, index) => {
+                                      // text represented for each item in dropdown
+                                      // if data array is an array of objects then return item.property to represent item in dropdown
+                                      return item;
+                                    }}
+                                  />
+                                </View>
+                                <View
+                                  style={{
+                                    display: "flex",
+                                    gap: 5,
+                                  }}
+                                >
+                                  <View>
+                                    <Button
+                                      key={"btnfrom" + p.id}
+                                      id={"btnfrom" + p.id}
+                                      title="Show Date Picker"
+                                      onPress={() => showDatePicker()}
+                                      style={{
+                                        borderColor: "#4F645D",
+                                        borderWidth: 2,
+                                        alignItems: "center",
+                                        alignContent: "center",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <MaterialCommunityIcons
+                                        name="clock-outline"
+                                        size={24}
+                                        color="#4F645D"
+                                        style={{
+                                          padding: 10,
+                                          marginLeft: 5,
+                                          marginRight: 5,
+                                        }}
+                                      />{" "}
+                                      <Text
+                                        style={{
+                                          textAlign: "center",
+                                          marginLeft: 5,
+                                        }}
+                                      >
+                                        From: {" " + p.from}
+                                      </Text>
+                                    </Button>
+                                    <DateTimePickerModal
+                                      key={"from" + p.id}
+                                      id={"from" + p.id}
+                                      isVisible={isDatePickerVisible}
+                                      mode="time"
+                                      onConfirm={(date) =>
+                                        handleConfirm(date, p, "from")
+                                      }
+                                      onCancel={() => hideDatePicker()}
+                                    />
+                                  </View>
+                                  <View>
+                                    <Button
+                                      key={"btnto" + p.id}
+                                      id={"btnto" + p.id}
+                                      title="Show Date Picker"
+                                      onPress={() => showDatePicker1()}
+                                      style={{
+                                        borderColor: "#4F645D",
+                                        borderWidth: 2,
+                                        alignItems: "center",
+                                        alignContent: "center",
+                                      }}
+                                    >
+                                      <MaterialCommunityIcons
+                                        name="clock-outline"
+                                        size={24}
+                                        color="#4F645D"
+                                        style={{
+                                          padding: 5,
+                                          padding: 10,
+                                          marginLeft: 5,
+                                          marginRight: 5,
+                                        }}
+                                      />{" "}
+                                      <Text
+                                        style={{
+                                          textAlign: "center",
+                                          marginLeft: 5,
+                                        }}
+                                      >
+                                        To: {" " + p.to}
+                                      </Text>
+                                    </Button>
+                                    <DateTimePickerModal
+                                      key={"to" + p.id}
+                                      id={"to" + p.id}
+                                      isVisible={isDatePickerVisible1}
+                                      mode="time"
+                                      onConfirm={(date) =>
+                                        handleConfirm(date, p, "to")
+                                      }
+                                      onCancel={() => hideDatePicker1()}
+                                    />
+                                  </View>
+                                </View>
+                              </View>
+                            </View>
+                          ))}
+                          <Button
+                            onPress={() => {
+                              let exTimeSlots = availablePlace.timeSlots;
+                              const newTimeSlot = {
+                                id: generateUniqueRandomNumber(
+                                  minNumber,
+                                  maxNumber
+                                ),
+                                daysType: "",
+                                from: "",
+                                to: "",
+                                isAvailable: "",
+                              };
+                              exTimeSlots.push(newTimeSlot);
+                              setAvailablePlace({
+                                ...availablePlace,
+                                timeSlots: exTimeSlots,
+                              });
+                            }}
+                          >
+                            Add Another New Time Slots
+                          </Button>
+                          <View style={{ alignItems: "center" }}>
+                            <Button
+                              style={themes.SecondaryBtnLarge2}
+                              onPress={() => {
+                                handleAddLocation();
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  color: "#FFF",
+                                  fontSize: 16,
+                                  fontFamily: "Urbanist-Semi-Bold",
+                                }}
+                              >
+                                Add
+                              </Text>
+                            </Button>
+                          </View>
+                        </View>
+                      ) : (
+                        <>
+                          {availablePlaces.map((ap) => (
+                            <View
+                              key={ap.id}
+                              style={{
+                                borderWidth: 2,
+                                borderColor: "#4F645D",
+                                padding: 20,
+                                borderRadius: 50,
+                              }}
+                            >
+                              <Text>{"Place Name: " + ap.name}</Text>
+                              <Text>Location:</Text>
+                              <MapView style={styles.map} region={ap.cordinate}>
+                                <Marker
+                                  coordinate={ap.cordinate}
+                                  title="Your Location"
+                                />
+                              </MapView>
+                              {ap.timeSlots && ap.timeSlots.length > 0 ? (
+                                <>
+                                  {ap.timeSlots.map((ts) => (
+                                    <View
+                                      key={ts.from + ts.to}
+                                      style={{
+                                        borderWidth: 2,
+                                        borderColor: "#C9FAEA",
+                                        padding: 20,
+                                        borderRadius: 50,
+                                      }}
+                                    >
+                                      <Text>Day Time: {" " + ts.daysType}</Text>
+                                      <Text>From: {" " + ts.from}</Text>
+                                      <Text>To: {" " + ts.to}</Text>
+                                    </View>
+                                  ))}
+                                </>
+                              ) : (
+                                <>
+                                  <Text>No Time Slotes Availble</Text>
+                                </>
+                              )}
+                            </View>
+                          ))}
+                          <View style={{ alignItems: "center" }}>
+                            <Button
+                              style={themes.SecondaryBtnLarge2}
+                              onPress={() => {
+                                setShowOptionsModal(!showOptionsModal);
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  color: "#FFF",
+                                  fontSize: 16,
+                                  fontFamily: "Urbanist-Semi-Bold",
+                                }}
+                              >
+                                Add New Work Place
+                              </Text>
+                            </Button>
+                          </View>
+                        </>
+                      )}
+                    </>
                   )
                 ) : (
                   <>
                     {doctor.doctor.availablePlaces.length > 0 ? (
                       <View style={{ flex: 1, marginBottom: 5 }}>
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: "row",
-                            gap: 5,
-                            width: "100%",
-                          }}
-                        >
+                        {availablePlaces.map((ap) => (
                           <View
+                            key={ap.id}
                             style={{
-                              padding: 10,
-                              backgroundColor: "#D1D1D1",
-                              width: "30%",
+                              borderWidth: 2,
+                              borderColor: "#4F645D",
+                              padding: 20,
+                              borderRadius: 50,
                             }}
                           >
-                            <Text style={{ ...themes.Typography.body }}>
-                              Place
-                            </Text>
+                            <Text>{"Place Name: " + ap.name}</Text>
+                            <Text>Location:</Text>
+                            <MapView style={styles.map} region={ap.cordinate}>
+                              <Marker
+                                coordinate={ap.cordinate}
+                                title="Your Location"
+                              />
+                            </MapView>
+                            {ap.timeSlots && ap.timeSlots.length > 0 ? (
+                              <>
+                                {ap.timeSlots.map((ts) => (
+                                  <View
+                                    key={ts.from + ts.to}
+                                    style={{
+                                      borderWidth: 2,
+                                      borderColor: "#C9FAEA",
+                                      padding: 20,
+                                      borderRadius: 50,
+                                    }}
+                                  >
+                                    <Text>Day Time: {" " + ts.daysType}</Text>
+                                    <Text>From: {" " + ts.from}</Text>
+                                    <Text>To: {" " + ts.to}</Text>
+                                  </View>
+                                ))}
+                              </>
+                            ) : (
+                              <>
+                                <Text>No Time Slotes Availble</Text>
+                              </>
+                            )}
                           </View>
-                          <View
-                            style={{
-                              padding: 10,
-                              backgroundColor: "#D1D1D1",
-                              width: "30%",
-                            }}
-                          >
-                            <Text style={{ ...themes.Typography.body }}>
-                              Distence
-                            </Text>
-                          </View>
-                          <View
-                            style={{
-                              padding: 10,
-                              backgroundColor: "#D1D1D1",
-                              width: "35%",
-                            }}
-                          >
-                            <Text style={{ ...themes.Typography.body }}>
-                              Location
-                            </Text>
-                          </View>
-                        </View>
-                        {doctor.doctor.availablePlaces.map((data, index) => {
-                          return <Map key={index} data={data} />;
-                        })}
+                        ))}
                       </View>
                     ) : (
                       <View style={{ flex: 1 }}>
@@ -1072,6 +1608,7 @@ const styles = StyleSheet.create({
   map: {
     width: 300,
     height: 200,
+    marginBottom: 10,
   },
   locationDisabledContainer: {
     flex: 1,
