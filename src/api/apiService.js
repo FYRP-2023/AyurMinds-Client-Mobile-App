@@ -36,10 +36,10 @@ const AyurMindsApi = {
     addToGroup: `${chatServiceBaseURL()}/groupadd`,
   },
   social_network_service: {
-    content: "content",
-    response: "response",
+    content: 'content',
+    response: 'response',
+    search: 'search/'
   },
-
   doctor_service: {
     getDiseases: `${doctorServiceBaseURL()}/getDiseases`,
     updateDoctorDetails: `${doctorServiceBaseURL()}/updateDoctorDetails`,

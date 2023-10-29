@@ -1,14 +1,15 @@
 import * as React from 'react';
+import { StyleSheet, ToastAndroid, ScrollView } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { View, StyleSheet, ToastAndroid } from "react-native";
+import { useSelector } from 'react-redux';
 import { TextInput, Button } from 'react-native-paper';
 import themes from "../../common/theme/themes";
-import { CONTENT_TYPE_QUESTION } from '../../constants/SocialNetworkConstants';
-import { getAxiosSocialNetworkInstance } from '../../utils/axios';
+import { getAxiosSocialNetworkService1Instance } from '../../utils/axios';
 import AyurMindsApi from '../../api/apiService';
+import { CONTENT_TYPE_QUESTION } from '../../constants/SocialNetworkConstants';
 
 function PostContent() {
-    const userId = "1111";
+    const userId = useSelector((state) => state.auth.user)._id;
     const id = 0;
 
     const navigator = useNavigation();
@@ -20,23 +21,23 @@ function PostContent() {
     const [body, setBody] = React.useState("");
 
     const onSubmit = async () => {
-        await getAxiosSocialNetworkInstance()
+        await getAxiosSocialNetworkService1Instance()
             .post(AyurMindsApi.social_network_service.content, { id, userId, header, body, contentType });
         ToastAndroid.showWithGravity('Your content has been made publicly available.', ToastAndroid.LONG, ToastAndroid.BOTTOM,)
         navigator.goBack();
     }
 
     return (
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
             <TextInput
+                mode="outlined"
+                theme={{ colors: { onSurfaceVariant: themes.Colors.primary, onBackground: 'white' } }}
+                outlineColor={themes.Colors.primary}
+                activeOutlineColor={themes.Colors.primary}
                 style={{
                     width: '90%',
                     marginTop: 10
                 }}
-                theme={{ colors: { onSurfaceVariant: themes.Colors.primary, onBackground: 'white' } }}
-                outlineColor={themes.Colors.primary}
-                activeOutlineColor={themes.Colors.primary}
-                mode="outlined"
                 multiline={true}
                 label="Header"
                 value={header}
@@ -44,15 +45,16 @@ function PostContent() {
             />
 
             <TextInput
+                mode="outlined"
+                theme={{ colors: { onSurfaceVariant: themes.Colors.primary, onBackground: 'white' } }}
+                outlineColor={themes.Colors.primary}
+                activeOutlineColor={themes.Colors.primary}
                 style={{
                     width: '90%',
                     marginTop: 10
                 }}
-                theme={{ colors: { onSurfaceVariant: themes.Colors.primary, onBackground: 'white' } }}
-                outlineColor={themes.Colors.primary}
-                activeOutlineColor={themes.Colors.primary}
-                mode="outlined"
                 multiline={true}
+                numberOfLines={20}
                 label="Body"
                 value={body}
                 onChangeText={text => setBody(text)}
@@ -64,7 +66,7 @@ function PostContent() {
                 style={styles.item} buttonColor={themes.Colors.primary}>
                 {contentType === CONTENT_TYPE_QUESTION ? "Ask" : "Post"}
             </Button>
-        </View>
+        </ScrollView>
     );
 }
 
