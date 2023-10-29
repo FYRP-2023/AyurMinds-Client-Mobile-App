@@ -1,9 +1,9 @@
 import { StyleSheet, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Button } from 'react-native-paper';
 import themes from "../../common/theme/themes";
 import { CONTENT_TYPE_ARTICLE, CONTENT_TYPE_QUESTION, CONTENT_TYPE_USER } from "../../constants/SocialNetworkConstants"
 import ContentList from "./ContentList";
-import { useNavigation } from "@react-navigation/native";
 
 function UserContent() {
     const navigator = useNavigation();

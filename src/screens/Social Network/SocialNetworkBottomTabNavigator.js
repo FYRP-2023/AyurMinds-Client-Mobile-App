@@ -2,9 +2,9 @@ import React from "react";
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import themes from "../../common/theme/themes";
-import ContentList from "./ContentList";
 import { CONTENT_TYPE_QUESTION, CONTENT_TYPE_ARTICLE } from "../../constants/SocialNetworkConstants";
 import SocialNetworkUserContentNavigator from '../../navigations/SocialNetworkUserContentNavigator'
+import ContentList from "./ContentList";
 
 const Tab = createMaterialBottomTabNavigator();
 
