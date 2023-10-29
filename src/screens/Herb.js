@@ -10,11 +10,11 @@ import {
 } from "react-native";
 import ChatbotIcon from "../../assets/herbIcon.svg";
 import themes from "../common/theme/themes";
-import { Button, Dialog } from "react-native-paper";
+import { Button, Dialog, Divider } from "react-native-paper";
 import { Camera } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import SingleHerb from "./SingleHerb";
+import axios from "axios";
 
 const Herb = () => {
   const [hasCameraPermission, setHasCameraPermission] = useState();
@@ -26,6 +26,45 @@ const Herb = () => {
   const [visibleHerbDetailsDialog, setVisibleHerbDetailsDialog] =
     useState(false);
   const [isPredictedHerb, setIsPredictedHerb] = useState(false);
+  const [predictedData, setPredictedData] = useState();
+  const [selectedHerbDetails, setSelectedHerbDetails] = useState();
+
+  const imageToBase64 = (imageUri) => {
+    return new Promise((resolve, reject) => {
+      fetch(imageUri)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const base64data = reader.result.split(",")[1];
+            resolve(base64data);
+          };
+          reader.onerror = (error) => {
+            reject(error);
+          };
+          reader.readAsDataURL(blob);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  };
+
+  const pickedPhotoBase64 = imageToBase64(pickedPhoto);
+
+  const data = {
+    api_key: "9RULU2qv7ZuyDdyEcsfeZxZbp8syLoHr7wpmjylet8eqUZbaue",
+    images: capturePhoto
+      ? [capturePhoto.base64]
+      : pickedPhoto
+      ? [pickedPhotoBase64.base64]
+      : [],
+    /* modifiers docs: https://github.com/flowerchecker/Plant-id-API/wiki/Modifiers */
+    modifiers: ["crops_fast", "similar_images"],
+    plant_language: "en",
+    /* plant details docs: https://github.com/flowerchecker/Plant-id-API/wiki/Plant-details */
+    plant_details: ["common_names", "url", "wiki_description"],
+  };
 
   const cameraRef = useRef();
 
@@ -94,8 +133,17 @@ const Herb = () => {
   //
   const predictHerbDetails = async () => {
     setVisibleDialogBox(true);
-    //pass the herb image to the model
-    setIsPredictedHerb(true);
+    axios
+      .post("https://api.plant.id/v2/identify", data)
+      .then((res) => {
+        setPredictedData(res.data);
+
+        setVisibleDialogBox(false);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+        setVisibleDialogBox(false);
+      });
   };
   //
   const hideDialog = () => setVisibleDialogBox(false);
@@ -199,6 +247,7 @@ const Herb = () => {
                     onPress={() => {
                       setCapturePhoto(undefined);
                       setPickedPhoto(undefined);
+                      setPredictedData(undefined);
                     }}
                   >
                     <Text style={styles.secondaryButtonText}>Cancel</Text>
@@ -238,15 +287,91 @@ const Herb = () => {
             </View>
           )}
         </View>
-        {isPredictedHerb && (
-          <SingleHerb
-            setStartCamera={setStartCamera}
-            setCapturePhoto={setCapturePhoto}
-            setPickedPhoto={setPickedPhoto}
-            setIsPredictedHerb={setIsPredictedHerb}
-            setVisibleHerbDetailsDialog={setVisibleHerbDetailsDialog}
-          />
-        )}
+      </View>
+
+      <View style={{ backgroundColor: "#FFFFFF" }}>
+        {predictedData &&
+          predictedData.suggestions &&
+          predictedData.suggestions.map((suggestion) => (
+            // console.log(suggestion.plant_details.common_names),
+            <View
+              key={suggestion.id}
+              style={{ margin: 10, backgroundColor: "#FFFFFF" }}
+            >
+              <Text style={themes.Typography.bodyNormal}>
+                {suggestion.plant_name} - Probability:{" "}
+                <Text style={{ color: "green" }}>
+                  {Math.round(suggestion.probability * 100)}%
+                </Text>
+              </Text>
+              {suggestion?.plant_details?.common_names && (
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: "#616161",
+                    paddingTop: 6,
+                    fontFamily: "Urbanist-Light",
+                  }}
+                >
+                  ( {suggestion.plant_details.common_names.join(", ")} )
+                </Text>
+              )}
+
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  flexWrap: "wrap",
+                }}
+              >
+                {suggestion.similar_images.map((img, index) => {
+                  return (
+                    <Image
+                      key={index}
+                      source={{
+                        uri: img.url,
+                      }}
+                      style={{
+                        width: 100,
+                        height: 100,
+                        margin: 10,
+                      }}
+                    />
+                  );
+                })}
+              </View>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <MaterialIcons
+                  name='info'
+                  size={20}
+                  color={themes.Colors.primary}
+                />
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: themes.Colors.primary,
+                    padding: 6,
+                    fontFamily: "Urbanist-Bold",
+                  }}
+                  onPress={() => {
+                    setVisibleHerbDetailsDialog(true);
+                    setSelectedHerbDetails(suggestion);
+                  }}
+                >
+                  Details
+                </Text>
+              </View>
+              <Divider />
+            </View>
+          ))}
       </View>
       <Dialog visible={visibleDialogBox} onDismiss={hideDialog}>
         <Dialog.Content>
@@ -264,24 +389,17 @@ const Herb = () => {
           </View>
         </Dialog.Content>
       </Dialog>
+
       <Dialog
         visible={visibleHerbDetailsDialog}
         onDismiss={hideHerbDetailsDialog}
+        style={{ display: "flex" }}
       >
         <Dialog.ScrollArea>
-          <Dialog.Title>Herb Name</Dialog.Title>
-          <ScrollView contentContainerStyle={{ paddingHorizontal: 24 }}>
+          <Dialog.Title>Plant Details</Dialog.Title>
+          <ScrollView>
             <Text style={themes.Typography.bodyNormal}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non pr , quis
-              nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate
-              velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-              occaecat cupidatat non pr
+              {selectedHerbDetails?.plant_details?.wiki_description?.value}
             </Text>
           </ScrollView>
         </Dialog.ScrollArea>

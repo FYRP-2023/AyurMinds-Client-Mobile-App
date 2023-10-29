@@ -15,7 +15,7 @@ import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import SingleChat from "./SingleChat";
 import axios from "axios";
 
-const apiUrl = "http://192.168.1.6:5005/webhooks/rest/webhook";
+const RASA_URL = "http://192.168.40.245:5005/webhooks/rest/webhook";
 let sender = "userID001";
 export default function NewChat() {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -60,7 +60,7 @@ export default function NewChat() {
     };
     //
     await axios
-      .post(apiUrl, requestBody)
+      .post(RASA_URL, requestBody)
       .then((response) => {
         // Handle the response data here
         setChatHistory(response.data);
@@ -75,7 +75,7 @@ export default function NewChat() {
   //
   const setChatHistory = async (reply) => {
     await axios
-      .post("http://192.168.1.6:5000/api/chatbot_service", {
+      .post("http://192.168.40.245:5000/api/chatbot_service/", {
         userId: sender,
         chats: [
           {
@@ -102,13 +102,15 @@ export default function NewChat() {
   //
   const handleChatDelete = async (id) => {
     try {
-      await axios.delete(`http://192.168.43.229:5004/messages/${sender}/${id}`);
+      await axios.delete(
+        `http://192.168.40.245:5000/api/chatbot_service/?userId=${sender}&chatId=${id}`
+      );
       console.log("DELETED");
       setIsNewChat(true);
       closeMenu();
       // You can handle the success or any other logic here
     } catch (error) {
-      // Handle errors here
+      console.log("NOTDELETED");
       console.log(error);
     }
   };
@@ -116,14 +118,14 @@ export default function NewChat() {
   useEffect(() => {
     // Make an HTTP GET request to retrieve the chats
     axios
-      .get("http://localhost:5000/api/chatbot_service/?userId=userID001")
+      .get("http://192.168.40.245:5000/api/chatbot_service/?userId=userID001")
       .then((response) => {
         setChats(response.data); // Assuming your API returns an array of chats
       })
       .catch((error) => {
         console.error("Error fetching chats:", error);
       });
-  }, [chats]);
+  }, []);
 
   return (
     <>
@@ -154,9 +156,9 @@ export default function NewChat() {
       <Animated.View style={[styles.sideMenu, { left: menuPosition, top: 49 }]}>
         {/* Menu Content */}
         <View>
-          {chats.map((chat) => {
+          {chats.map((chat, index) => {
             return (
-              <View style={styles.sideMenuItemContainer}>
+              <View style={styles.sideMenuItemContainer} key={index}>
                 <View style={styles.sideMenuItem}>
                   <Ionicons name='chatbox-outline' size={20} color='#FFFFFF' />
                   <TouchableOpacity
@@ -241,11 +243,13 @@ export default function NewChat() {
             <View>
               <TextInput
                 placeholder='Ask me...'
-                placeholderTextColor='#BDBDBD'
+                // placeholderTextColor='#BDBDBD'
                 style={styles.input}
                 multiline
                 underlineColor='none'
                 activeUnderlineColor='none'
+                selectionColor='#FF0000'
+                cursorColor='#FF0000'
                 right={
                   <TextInput.Icon
                     icon='send'
