@@ -16,6 +16,8 @@ import {
   Ionicons,
 } from "@expo/vector-icons";
 import axios from "axios";
+import { getAxiosInstance } from "../../utils/axios";
+import { configs } from "../../../configs";
 
 const RASA_URL = "http://192.168.40.245:5005/webhooks/rest/webhook";
 let sender = "userID001";
@@ -39,11 +41,8 @@ const SingleChat = (props) => {
       message: userQuestion,
     };
     //
-    await axios
-      .post(
-        "http://192.168.40.245:5000/api/chatbot_service/predict",
-        requestBody
-      )
+    await getAxiosInstance()
+      .post(configs.CHATBOT_SERVICE + "/predict", requestBody)
       .then((response) => {
         // Handle the response data here
         setChatHistory(response.data);
@@ -58,14 +57,11 @@ const SingleChat = (props) => {
   };
 
   const setChatHistory = async (reply) => {
-    await axios
-      .put(
-        `http://192.168.40.245:5000/api/chatbot_service/?userId=${sender}&chatId=${chat?._id}`,
-        {
-          user: userQuestion,
-          bot: reply?.message,
-        }
-      )
+    await getAxiosInstance()
+      .put(configs.CHATBOT_SERVICE + `/?userId=${sender}&chatId=${chat?._id}`, {
+        user: userQuestion,
+        bot: reply?.message,
+      })
       .then(() => {
         setRefetch(true);
       });
@@ -77,7 +73,6 @@ const SingleChat = (props) => {
           return (
             <View key={index}>
               {chat?.dialogs?.map((dialog, index) => {
-                // console.log(dialog?.bot?.answer);
                 return (
                   <View key={index}>
                     <View style={styles.userQuestion}>
@@ -128,11 +123,14 @@ const SingleChat = (props) => {
                             color={themes.Colors.status.success}
                           />
                         </TouchableOpacity>
-                        <MaterialCommunityIcons
-                          name='doctor'
-                          size={24}
-                          color={themes.Colors.status.warning}
-                        />
+                        {/* TODO: Doctor Icon */}
+                        <TouchableOpacity>
+                          <MaterialCommunityIcons
+                            name='doctor'
+                            size={24}
+                            color={themes.Colors.status.warning}
+                          />
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>

@@ -19,6 +19,9 @@ export const messageServiceBaseURL = () => {
 export const doctorServiceBaseURL = () => {
   return configs.DOCTOR_SERVICE;
 };
+export const chatBotBaseURL = () => {
+  return configs.CHATBOT_SERVICE;
+};
 
 //create instance of each services here
 export const getAxiosInstance = () => {

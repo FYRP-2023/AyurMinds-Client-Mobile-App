@@ -6,6 +6,7 @@ export const configs = {
   DOCTOR_SERVICE: "/api/doctor_service",
   CHAT_SERVICE: "/api/chat_service",
   MESSAGE_SERVICE: "/api/message_service",
+  CHATBOT_SERVICE: "/api/chatbot_service",
   SOCIAL_NETWROK_SERVICE_1:
     "https://ayurconnect-service-1.azurewebsites.net/api",
   SOCIAL_NETWROK_SERVICE_2: "http://192.168.1.2:8000",
