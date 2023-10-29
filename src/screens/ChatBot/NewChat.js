@@ -25,6 +25,7 @@ export default function NewChat() {
   const [userQuestion, setUserQuestion] = useState("");
   const [chats, setChats] = useState([]);
   const [isSubmittingQuestion, setIsSubmittingQuestion] = useState(false);
+  const [reFetch, setReFetch] = useState(false);
 
   const openMenu = () => {
     Animated.timing(menuPosition, {
@@ -68,16 +69,18 @@ export default function NewChat() {
         // Handle the response data here
         setChatHistory(response.data);
         setIsSubmittingQuestion(false);
+        setReFetch(true);
       })
       .catch((error) => {
         // Handle any errors that occurred during the request
         console.error("Error:", error);
         setIsSubmittingQuestion(false);
+        setReFetch(false);
       });
   };
   //
   const setChatHistory = async (reply) => {
-    const firstFourWords = userQuestion.split(" ").slice(0, 6).join(" ");
+    const firstFourWords = userQuestion.split(" ").slice(0, 10).join(" ");
 
     await axios
       .post("http://192.168.40.245:5000/api/chatbot_service/", {
@@ -98,6 +101,7 @@ export default function NewChat() {
       .then((response) => {
         setIsNewChat(false);
         setSelectedSingleChat(response.data);
+        setReFetch(true);
       });
   };
   //
@@ -106,8 +110,8 @@ export default function NewChat() {
       await axios.delete(
         `http://192.168.40.245:5000/api/chatbot_service/?userId=${sender}&chatId=${id}`
       );
-      console.log("DELETED");
       setIsNewChat(true);
+      setReFetch(true);
       closeMenu();
       // You can handle the success or any other logic here
     } catch (error) {
@@ -126,7 +130,7 @@ export default function NewChat() {
       .catch((error) => {
         console.error("Error fetching chats:", error);
       });
-  }, []);
+  }, [reFetch]);
 
   return (
     <>
@@ -138,7 +142,11 @@ export default function NewChat() {
         <View>
           <Text style={{ ...themes.Typography.subHeading, color: "#FFFFFF" }}>
             {selectedSingleChat?._id && !isNewChat
-              ? selectedSingleChat?.chats[0]?.chatName
+              ? selectedSingleChat?.chats[0]?.chatName &&
+                selectedSingleChat?.chats[0]?.chatName
+                  .split(" ")
+                  .slice(0, 6)
+                  .join(" ")
               : "New Chat"}
           </Text>
         </View>
@@ -172,7 +180,11 @@ export default function NewChat() {
                     <Text
                       style={{ ...themes.Typography.title, color: "#FFFFFF" }}
                     >
-                      {chat?._id}
+                      {chat?.chats[0]?.chatName &&
+                        chat?.chats[0]?.chatName
+                          .split(" ")
+                          .slice(0, 5)
+                          .join(" ")}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -264,7 +276,9 @@ export default function NewChat() {
           </View>
         </View>
       ) : (
-        selectedSingleChat && <SingleChat chat={selectedSingleChat} />
+        selectedSingleChat && (
+          <SingleChat chat={selectedSingleChat} setRefetch={setReFetch} />
+        )
       )}
     </>
   );

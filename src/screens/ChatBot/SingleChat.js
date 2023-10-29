@@ -21,7 +21,7 @@ const RASA_URL = "http://192.168.40.245:5005/webhooks/rest/webhook";
 let sender = "userID001";
 
 const SingleChat = (props) => {
-  const chat = props.chat;
+  const { chat, setRefetch } = props;
   const [isPopupVisible, setPopupVisibility] = useState(false);
   const [imageURL, setImageURL] = useState([]);
   const [userQuestion, setUserQuestion] = useState("");
@@ -48,6 +48,7 @@ const SingleChat = (props) => {
         // Handle the response data here
         setChatHistory(response.data);
         setIsSubmittingQuestion(false);
+        setRefetch(true);
       })
       .catch((error) => {
         // Handle any errors that occurred during the request
@@ -57,13 +58,17 @@ const SingleChat = (props) => {
   };
 
   const setChatHistory = async (reply) => {
-    await axios.put(
-      `http://192.168.40.245:5000/api/chatbot_service/?userId=${sender}&chatId=${chat?._id}`,
-      {
-        user: userQuestion,
-        bot: reply?.message,
-      }
-    );
+    await axios
+      .put(
+        `http://192.168.40.245:5000/api/chatbot_service/?userId=${sender}&chatId=${chat?._id}`,
+        {
+          user: userQuestion,
+          bot: reply?.message,
+        }
+      )
+      .then(() => {
+        setRefetch(true);
+      });
   };
   return (
     <View style={styles.container}>
