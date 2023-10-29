@@ -8,7 +8,7 @@ import {
   Image,
 } from "react-native";
 import React, { useState } from "react";
-import { Divider, TextInput } from "react-native-paper";
+import { ActivityIndicator, Divider, TextInput } from "react-native-paper";
 import themes from "../../common/theme/themes";
 import {
   FontAwesome,
@@ -27,12 +27,6 @@ const SingleChat = (props) => {
   const [userQuestion, setUserQuestion] = useState("");
   const [isSubmittingQuestion, setIsSubmittingQuestion] = useState(false);
 
-  const openPopup = (url) => {
-    setImageURL(url);
-    setPopupVisibility(true);
-    console.log(url);
-  };
-
   const closePopup = () => {
     setImageURL([]);
     setPopupVisibility(false);
@@ -46,7 +40,10 @@ const SingleChat = (props) => {
     };
     //
     await axios
-      .post(RASA_URL, requestBody)
+      .post(
+        "http://192.168.40.245:5000/api/chatbot_service/predict",
+        requestBody
+      )
       .then((response) => {
         // Handle the response data here
         setChatHistory(response.data);
@@ -60,33 +57,13 @@ const SingleChat = (props) => {
   };
 
   const setChatHistory = async (reply) => {
-    await axios
-      .put(
-        `http://192.168.40.245:5000/api/chatbot_service/?userId=${sender}&chatId=${chat?._id}`,
-        {
-          userId: sender,
-          chats: [
-            {
-              chatName: "Lorem ipsum Chat one",
-              modifiedAt: "2023-09-03T12:00:00.000Z",
-              dialogs: [
-                {
-                  user: userQuestion,
-                  bot: {
-                    answer: reply[0]?.text,
-                    herbs: reply[1]?.image,
-                    symptoms: ["symptom 1", "symptom 2"],
-                  },
-                },
-              ],
-            },
-          ],
-        }
-      )
-      .then((response) => {
-        setIsNewChat(false);
-        setSelectedSingleChat(response.data);
-      });
+    await axios.put(
+      `http://192.168.40.245:5000/api/chatbot_service/?userId=${sender}&chatId=${chat?._id}`,
+      {
+        user: userQuestion,
+        bot: reply?.message,
+      }
+    );
   };
   return (
     <View style={styles.container}>
@@ -132,13 +109,13 @@ const SingleChat = (props) => {
                               textAlign: "justify",
                             }}
                           >
-                            {dialog?.bot?.answer}
+                            {dialog?.bot}
                           </Text>
                         </View>
                       </View>
                       <View style={styles.botAnswerIcons}>
                         <TouchableOpacity
-                          onPress={() => openPopup(dialog?.bot?.herbs)}
+                        // onPress={() => openPopup(dialog?.bot?.herbs)}
                         >
                           <Ionicons
                             name='leaf'
@@ -160,6 +137,15 @@ const SingleChat = (props) => {
           );
         })}
       </ScrollView>
+      {isSubmittingQuestion ? (
+        <ActivityIndicator
+          size='large'
+          color={themes.Colors.primary}
+          style={{ marginTop: 250, marginBottom: 250 }}
+        />
+      ) : (
+        <></>
+      )}
 
       <View style={styles.inputContainer}>
         <Divider style={{ marginBottom: 10 }} />

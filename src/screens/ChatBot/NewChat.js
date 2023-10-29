@@ -15,7 +15,7 @@ import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import SingleChat from "./SingleChat";
 import axios from "axios";
 
-const RASA_URL = "http://192.168.40.245:5005/webhooks/rest/webhook";
+// const RASA_URL = "http://192.168.40.245:5005/webhooks/rest/webhook";
 let sender = "userID001";
 export default function NewChat() {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -60,7 +60,10 @@ export default function NewChat() {
     };
     //
     await axios
-      .post(RASA_URL, requestBody)
+      .post(
+        "http://192.168.40.245:5000/api/chatbot_service/predict",
+        requestBody
+      )
       .then((response) => {
         // Handle the response data here
         setChatHistory(response.data);
@@ -74,21 +77,19 @@ export default function NewChat() {
   };
   //
   const setChatHistory = async (reply) => {
+    const firstFourWords = userQuestion.split(" ").slice(0, 6).join(" ");
+
     await axios
       .post("http://192.168.40.245:5000/api/chatbot_service/", {
         userId: sender,
         chats: [
           {
-            chatName: "Lorem ipsum Chat one",
+            chatName: firstFourWords,
             modifiedAt: "2023-09-03T12:00:00.000Z",
             dialogs: [
               {
                 user: userQuestion,
-                bot: {
-                  answer: reply[0]?.text,
-                  herbs: reply[1]?.image,
-                  symptoms: ["symptom 1", "symptom 2"],
-                },
+                bot: reply.message,
               },
             ],
           },
@@ -137,7 +138,7 @@ export default function NewChat() {
         <View>
           <Text style={{ ...themes.Typography.subHeading, color: "#FFFFFF" }}>
             {selectedSingleChat?._id && !isNewChat
-              ? selectedSingleChat?._id
+              ? selectedSingleChat?.chats[0]?.chatName
               : "New Chat"}
           </Text>
         </View>
