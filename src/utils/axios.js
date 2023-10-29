@@ -39,7 +39,6 @@ export const getAxiosSocialNetworkService2Instance = () => {
   });
 };
 
-
 // export const handleResponse = (response) => {
 //   console.log("🚀 ~ file: axios.js:31 ~ handleResponse ~ response:", response)
 //   return {

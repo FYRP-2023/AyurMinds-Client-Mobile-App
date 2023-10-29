@@ -1,5 +1,6 @@
 // All API's endpoints uses here
 import {
+  ChatBotServiceBaseURL,
   authenticationServiceBaseURL,
   autherizationServiceBaseURL,
   chatServiceBaseURL,
