@@ -73,7 +73,6 @@ const SingleChat = (props) => {
           return (
             <View key={index}>
               {chat?.dialogs?.map((dialog, index) => {
-                // console.log(dialog?.bot?.answer);
                 return (
                   <View key={index}>
                     <View style={styles.userQuestion}>
@@ -124,11 +123,14 @@ const SingleChat = (props) => {
                             color={themes.Colors.status.success}
                           />
                         </TouchableOpacity>
-                        <MaterialCommunityIcons
-                          name='doctor'
-                          size={24}
-                          color={themes.Colors.status.warning}
-                        />
+                        {/* TODO: Doctor Icon */}
+                        <TouchableOpacity>
+                          <MaterialCommunityIcons
+                            name='doctor'
+                            size={24}
+                            color={themes.Colors.status.warning}
+                          />
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>
