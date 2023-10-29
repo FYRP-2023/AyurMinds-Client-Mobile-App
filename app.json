@@ -1,5 +1,10 @@
 {
   "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "f0cfb282-deec-4d44-ac1a-7705fe1a2c4f"
+      }
+    },
     "name": "AyurMinds-Client-MApp",
     "slug": "AyurMinds-Client-MApp",
     "version": "1.0.0",

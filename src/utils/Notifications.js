@@ -11,14 +11,29 @@ Notifications.setNotificationHandler({
 });
 
 // Function to send a notification
-export const sendNotification = async ({ title, message, notificationId }) => {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: title,
-      body: message,
-    },
-    trigger: null,
-  });
+export const sendNotification = async ({token, title, message, notificationId }) => {
+try {
+   const messageB = {
+     to: token,
+     sound: "default",
+     title: title,
+     body: message,
+     data: { someData: "goes here" },
+   };
+
+   await fetch("https://exp.host/--/api/v2/push/send", {
+     method: "POST",
+     headers: {
+       Accept: "application/json",
+       "Accept-encoding": "gzip, deflate",
+       "Content-Type": "application/json",
+     },
+     body: JSON.stringify(messageB),
+   });
+} catch (error) {
+  console.log("🚀 ~ file: Notifications.js:18 ~ sendNotification ~ error:", error)
+  
+}
 };
 
 // Replace 'notificationId' with the actual identifier of the notification you want to clear.
@@ -60,7 +75,7 @@ export async function registerForPushNotificationsAsync() {
     // https://docs.expo.dev/push-notifications/push-notifications-setup/#configure-projectid
     token = (
       await Notifications.getExpoPushTokenAsync({
-        projectId: "your-project-id",
+        projectId: "f0cfb282-deec-4d44-ac1a-7705fe1a2c4f",
       })
     ).data;
     console.log(token);
