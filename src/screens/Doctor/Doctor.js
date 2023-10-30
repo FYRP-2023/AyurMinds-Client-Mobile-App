@@ -26,6 +26,9 @@ import { getAxiosInstance } from "../../utils/axios";
 import { AirbnbRating } from "react-native-ratings";
 import { useEffect } from "react";
 import Map from "../../components/Map";
+import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
+import { configs } from "../../../configs";
 
 export default function Doctor({ route, navigation }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -35,9 +38,21 @@ export default function Doctor({ route, navigation }) {
   const [isDoctorDetailsRatingsOpen, setDoctorDetailsRatingsOpen] =
     useState(true);
   const menuPosition = useRef(new Animated.Value(-300)).current;
-  const doctor = route.params.doctor;
+  const doc = route.params.doctor;
+   const [doctor, setDoctor] = useState(doc);
   const navigate = useNavigation();
   const user = useSelector((state) => state.auth.user);
+  const [isRateOptionEnable,setIsRateOptionEnable]=useState(false)
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState('');
+    const [callback,setCallBack]=useState(true)
+    const [overallRating, setOverallRating] = useState(0)
+
+
+  const handleRatingChange = (value) => {
+    setRating(value);
+  };
+
 
   const goChat = async () => {
     try {
@@ -97,10 +112,6 @@ export default function Doctor({ route, navigation }) {
     }
   };
 
-  console.log(
-    "🚀 ~ file: Doctor.js:97 ~ Doctor ~ overallRating:",
-    doctor.doctor.ratings
-  );
 
     const calculateOverallRating = () => {
       if (doctor.doctor.ratings.length === 0) return 0;
@@ -109,9 +120,63 @@ export default function Doctor({ route, navigation }) {
         (acc, rating) => acc + rating.rate,
         0
       );
-      return totalRating / doctor.doctor.ratings.length;
+      setOverallRating(totalRating / doctor.doctor.ratings.length);
     };
- const overallRating =    calculateOverallRating();
+
+    useEffect(()=>{
+      if(doctor){
+        calculateOverallRating();
+      }
+    },[doctor])
+ 
+
+const addRateAndReview = async()=>{
+  try {
+    const res = await getAxiosInstance().post(
+      configs.DOCTOR_SERVICE + "/createRateAndReview",
+      {
+        rate:rating,
+        comment:comment,
+        userId:user._id,
+        docID:doctor._id,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    setIsRateOptionEnable(false)
+    setCallBack(true)
+    setComment("")
+    setRating(0)
+  } catch (error) {
+    console.log("🚀 ~ file: Doctor.js:130 ~ addRateAndReview ~ error:", error)
+    
+  }
+}
+
+const getDoctor = async () => {
+  try {
+    const res = await getAxiosInstance().post(
+      configs.DOCTOR_SERVICE + "/getDoctor",
+      {
+        docId: doc._id,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    setDoctor(res.data)
+    setCallBack(false);
+  } catch (error) {
+    console.log("🚀 ~ file: Doctor.js:166 ~ getDoctor ~ error:", error)
+    
+  }
+};
+
+useEffect(()=>{
+  callback && getDoctor()
+  callback && setCallBack(false)
+},[callback,doc])
 
 
   return (
@@ -127,7 +192,7 @@ export default function Doctor({ route, navigation }) {
 
         <View>
           <Text style={{ ...themes.Typography.subHeading, color: "#FFFFFF" }}>
-            {doctor.firstName + " " + doctor.lastName}
+            {doctor?.firstName + " " + doctor?.lastName}
           </Text>
         </View>
         <View></View>
@@ -135,7 +200,7 @@ export default function Doctor({ route, navigation }) {
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.doctorAvatar}>
-            <Image source={{ uri: doctor.avatar }} style={styles.avatar} />
+            <Image source={{ uri: doctor?.avatar }} style={styles.avatar} />
           </View>
           <View>
             <TouchableOpacity
@@ -175,7 +240,7 @@ export default function Doctor({ route, navigation }) {
                       ...themes.Typography.title2,
                     }}
                   >
-                    {doctor.firstName + " " + doctor.lastName}
+                    {doctor?.firstName + " " + doctor?.lastName}
                   </Text>
                 </View>
               </View>
@@ -183,7 +248,7 @@ export default function Doctor({ route, navigation }) {
                 <Text style={{ ...themes.Typography.body }}>Contact No :</Text>
                 <View style={{ flex: 1 }}>
                   <Text style={{ ...themes.Typography.title2 }}>
-                    {doctor.doctor.contactNo}
+                    {doctor?.doctor?.contactNo}
                   </Text>
                 </View>
               </View>
@@ -195,14 +260,14 @@ export default function Doctor({ route, navigation }) {
                       ...themes.Typography.title2,
                     }}
                   >
-                    {doctor.doctor.bio}
+                    {doctor?.doctor?.bio}
                   </Text>
                 </View>
               </View>
               <View style={{ flexDirection: "row" }}>
                 <Text style={{ ...themes.Typography.body }}>Verified :</Text>
                 <Text style={{ ...themes.Typography.title2 }}>
-                  {doctor.doctor.isVerified ? "Yes" : "No"}
+                  {doctor?.doctor?.isVerified ? "Yes" : "No"}
                 </Text>
               </View>
               <View style={{ flexDirection: "row" }}>
@@ -210,7 +275,7 @@ export default function Doctor({ route, navigation }) {
                   Specialized Diseases :
                 </Text>
                 <View>
-                  {doctor.doctor.specializedIn.map((data) => {
+                  {doctor?.doctor?.specializedIn.map((data) => {
                     return (
                       <View key={data._id} style={{ flex: 1 }}>
                         <Text style={{ ...themes.Typography.title2 }}>
@@ -254,51 +319,48 @@ export default function Doctor({ route, navigation }) {
             </TouchableOpacity>
             {isDoctorPlacesOpen && (
               <View>
-                {doctor.doctor.availablePlaces.length > 0 ? (
+                {doctor?.doctor?.availablePlaces.length > 0 ? (
                   <View style={{ flex: 1, marginBottom: 5 }}>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: "row",
-                        gap: 5,
-                        width: "100%",
-                      }}
-                    >
+                    {doctor?.doctor?.availablePlaces.map((ap) => (
                       <View
+                        key={ap.id}
                         style={{
-                          padding: 10,
-                          backgroundColor: "#D1D1D1",
-                          width: "30%",
+                          borderWidth: 2,
+                          borderColor: "#4F645D",
+                          padding: 20,
+                          borderRadius: 50,
                         }}
                       >
-                        <Text style={{ ...themes.Typography.body }}>Place</Text>
+                        <Text>{"Place Name: " + ap.name}</Text>
+                        <Text>Location:</Text>
+                        <MapView style={styles.map} region={ap.cordinate}>
+                          <Marker coordinate={ap.cordinate} title={ap.name} />
+                        </MapView>
+                        {ap.timeSlots && ap.timeSlots.length > 0 ? (
+                          <>
+                            {ap.timeSlots.map((ts) => (
+                              <View
+                                key={ts.from + ts.to}
+                                style={{
+                                  borderWidth: 2,
+                                  borderColor: "#C9FAEA",
+                                  padding: 20,
+                                  borderRadius: 50,
+                                }}
+                              >
+                                <Text>Day Time: {" " + ts.daysType}</Text>
+                                <Text>From: {" " + ts.from}</Text>
+                                <Text>To: {" " + ts.to}</Text>
+                              </View>
+                            ))}
+                          </>
+                        ) : (
+                          <>
+                            <Text>No Time Slotes Availble</Text>
+                          </>
+                        )}
                       </View>
-                      <View
-                        style={{
-                          padding: 10,
-                          backgroundColor: "#D1D1D1",
-                          width: "30%",
-                        }}
-                      >
-                        <Text style={{ ...themes.Typography.body }}>
-                          Distence
-                        </Text>
-                      </View>
-                      <View
-                        style={{
-                          padding: 10,
-                          backgroundColor: "#D1D1D1",
-                          width: "35%",
-                        }}
-                      >
-                        <Text style={{ ...themes.Typography.body }}>
-                          Location
-                        </Text>
-                      </View>
-                    </View>
-                    {doctor.doctor.availablePlaces.map((data, index) => {
-                      return <Map key={index} data={data} />;
-                    })}
+                    ))}
                   </View>
                 ) : (
                   <View style={{ flex: 1 }}>
@@ -354,7 +416,7 @@ export default function Doctor({ route, navigation }) {
                     starContainerStyle={styles.starContainer}
                   />
                   <Text style={{}}>
-                    {doctor.doctor.ratings.length + " of users rated"}
+                    {doctor?.doctor?.ratings.length + " of users rated"}
                   </Text>
                 </View>
                 <View style={{ flex: 1, alignItems: "center", marginTop: 30 }}>
@@ -379,31 +441,112 @@ export default function Doctor({ route, navigation }) {
                     </View>
                   </View>
                   <Text style={{}}>
-                    {doctor.doctor.reviews.length + " of users reviwed"}
+                    {doctor?.doctor?.reviews.length + " of users reviwed"}
                   </Text>
                 </View>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#616161",
-                    paddingVertical: 10,
-                    paddingHorizontal: 5,
-                    borderRadius: 25,
-                    marginTop: 20,
-                    width: 200,
-                    textAlign: "center",
-                  }}
-                >
-                  <Text
+                {isRateOptionEnable ? (
+                  <>
+                    <View
+                      style={{
+                        padding: 20,
+                        borderRadius: 20,
+                        borderWidth: 2,
+                        borderColor: "#616161",
+                        marginTop: 10,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          color: "#000000",
+                          padding: 6,
+                          fontFamily: "Urbanist-Bold",
+                        }}
+                      >
+                        Rate & Review Me 🤩
+                      </Text>
+                      <AirbnbRating
+                        count={5}
+                        reviews={["Terrible", "Bad", "OK", "Good", "Excellent"]}
+                        defaultRating={rating}
+                        size={30}
+                        onFinishRating={handleRatingChange}
+                      />
+                      <Text style={{ textAlign: "center" }}>{rating} / 5</Text>
+                      <View>
+                        <TextInput
+                          multiline
+                          numberOfLines={2}
+                          style={{
+                            // height: 40,
+                            // width: "100%",
+                            borderBottomColor: themes.Colors.primary,
+                            borderBottomWidth: 1,
+                            marginBottom: 10,
+                            backgroundColor: "#FFFF",
+                          }}
+                          placeholder="Add a comment here..."
+                          onChangeText={(text) => setComment(text)}
+                          value={comment}
+                          // right={<AntDesign name='eyeo' size={24} color='red' />}
+                        />
+                      </View>
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: "#616161",
+                          paddingVertical: 10,
+                          paddingHorizontal: 5,
+                          borderRadius: 25,
+                          marginTop: 20,
+                          textAlign: "center",
+                          alignItems: "center",
+                          alignContent: "center",
+                        }}
+                        onPress={() => {
+                          addRateAndReview();
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            color: "#FFFFFF",
+                            padding: 6,
+                            fontFamily: "Urbanist-Bold",
+                          }}
+                        >
+                          Submit
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </>
+                ) : (
+                  <TouchableOpacity
                     style={{
-                      fontSize: 18,
-                      color: "#FFFFFF",
-                      padding: 6,
-                      fontFamily: "Urbanist-Bold",
+                      backgroundColor: "#616161",
+                      paddingVertical: 10,
+                      paddingHorizontal: 5,
+                      borderRadius: 25,
+                      marginTop: 20,
+                      textAlign: "center",
+                      alignItems: "center",
+                      alignContent: "center",
+                    }}
+                    onPress={() => {
+                      setIsRateOptionEnable(!isRateOptionEnable);
                     }}
                   >
-                    Rate & Review Me 🤩
-                  </Text>
-                </TouchableOpacity>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        color: "#FFFFFF",
+                        padding: 6,
+                        fontFamily: "Urbanist-Bold",
+                      }}
+                    >
+                      Rate & Review Me 🤩
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
             )}
           </View>
@@ -432,7 +575,7 @@ const styles = StyleSheet.create({
   },
   rating: {
     fontSize: 32,
-    marginTop:20
+    marginTop: 20,
   },
   // Fixed button styles
   fixedButton: {
@@ -558,4 +701,28 @@ const styles = StyleSheet.create({
     fontFamily: "Urbanist-Regular",
   },
   doctorDetails: {},
+  map: {
+    width: 300,
+    height: 200,
+    marginBottom: 10,
+  },
+  locationDisabledContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  locationDisabledText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  enableLocationButton: {
+    backgroundColor: "blue",
+    padding: 10,
+    borderRadius: 5,
+  },
+  enableLocationButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
 });
