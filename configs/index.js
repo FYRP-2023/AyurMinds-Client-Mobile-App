@@ -9,6 +9,6 @@ export const configs = {
   CHATBOT_SERVICE: "/api/chatbot_service",
   SOCIAL_NETWROK_SERVICE_1:
     "https://ayurconnect-service-1.azurewebsites.net/api",
-  SOCIAL_NETWROK_SERVICE_2: "http://192.168.1.2:8000",
+  SOCIAL_NETWROK_SERVICE_2: "https://e63e-34-138-252-61.ngrok.io",
   GOOGLE_MAP_API_KEY: "AIzaSyDVrRktQwOIwxvcK5JxGka8smIqJBGmY4U",
 };
