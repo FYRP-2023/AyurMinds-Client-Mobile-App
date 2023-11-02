@@ -173,6 +173,7 @@ export default function Doctors({ route,navigation }) {
       console.log("🚀 ~ file: Doctors.js:170 ~ Doctors ~ selectedItems:", selectedItems)
   const [selectedItemDataCall, setSelectedItemDataCall] = useState(true);
     const [selectedItemData, setSelectedItemData] = useState([]);
+    console.log("🚀 ~ file: Doctors.js:176 ~ Doctors ~ selectedItemData:", selectedItemData)
    
 
     useEffect(() => {
@@ -189,12 +190,12 @@ export default function Doctors({ route,navigation }) {
             }
           );
           // setCallBack(false);
-          let docs = []
-          if (res.data && res.data.length > 0){
-            docs = res.data.filter(d=>{
-              return user._id != d._id
-            })
-          } 
+          let docs = [];
+          if (res.data && res.data.length > 0) {
+            docs = res.data.filter((d) => {
+              return user._id != d._id;
+            });
+          }
           setDoctors(docs);
         } catch (error) {
           console.log(
@@ -204,7 +205,7 @@ export default function Doctors({ route,navigation }) {
         }
       };
       getDoctors();
-    }, [selectedItemData, selectedCoordinates]);
+    }, [selectedItems, selectedCoordinates]);
 
      const getDiseases = async () => {
        try {
@@ -317,6 +318,10 @@ export default function Doctors({ route,navigation }) {
         const data = selectedItems.filter((i) => {
           return i != id;
         });
+        const sid = selectedItemData.filter((i)=>{
+           return i._id != id;
+        })
+        setSelectedItemData(sid);
         setselectedItems(data);
         setSelectedItemDataCall(true);
       };
